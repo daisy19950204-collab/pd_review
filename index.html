@@ -259,8 +259,8 @@ select{cursor:pointer}
     <div>
       <div class="up-main">엑셀 파일을 드래그하거나 클릭해서 업로드 (여러 채널 동시 가능)</div>
       <div class="up-sub">
-        <b>GitHub 공유:</b> 레포 루트에 <b>260608_서든어택.xlsx</b> 형식으로 업로드 → 모든 기기 자동 로드 (같은 채널 파일 여러 개면 가장 최신 날짜 자동 선택)<br>
-        <b>로컬 임시:</b> 파일 드롭 시 이 브라우저에만 저장됨
+        <b>파일명 형식:</b> <b>YYMMDD_채널명.xlsx</b> (예: <b>260608_오버워치.xlsx</b> / <b>260608_SAZ.xlsx</b> / <b>260608_낙원.xlsx</b> / <b>260608_낙원글로벌.xlsx</b>)<br>
+        <b>GitHub 공유:</b> 레포 루트에 위 형식으로 업로드 → 모든 기기 자동 로드 (같은 채널 파일 여러 개면 가장 최신 날짜 자동 선택) &nbsp;|&nbsp; <b>로컬 임시:</b> 파일 드롭 시 이 브라우저에만 저장됨
       </div>
     </div>
   </div>
@@ -676,7 +676,7 @@ function loadCh(ch) {
       if (tried >= dates.length) { fallbackLoad(ch); return; }
       var dateStr = dates[tried++];
       var fname   = dateStr + '_' + ch + '.xlsx';
-      var url     = GITHUB_RAW + '/' + encodeURIComponent(fname);
+      var url     = GITHUB_RAW + '/' + fname.split('').map(function(c){ return /[A-Za-z0-9-_.~]/.test(c) ? c : encodeURIComponent(c); }).join('');
       fetch(url, {method:'HEAD'})
         .then(function(res) {
           if (!res.ok) { tryNext(); return; }
@@ -734,6 +734,8 @@ document.querySelectorAll('.chtab').forEach(function(btn) {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.chtab').forEach(function(b){ b.classList.remove('on'); });
     btn.classList.add('on');
+    // 탭 클릭 즉시 1년 기준 KPI 표시 (파일 로드 완료 전에도 보이도록)
+    setAnnualKPI(btn.dataset.ch);
     loadCh(btn.dataset.ch);
   });
 });
@@ -741,7 +743,12 @@ document.querySelectorAll('.chtab').forEach(function(btn) {
 // ── file upload ───────────────────────────────────────────────
 function chFromFilename(name) {
   var base = name.replace(/\.[^.]+$/,'').replace(/^\d+_/,'');
-  for (var i=0; i<CH_NAMES.length; i++) { if (base.indexOf(CH_NAMES[i])>=0) return CH_NAMES[i]; }
+  var baseLower = base.toLowerCase();
+  for (var i=0; i<CH_NAMES.length; i++) {
+    if (base.indexOf(CH_NAMES[i])>=0) return CH_NAMES[i];
+    // 대소문자 무시 매칭 (SAZ, saz, Saz 등 모두 인식)
+    if (baseLower.indexOf(CH_NAMES[i].toLowerCase())>=0) return CH_NAMES[i];
+  }
   return null;
 }
 function handleDrop(e) {
@@ -1060,7 +1067,10 @@ function showToast(msg){
 }
 
 // ── init ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function(){ loadCh('서든어택'); });
+document.addEventListener('DOMContentLoaded', function(){
+  setAnnualKPI('서든어택');
+  loadCh('서든어택');
+});
 
 </script>
 </body>
