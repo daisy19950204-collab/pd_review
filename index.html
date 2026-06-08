@@ -652,6 +652,42 @@ function applyRows(ch, rows) {
   applyFilters();
 }
 
+// 파일 목록 캐시 (페이지 로드시 1회만 API 호출)
+var GH_FILE_MAP = null; // {채널명: {dateStr, name}} 형태로 저장
+
+function encodeGHPath(name) {
+  return name.split('').map(function(c){
+    return /[A-Za-z0-9\-_.~]/.test(c) ? c : encodeURIComponent(c);
+  }).join('');
+}
+
+// GitHub API로 파일 목록 1회 로드 → 콜백
+function fetchGHFileMap(callback) {
+  if (GH_FILE_MAP !== null) { callback(GH_FILE_MAP); return; }
+  fetch(GITHUB_API + '/contents/')
+    .then(function(res){ return res.ok ? res.json() : []; })
+    .then(function(files) {
+      var map = {};
+      files.forEach(function(f) {
+        if (!f.name.match(/\.xlsx?$/i)) return;
+        var parts = f.name.replace(/\.[^.]+$/,'').match(/^(\d{6})_(.+)$/);
+        if (!parts) return;
+        var dateStr = parts[1], chPart = parts[2];
+        for (var i = 0; i < CH_NAMES.length; i++) {
+          if (chPart.toLowerCase() === CH_NAMES[i].toLowerCase()) {
+            var ch = CH_NAMES[i];
+            if (!map[ch] || dateStr > map[ch].dateStr)
+              map[ch] = {dateStr: dateStr, name: f.name};
+            break;
+          }
+        }
+      });
+      GH_FILE_MAP = map;
+      callback(map);
+    })
+    .catch(function(){ GH_FILE_MAP = {}; callback({}); });
+}
+
 function loadCh(ch) {
   curCh = ch;
   checked.clear();
@@ -660,58 +696,39 @@ function loadCh(ch) {
   document.querySelectorAll('.tg[data-g="fmt"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
   document.querySelectorAll('.tg[data-g="cat"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
 
-  // ① GitHub API로 파일 목록 조회 → 채널명 매칭 → 최신 날짜 파일 RAW fetch
-  if (GITHUB_RAW && GITHUB_API) {
-    fetch(GITHUB_API + '/contents/', {cache:'no-cache'})
-      .then(function(res) {
-        if (!res.ok) throw new Error('api_fail');
-        return res.json();
-      })
-      .then(function(files) {
-        // 파일명에서 채널명 매칭 (대소문자 무시) + 날짜 추출 → 가장 최신 파일 선택
-        var matched = [];
-        files.forEach(function(f) {
-          if (!f.name.match(/\.xlsx?$/i)) return;
-          var base = f.name.replace(/\.[^.]+$/, '');
-          var parts = base.match(/^(\d{6})_(.+)$/);
-          if (!parts) return;
-          var dateStr = parts[1];
-          var chPart  = parts[2];
-          // CH_NAMES 순서대로 매칭 (낙원글로벌 > 낙원 우선순위 유지)
-          for (var i = 0; i < CH_NAMES.length; i++) {
-            if (chPart.toLowerCase() === CH_NAMES[i].toLowerCase()) {
-              if (CH_NAMES[i] === ch) matched.push({dateStr: dateStr, name: f.name});
-              break;
-            }
-          }
-        });
-        if (!matched.length) { fallbackLoad(ch); return; }
-        // 날짜 내림차순 정렬 → 가장 최신 파일
-        matched.sort(function(a,b){ return b.dateStr.localeCompare(a.dateStr); });
-        var best = matched[0];
-        var rawUrl = GITHUB_RAW + '/' + best.name.split('').map(function(c){
-          return /[A-Za-z0-9\-_.~]/.test(c) ? c : encodeURIComponent(c);
-        }).join('');
-        return fetch(rawUrl, {cache:'no-cache'})
-          .then(function(r2) { return r2.arrayBuffer(); })
-          .then(function(buf) {
-            var wb  = XLSX.read(new Uint8Array(buf), {type:'array'});
-            var ws  = wb.Sheets[wb.SheetNames[0]];
-            var raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-            var rows = parseSheet(raw);
-            if (!rows.length) throw new Error('empty');
-            var ds = '20'+best.dateStr.slice(0,2)+'.'+best.dateStr.slice(2,4)+'.'+best.dateStr.slice(4,6)+'.';
-            document.getElementById('up-title').textContent = ch + ' · ' + ds + ' 기준';
-            ST.chData[ch] = rows; saveST();
-            showUploadStatus(ch, rows.length, null);
-            applyRows(ch, rows);
-          })
-          .catch(function() { fallbackLoad(ch); });
-      })
-      .catch(function() { fallbackLoad(ch); });
-  } else {
-    fallbackLoad(ch);
+  if (!GITHUB_RAW || !GITHUB_API) { fallbackLoad(ch); return; }
+
+  // localStorage에 이미 데이터 있으면 즉시 표시 후 백그라운드에서 최신 확인
+  if (ST.chData[ch] && ST.chData[ch].length) {
+    applyRows(ch, ST.chData[ch]);
   }
+
+  fetchGHFileMap(function(map) {
+    var entry = map[ch];
+    if (!entry) { fallbackLoad(ch); return; }
+    // localStorage와 날짜 같으면 재다운로드 스킵
+    if (ST.chData[ch] && ST.chData[ch].length && ST.chMeta && ST.chMeta[ch] === entry.dateStr) {
+      applyRows(ch, ST.chData[ch]); return;
+    }
+    var rawUrl = GITHUB_RAW + '/' + encodeGHPath(entry.name);
+    fetch(rawUrl)
+      .then(function(r){ return r.arrayBuffer(); })
+      .then(function(buf) {
+        var wb  = XLSX.read(new Uint8Array(buf), {type:'array'});
+        var ws  = wb.Sheets[wb.SheetNames[0]];
+        var raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        var rows = parseSheet(raw);
+        if (!rows.length) throw new Error('empty');
+        var ds = '20'+entry.dateStr.slice(0,2)+'.'+entry.dateStr.slice(2,4)+'.'+entry.dateStr.slice(4,6)+'.';
+        document.getElementById('up-title').textContent = ch + ' · ' + ds + ' 기준';
+        if (!ST.chMeta) ST.chMeta = {};
+        ST.chData[ch] = rows; ST.chMeta[ch] = entry.dateStr; saveST();
+        showUploadStatus(ch, rows.length, null);
+        // 현재 보고 있는 탭일 때만 화면 갱신
+        if (curCh === ch) applyRows(ch, rows);
+      })
+      .catch(function(){ fallbackLoad(ch); });
+  });
 }
 
 function fallbackLoad(ch) {
@@ -1060,11 +1077,20 @@ function fallbackCopy(text,cnt){
 
 // ── reset ────────────────────────────────────────────────────
 function resetAllData() {
-  if (!confirm('모든 채널의 업로드 데이터와 포맷/유형/제작자 설정을 초기화합니다.\n계속하시겠습니까?')) return;
-  try { localStorage.removeItem(SKEY); } catch(e) {}
-  ST = {meta:{}, chData:{}};
+  if (!confirm('포맷/유형/제작자 설정만 초기화합니다. (엑셀 데이터는 유지)\n계속하시겠습니까?')) return;
+  ST.meta = {};
+  saveST();
   loadCh(curCh);
-  showToast('✅ 데이터가 초기화되었습니다');
+  showToast('✅ 설정이 초기화되었습니다 (데이터 유지)');
+}
+
+function resetAndReload() {
+  if (!confirm('모든 데이터와 설정을 완전 초기화하고 GitHub에서 다시 불러옵니다.\n계속하시겠습니까?')) return;
+  try { localStorage.removeItem(SKEY); } catch(e) {}
+  ST = {meta:{}, chData:{}, chMeta:{}};
+  GH_FILE_MAP = null;
+  showToast('🔄 GitHub에서 데이터를 다시 불러오는 중...');
+  fetchGHFileMap(function(){ loadCh(curCh); });
 }
 
 // ── toast ─────────────────────────────────────────────────────
@@ -1077,7 +1103,12 @@ function showToast(msg){
 // ── init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function(){
   setAnnualKPI('서든어택');
-  loadCh('서든어택');
+  // 페이지 로드 시 GitHub 파일 목록 1회 선로드 → 이후 탭 전환은 즉시
+  if (GITHUB_RAW && GITHUB_API) {
+    fetchGHFileMap(function(){ loadCh('서든어택'); });
+  } else {
+    loadCh('서든어택');
+  }
 });
 
 </script>
