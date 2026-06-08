@@ -677,11 +677,11 @@ function loadCh(ch) {
       var dateStr = dates[tried++];
       var fname   = dateStr + '_' + ch + '.xlsx';
       var url     = GITHUB_RAW + '/' + fname.split('').map(function(c){ return /[A-Za-z0-9-_.~]/.test(c) ? c : encodeURIComponent(c); }).join('');
-      fetch(url, {method:'HEAD'})
+      fetch(url, {method:'HEAD', cache:'no-cache'})
         .then(function(res) {
           if (!res.ok) { tryNext(); return; }
           // 파일 존재 확인 → 실제 다운로드
-          return fetch(url)
+          return fetch(url, {cache:'no-cache'})
             .then(function(r2) { return r2.arrayBuffer(); })
             .then(function(buf) {
               var wb   = XLSX.read(new Uint8Array(buf), {type:'array'});
