@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>채널 성과 분석 대시보드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f4f1;--sur:#fff;--sur2:#f0efeb;--bd:#e2e1dc;--bd2:#cccbc5;
+  --t1:#18181a;--t2:#5a5a60;--t3:#9a9a9f;
+  --ac:#1a56db;--ac-bg:#eef3ff;--ac-bd:#bfcfff;
+  --gn:#0d7a4e;--gn-bg:#ebfaf3;--gn-bd:#a3e6c5;
+  --rd:#c0392b;--rd-bg:#fdf0ee;--rd-bd:#f5bdb8;
+  --r:8px;--rl:12px;
+  --sh:0 1px 4px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:'Pretendard',system-ui,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
+.page{max-width:1500px;margin:0 auto;padding:24px 28px 60px}
+
+/* ── header ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1.5px solid var(--bd)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-ico{width:34px;height:34px;border-radius:7px;background:#e22134;display:flex;align-items:center;justify-content:center}
+.brand-ico svg{width:18px;height:18px;fill:#fff}
+.brand-nm{font-size:16px;font-weight:700;letter-spacing:-.4px}
+.brand-sb{font-size:11px;color:var(--t3);margin-top:1px}
+.hdr-meta{font-size:12px;color:var(--t3)}
+.hdr-meta b{color:var(--t2)}
+
+/* ── channel tabs ── */
+.ch-tabs{display:flex;gap:4px;margin-bottom:18px;background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:5px;box-shadow:var(--sh);flex-wrap:wrap}
+.chtab{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--t2);transition:all .15s;white-space:nowrap;border:none;background:transparent;font-family:'Pretendard',sans-serif}
+.chtab:hover{background:var(--sur2);color:var(--t1)}
+.chtab.on{background:var(--ac);color:#fff}
+.chtab .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── upload ── */
+.upsec{margin-bottom:18px}
+.uph{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.uph-lbl{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.6px;display:flex;align-items:center;gap:6px}
+.upz{border:2px dashed var(--bd2);border-radius:var(--rl);padding:18px 22px;background:var(--sur);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:16px}
+.upz:hover,.upz.drag{border-color:var(--ac);background:var(--ac-bg)}
+.upz.drag{border-style:solid}
+.up-ico{width:40px;height:40px;border-radius:var(--r);background:var(--sur2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.up-ico svg{width:20px;height:20px;stroke:var(--t2);fill:none;stroke-width:2}
+.up-main{font-size:13px;font-weight:500;color:var(--t1);margin-bottom:2px}
+.up-sub{font-size:11px;color:var(--t3)}
+.up-results{display:none;margin-top:8px;gap:6px;flex-wrap:wrap}
+.up-results.show{display:flex}
+.upstat{font-size:11px;padding:3px 9px;border-radius:12px;font-weight:500}
+.us-ok{background:var(--gn-bg);color:var(--gn);border:1px solid var(--gn-bd)}
+.us-err{background:var(--rd-bg);color:var(--rd);border:1px solid var(--rd-bd)}
+.us-none{background:var(--sur2);color:var(--t3);border:1px solid var(--bd)}
+
+/* ── KPI ── */
+.kpi-wrap{margin-bottom:18px;display:flex;flex-direction:column;gap:10px}
+.kpi-sec{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden}
+.kpi-sec-ttl{font-size:12px;font-weight:700;padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px;color:var(--t2)}
+.kpi-sec-ttl svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0}
+.kpi-hdr{display:grid;grid-template-columns:100px repeat(5,1fr);background:var(--sur2);border-bottom:1px solid var(--bd)}
+.kpi-hdr-lbl{font-size:11px;font-weight:700;color:var(--t2);padding:8px 12px;display:flex;align-items:center}
+.kpi-col-lbl{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;text-align:center;padding:8px 6px;border-left:1px solid var(--bd)}
+.kpi-row{display:grid;grid-template-columns:100px repeat(5,1fr);border-bottom:1px solid var(--bd)}
+.kpi-row:last-child{border-bottom:none}
+.kpi-row-tag{display:flex;align-items:center;justify-content:center;padding:10px 8px;border-right:1px solid var(--bd);background:var(--sur2)}
+.fmt-badge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:700}
+.fmt-l{background:#eef3ff;color:#1a56db}
+.fmt-s{background:#fef3e2;color:#92400e}
+.kpi-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 8px;border-left:1px solid var(--bd);text-align:center}
+.kpi-val{font-size:16px;font-weight:700;color:var(--t1);font-family:'DM Mono',monospace;line-height:1}
+.kpi-unit{font-size:10px;color:var(--t3);margin-top:3px}
+.kpi-cell.hi{background:var(--gn-bg)}
+.kpi-cell.hi .kpi-val{color:var(--gn)}
+.kpi-cell.lo{background:var(--rd-bg)}
+.kpi-cell.lo .kpi-val{color:var(--rd)}
+.kpi-note{font-size:10px;color:var(--t3);font-weight:400;margin-left:8px}
+
+/* ── filter ── */
+.fp{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px;margin-bottom:14px;box-shadow:var(--sh)}
+.fr1{display:grid;grid-template-columns:1fr 200px auto;gap:10px;align-items:end;margin-bottom:14px}
+.fr2{display:flex;align-items:flex-start;gap:20px;padding-top:12px;border-top:1px solid var(--bd)}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fl{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px}
+.fg input,.fg select{height:36px;padding:0 11px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--sur);color:var(--t1);font-family:'Pretendard',sans-serif;font-size:13px;outline:none;transition:border-color .15s;width:100%}
+.fg input:focus,.fg select:focus{border-color:var(--ac)}
+.sw{position:relative}
+.sw input{padding-left:32px}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--t3);pointer-events:none;line-height:0}
+.si svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2}
+.tglbl{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.tgrow{display:flex;gap:5px;flex-wrap:wrap}
+.tg{display:inline-flex;align-items:center;gap:4px;padding:4px 11px;border-radius:20px;border:1px solid var(--bd2);background:var(--sur2);font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;transition:all .15s;user-select:none}
+.tg:hover{border-color:var(--ac);color:var(--ac);background:var(--ac-bg)}
+.tg.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.tdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* ── buttons ── */
+.btn{display:inline-flex;align-items:center;gap:5px;height:36px;padding:0 14px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--sur);color:var(--t2);font-family:'Pretendard',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--sur2);color:var(--t1)}
+.btn svg{width:14px;height:14px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+.btn.pri:hover{background:#1447c0}
+.btn.suc{background:var(--gn);border-color:var(--gn);color:#fff;height:44px;font-size:14px;font-weight:600;padding:0 22px}
+.btn.suc:hover{background:#0a6040}
+.btn.sm{height:30px;padding:0 10px;font-size:12px}
+.btn.ghost{border-color:var(--bd);color:var(--t3)}
+.brow{display:flex;gap:7px;align-items:center}
+
+/* ── table ── */
+.tc{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden;margin-bottom:18px}
+.ttb{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border-bottom:1px solid var(--bd);gap:10px;flex-wrap:wrap}
+.tinf{font-size:13px;color:var(--t2);display:flex;align-items:center;gap:8px}
+.sbadge{background:var(--ac-bg);color:var(--ac);border:1px solid var(--ac-bd);border-radius:12px;padding:2px 10px;font-size:11px;font-weight:600}
+.tsc{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:960px}
+thead th{padding:9px 11px;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;background:var(--sur2);border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap;cursor:pointer;user-select:none;position:sticky;top:0;z-index:1}
+thead th:hover{color:var(--t1)}
+thead th.srt{color:var(--ac)}
+.si2{display:inline-block;margin-left:3px;opacity:.4;font-size:9px}
+thead th.srt .si2{opacity:1}
+td{padding:9px 11px;border-bottom:1px solid var(--bd);vertical-align:middle;font-size:12.5px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#faf9f7}
+tr.ck td{background:var(--ac-bg)}
+.c-chk{width:38px}.c-ttl{min-width:240px}.c-dt{width:90px}.c-n{width:86px;text-align:right}.c-fmt{width:68px}.c-cat{width:90px}
+.tlink{color:var(--t1);text-decoration:none;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
+.tlink:hover{color:var(--ac)}
+.dc{font-size:11.5px;color:var(--t3);font-family:'DM Mono',monospace}
+.nc{font-family:'DM Mono',monospace;font-size:12px;text-align:right;color:var(--t2)}
+.hh{color:#0d7a4e!important}
+.hmh{color:#0d7a4e!important}
+.ham{color:#d97706!important}
+.hl{color:#c0392b!important}
+.hml{color:#c0392b!important}
+
+/* ── type/fmt badges ── */
+.tb{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer}
+.tb:hover{opacity:.75}
+.tb-fs{background:#fef3e2;color:#92400e}
+.tb-fl{background:#eef3ff;color:#1a56db}
+.tb-fv{background:#ebfaf3;color:#0d7a4e}
+.tb-fn{background:#f0efeb;color:#9a9a9f;border:1px dashed var(--bd2)}
+.tb-c0{background:#f5f3ff;color:#5b21b6}
+.tb-c1{background:#fdf2ff;color:#86198f}
+.tb-c2{background:#eef3ff;color:#1a56db}
+.tb-c3{background:#fff7ed;color:#c2410c}
+.tb-c4{background:#f0fdf4;color:#15803d}
+.tb-c5{background:#fef9ec;color:#92400e}
+.tb-c6{background:#f0f9ff;color:#0369a1}
+
+/* ── creator badge ── */
+.crb{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;cursor:pointer;transition:transform .1s;border:1.5px solid transparent}
+.crb:hover{transform:scale(1.12)}
+.cr0{background:#eef3ff;color:#1a56db;border-color:#bfcfff}
+.cr1{background:#ebfaf3;color:#0d7a4e;border-color:#a3e6c5}
+.cr2{background:#fdf0ee;color:#c0392b;border-color:#f5bdb8}
+.cr3{background:#fef3e2;color:#92400e;border-color:#f5c97c}
+.crn{background:var(--sur2);color:var(--t3);border-color:var(--bd2)}
+
+/* ── popover ── */
+.pop{display:none;position:fixed;z-index:9999;background:var(--sur);border:1px solid var(--bd2);border-radius:var(--rl);box-shadow:0 8px 24px rgba(0,0,0,.12);padding:4px;min-width:110px}
+.pop.op{display:block}
+.popt{padding:7px 12px;font-size:12px;font-weight:500;cursor:pointer;border-radius:6px;color:var(--t1);display:flex;justify-content:space-between}
+.popt:hover{background:var(--sur2)}
+.popt.sel{color:var(--ac);font-weight:700}
+.psep{height:1px;background:var(--bd);margin:3px 0}
+
+/* ── pagination ── */
+.pgbar{display:flex;align-items:center;justify-content:space-between;padding:10px 15px;border-top:1px solid var(--bd)}
+.pgi{font-size:12px;color:var(--t3)}
+.pgbs{display:flex;gap:3px}
+.pgb{min-width:30px;height:30px;padding:0 7px;border:1px solid var(--bd);border-radius:6px;background:var(--sur);color:var(--t2);font-family:'Pretendard',sans-serif;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .1s}
+.pgb:hover:not([disabled]){background:var(--sur2)}
+.pgb[disabled]{opacity:.3;cursor:not-allowed}
+.pgb.cur{background:var(--ac);border-color:var(--ac);color:#fff}
+
+/* ── export ── */
+.exc{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:20px 22px;box-shadow:var(--sh)}
+.exh{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ex-ico{width:36px;height:36px;border-radius:var(--r);background:var(--gn-bg);border:1px solid var(--gn-bd);display:flex;align-items:center;justify-content:center}
+.ex-ico svg{width:18px;height:18px;stroke:var(--gn);fill:none;stroke-width:2}
+.ex-title{font-size:15px;font-weight:700}
+.ex-sub{font-size:11px;color:var(--t3);margin-top:2px}
+.ex-body{display:flex;align-items:flex-end;gap:14px;margin-bottom:16px}
+.ex-f{display:flex;flex-direction:column;gap:4px}
+.ex-f label{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px}
+.ex-f select{height:40px;padding:0 12px;border:1px solid var(--bd2);border-radius:var(--r);background:var(--sur);color:var(--t1);font-family:'Pretendard',sans-serif;font-size:13px;outline:none;min-width:180px}
+.exft{display:flex;align-items:center;gap:12px;padding-top:14px;border-top:1px solid var(--bd);flex-wrap:wrap}
+.exnt{font-size:12px;color:var(--t3);line-height:1.5}
+.exnt b{color:var(--t2)}
+.excnt{font-weight:700;color:var(--ac)}
+
+/* ── toast ── */
+.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--t1);color:#fff;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;transition:all .25s;pointer-events:none;z-index:99999;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--ac)}
+select{cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+<header class="hdr">
+  <div class="brand">
+    <div class="brand-ico">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+    </div>
+    <div>
+      <div class="brand-nm">채널 성과 분석 대시보드</div>
+      <div class="brand-sb">YouTube Studio 데이터 기반 · 멀티채널 콘텐츠 관리</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="hdr-meta">로드된 데이터 <b id="hm-total">0</b>건</div>
+    <button class="btn ghost" onclick="resetAllData()" style="height:32px;padding:0 12px;font-size:12px;color:var(--rd);border-color:var(--rd-bd)">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.62"/></svg>
+      데이터 리셋
+    </button>
+  </div>
+</header>
+
+<!-- 채널 탭 -->
+<div class="ch-tabs">
+  <button class="chtab on" data-ch="서든어택"><span class="dot" style="background:#e22134"></span>서든어택</button>
+  <button class="chtab" data-ch="카스온라인"><span class="dot" style="background:#f97316"></span>카스온라인</button>
+  <button class="chtab" data-ch="더파이널스"><span class="dot" style="background:#8b5cf6"></span>더파이널스</button>
+  <button class="chtab" data-ch="SAZ"><span class="dot" style="background:#0ea5e9"></span>SAZ</button>
+  <button class="chtab" data-ch="낙원"><span class="dot" style="background:#10b981"></span>낙원</button>
+  <button class="chtab" data-ch="낙원글로벌"><span class="dot" style="background:#06b6d4"></span>낙원글로벌</button>
+  <button class="chtab" data-ch="오버워치"><span class="dot" style="background:#f59e0b"></span>오버워치</button>
+</div>
+
+<!-- 업로드 -->
+<div class="upsec">
+  <div class="uph">
+    <div class="uph-lbl">
+      <svg viewBox="0 0 24 24" width="13" height="13"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span id="up-title">채널 데이터 업로드</span>
+    </div>
+    <span class="upstat us-none" id="up-stat-inline" style="display:none"></span>
+  </div>
+  <div class="upz" id="upz"
+    onclick="document.getElementById('finput').click()"
+    ondragover="event.preventDefault();this.classList.add('drag')"
+    ondragleave="this.classList.remove('drag')"
+    ondrop="event.preventDefault();this.classList.remove('drag');handleDrop(event)">
+    <div class="up-ico">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+    </div>
+    <div>
+      <div class="up-main">엑셀 파일을 드래그하거나 클릭해서 업로드 (여러 채널 동시 가능)</div>
+      <div class="up-sub">
+        <b>GitHub 공유:</b> 레포 <b>data/</b> 폴더에 <b>260608_서든어택.xlsx</b> 형식으로 업로드 → 모든 기기 자동 로드 (같은 채널 파일 여러 개면 가장 최신 날짜 자동 선택)<br>
+        <b>로컬 임시:</b> 파일 드롭 시 이 브라우저에만 저장됨
+      </div>
+    </div>
+  </div>
+  <input type="file" id="finput" accept=".xlsx,.xls" multiple onchange="handleFileInput(this)">
+  <div class="up-results" id="up-results"></div>
+</div>
+
+<!-- KPI -->
+<div class="kpi-wrap">
+  <!-- 1년 기준 -->
+  <div class="kpi-sec">
+    <div class="kpi-sec-ttl">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      1년 기준 평균
+    </div>
+    <div class="kpi-hdr">
+      <div class="kpi-hdr-lbl">포맷</div>
+      <div class="kpi-col-lbl">중앙 조회수</div>
+      <div class="kpi-col-lbl">노출수</div>
+      <div class="kpi-col-lbl">CTR</div>
+      <div class="kpi-col-lbl">평균 조회율</div>
+      <div class="kpi-col-lbl">참여율</div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-row-tag"><span class="fmt-badge fmt-l">롱폼</span></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-l-views">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-l-impr">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-l-ctr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-l-avr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-l-eng">—</div><div class="kpi-unit">%</div></div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-row-tag"><span class="fmt-badge fmt-s">숏폼</span></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-s-views">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-s-impr">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-s-ctr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-s-avr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell"><div class="kpi-val" id="a-s-eng">—</div><div class="kpi-unit">%</div></div>
+    </div>
+  </div>
+  <!-- 업로드 데이터 -->
+  <div class="kpi-sec">
+    <div class="kpi-sec-ttl">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      업로드 데이터 평균
+      <span class="kpi-note">조회수 중앙값 · 1년 기준 대비 초록↑ 빨강↓</span>
+    </div>
+    <div class="kpi-hdr">
+      <div class="kpi-hdr-lbl">포맷</div>
+      <div class="kpi-col-lbl">중앙 조회수</div>
+      <div class="kpi-col-lbl">노출수</div>
+      <div class="kpi-col-lbl">CTR</div>
+      <div class="kpi-col-lbl">평균 조회율</div>
+      <div class="kpi-col-lbl">참여율</div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-row-tag"><span class="fmt-badge fmt-l">롱폼</span></div>
+      <div class="kpi-cell" id="d-l-views-c"><div class="kpi-val" id="d-l-views">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell" id="d-l-impr-c"><div class="kpi-val" id="d-l-impr">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell" id="d-l-ctr-c"><div class="kpi-val" id="d-l-ctr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell" id="d-l-avr-c"><div class="kpi-val" id="d-l-avr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell" id="d-l-eng-c"><div class="kpi-val" id="d-l-eng">—</div><div class="kpi-unit">%</div></div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-row-tag"><span class="fmt-badge fmt-s">숏폼</span></div>
+      <div class="kpi-cell" id="d-s-views-c"><div class="kpi-val" id="d-s-views">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell" id="d-s-impr-c"><div class="kpi-val" id="d-s-impr">—</div><div class="kpi-unit">회</div></div>
+      <div class="kpi-cell" id="d-s-ctr-c"><div class="kpi-val" id="d-s-ctr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell" id="d-s-avr-c"><div class="kpi-val" id="d-s-avr">—</div><div class="kpi-unit">%</div></div>
+      <div class="kpi-cell" id="d-s-eng-c"><div class="kpi-val" id="d-s-eng">—</div><div class="kpi-unit">%</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- 필터 -->
+<div class="fp">
+  <div class="fr1">
+    <div class="fg">
+      <div class="fl">제목 검색</div>
+      <div class="sw">
+        <span class="si"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+        <input type="text" id="f-q" placeholder="키워드 입력..." oninput="applyFilters()">
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fl">정렬</div>
+      <select id="f-sort" onchange="applySortSel()">
+        <option value="date-d" selected>최신 업로드순</option>
+        <option value="date-a">오래된순</option>
+        <option value="views-d">조회수 높은순</option>
+        <option value="views-a">조회수 낮은순</option>
+        <option value="impressions-d">노출수 높은순</option>
+        <option value="ctr-d">CTR 높은순</option>
+        <option value="avg_view_rate-d">평균조회율 높은순</option>
+        <option value="engagement-d">참여율 높은순</option>
+      </select>
+    </div>
+    <div class="brow">
+      <button class="btn pri" onclick="checkAll()">
+        <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        전체 선택
+      </button>
+      <button class="btn ghost" onclick="uncheckAll()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+        해제
+      </button>
+    </div>
+  </div>
+  <div class="fr2">
+    <div style="flex:1;display:flex;flex-direction:column;gap:10px">
+      <div>
+        <div class="tglbl">콘텐츠 포맷</div>
+        <div class="tgrow">
+          <div class="tg on" data-g="fmt" data-v="" onclick="setFilter(this,'fmt')"><span class="tdot" style="background:#9a9a9f"></span>전체</div>
+          <div class="tg" data-g="fmt" data-v="숏폼" onclick="setFilter(this,'fmt')"><span class="tdot" style="background:#92400e"></span>숏폼</div>
+          <div class="tg" data-g="fmt" data-v="롱폼" onclick="setFilter(this,'fmt')"><span class="tdot" style="background:#1a56db"></span>롱폼</div>
+          <div class="tg" data-g="fmt" data-v="라이브" onclick="setFilter(this,'fmt')"><span class="tdot" style="background:#0d7a4e"></span>라이브</div>
+        </div>
+      </div>
+      <div>
+        <div class="tglbl">콘텐츠 유형</div>
+        <div class="tgrow">
+          <div class="tg on" data-g="cat" data-v="" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#9a9a9f"></span>전체</div>
+          <div class="tg" data-g="cat" data-v="리그 안내" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#5b21b6"></span>리그 안내</div>
+          <div class="tg" data-g="cat" data-v="리그 서사" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#86198f"></span>리그 서사</div>
+          <div class="tg" data-g="cat" data-v="하이라이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#1a56db"></span>하이라이트</div>
+          <div class="tg" data-g="cat" data-v="오프라인행사" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#c2410c"></span>오프라인행사</div>
+          <div class="tg" data-g="cat" data-v="업데이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#15803d"></span>업데이트</div>
+          <div class="tg" data-g="cat" data-v="인플루언서" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#92400e"></span>인플루언서</div>
+          <div class="tg" data-g="cat" data-v="채널지기" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#0369a1"></span>채널지기</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="tglbl">페이지당</div>
+      <select id="per-page" onchange="applyFilters()" style="height:32px;padding:0 10px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sur);color:var(--t2);font-family:'Pretendard',sans-serif;font-size:12px;cursor:pointer">
+        <option value="25">25개</option>
+        <option value="50" selected>50개</option>
+        <option value="100">100개</option>
+        <option value="200">200개</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- 테이블 -->
+<div class="tc">
+  <div class="ttb">
+    <div class="tinf">
+      <span id="tbl-cnt">0개</span>
+      <span class="sbadge" id="sbadge" style="display:none">0건 선택</span>
+    </div>
+    <div class="brow">
+      <button class="btn sm ghost" onclick="checkPage()">이 페이지 선택</button>
+      <button class="btn sm ghost" onclick="uncheckPage()">이 페이지 해제</button>
+    </div>
+  </div>
+  <div class="tsc">
+    <table>
+      <thead>
+        <tr>
+          <th class="c-chk"><input type="checkbox" id="hchk" onchange="togglePage(this)"></th>
+          <th class="c-ttl" onclick="colSort('title')">제목<span class="si2" id="si-title">↕</span></th>
+          <th class="c-dt"  onclick="colSort('date')">업로드일<span class="si2" id="si-date">↓</span></th>
+          <th class="c-n"   onclick="colSort('views')">조회수<span class="si2" id="si-views">↕</span></th>
+          <th class="c-n"   onclick="colSort('impressions')">노출수<span class="si2" id="si-impressions">↕</span></th>
+          <th class="c-n"   onclick="colSort('ctr')">CTR%<span class="si2" id="si-ctr">↕</span></th>
+          <th class="c-n"   onclick="colSort('avg_view_rate')">평균조회율<span class="si2" id="si-avg_view_rate">↕</span></th>
+          <th class="c-n"   onclick="colSort('engagement')">참여율%<span class="si2" id="si-engagement">↕</span></th>
+          <th class="c-fmt">포맷</th>
+          <th class="c-cat">유형</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <div class="pgbar" id="pgbar"></div>
+</div>
+
+<!-- 내보내기 -->
+<div class="exc">
+  <div class="exh">
+    <div class="ex-ico">
+      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </div>
+    <div>
+      <div class="ex-title">노션 복사 내보내기</div>
+      <div class="ex-sub">체크된 콘텐츠를 노션 마크다운 테이블 형식으로 복사</div>
+    </div>
+  </div>
+  <div class="ex-body">
+    <div class="ex-f">
+      <label>제작자 선택</label>
+      <select id="ex-cr">
+        <option value="">선택 안 함</option>
+        <option value="심승선">심승선</option>
+        <option value="이유정">이유정</option>
+        <option value="이수민">이수민</option>
+        <option value="임기백">임기백</option>
+      </select>
+    </div>
+  </div>
+  <div class="exft">
+    <button class="btn suc" onclick="doCopy()">
+      <svg viewBox="0 0 24 24" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      노션에 붙여넣기 가능하도록 복사
+    </button>
+    <div class="exnt">
+      💡 복사 후 노션 페이지에서 <b>Ctrl+V</b> (Mac: <b>⌘V</b>) 하면 테이블 생성<br>
+      체크된 <span class="excnt" id="ex-cnt">0</span>건 포함
+    </div>
+  </div>
+</div>
+
+</div><!-- /page -->
+
+<div class="toast" id="toast"></div>
+<div class="pop" id="fmt-pop">
+  <div class="popt" data-v="숏폼">숏폼</div>
+  <div class="popt" data-v="롱폼">롱폼</div>
+  <div class="popt" data-v="라이브">라이브</div>
+</div>
+<div class="pop" id="cat-pop">
+  <div class="popt" data-v="리그 안내">리그 안내</div>
+  <div class="popt" data-v="리그 서사">리그 서사</div>
+  <div class="popt" data-v="하이라이트">하이라이트</div>
+  <div class="popt" data-v="오프라인행사">오프라인행사</div>
+  <div class="popt" data-v="업데이트">업데이트</div>
+  <div class="popt" data-v="인플루언서">인플루언서</div>
+  <div class="popt" data-v="채널지기">채널지기</div>
+</div>
+<div class="pop" id="cr-pop">
+  <div class="popt" data-v="">미지정</div>
+  <div class="psep"></div>
+  <div class="popt" data-v="심승선">심승선</div>
+  <div class="popt" data-v="이유정">이유정</div>
+  <div class="popt" data-v="이수민">이수민</div>
+  <div class="popt" data-v="임기백">임기백</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+const BUILTIN_SA = [{"id":"45CbexPRuO0","title":"Core-X vs Divine - DAY2 MATCH4 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 16, 2026","views":9005,"impressions":95109,"ctr":8.03,"avg_view_rate":36.55,"engagement":0.99,"likes":28,"comments":46,"shares":15},{"id":"3w98kSw-4ZM","title":"러블리? 시크? 하나론 부족해! l 정채연 l 서든어택","date":"May 7, 2026","views":5574,"impressions":42930,"ctr":3.52,"avg_view_rate":26.92,"engagement":3.1,"likes":91,"comments":41,"shares":41},{"id":"_azG_IVBjBs","title":"hermanos vs Core-X - DAY3 MATCH6 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 23, 2026","views":5837,"impressions":79450,"ctr":6.18,"avg_view_rate":35.44,"engagement":0.99,"likes":24,"comments":30,"shares":4},{"id":"ZLvh6KjMsF4","title":"진관우의 먼지 같은 체력","date":"May 4, 2026","views":88659,"impressions":41049,"ctr":6.34,"avg_view_rate":58.42,"engagement":0.18,"likes":123,"comments":28,"shares":9},{"id":"XJo5C--dJkw","title":"FINF vs Divine - DAY4 MATCH8 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 30, 2026","views":8617,"impressions":92951,"ctr":7.84,"avg_view_rate":38.53,"engagement":0.67,"likes":19,"comments":28,"shares":11},{"id":"TOv6XZ4SnIM","title":"예선전은 오시영의 발굴 현장","date":"May 2, 2026","views":350343,"impressions":76707,"ctr":7.75,"avg_view_rate":73.99,"engagement":0.16,"likes":460,"comments":28,"shares":69},{"id":"WA7GmSTDDMA","title":"이 맛에 팰리스 하지 ㅋㅋㅋ","date":"May 12, 2026","views":123975,"impressions":70266,"ctr":7.7,"avg_view_rate":82.78,"engagement":0.35,"likes":250,"comments":27,"shares":155},{"id":"4S8bxcLYAd0","title":"임치훈과 김동민의 콜라보레이션","date":"Apr 30, 2026","views":503154,"impressions":73296,"ctr":6.79,"avg_view_rate":71.43,"engagement":0.12,"likes":572,"comments":26,"shares":24},{"id":"31Yaju04mQk","title":"본선 진출 팀 결정 예선전 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"Apr 24, 2026","views":16904,"impressions":130800,"ctr":9.43,"avg_view_rate":43.96,"engagement":0.7,"likes":57,"comments":24,"shares":38},{"id":"F0GdnUo6jek","title":"악마 vs 핑투 - DAY1 MATCH2 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 9, 2026","views":11138,"impressions":131158,"ctr":7.09,"avg_view_rate":38.14,"engagement":0.59,"likes":32,"comments":23,"shares":11},{"id":"wfI_jmYc9qw","title":"임건우: 해체할게?","date":"May 5, 2026","views":169654,"impressions":61687,"ctr":7.36,"avg_view_rate":76.41,"engagement":0.19,"likes":291,"comments":22,"shares":12},{"id":"8WT7mv6rP4Y","title":"퍼제 vs 악마 - DAY4 MATCH7 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 30, 2026","views":7201,"impressions":74017,"ctr":8.51,"avg_view_rate":46.46,"engagement":0.82,"likes":32,"comments":20,"shares":7},{"id":"aqBKYe9vSIE","title":"퍼제 vs PAUL - DAY1 MATCH1 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 9, 2026","views":7903,"impressions":84457,"ctr":7.6,"avg_view_rate":38.92,"engagement":0.81,"likes":30,"comments":20,"shares":14},{"id":"8TY5kMgvvCU","title":"레일리 믿고 있었다구!!","date":"Jun 3, 2026","views":43147,"impressions":55857,"ctr":10.19,"avg_view_rate":97.25,"engagement":0.38,"likes":140,"comments":19,"shares":5},{"id":"G0kGcUA80Bk","title":"레일리의 패기가 멈추지 않는 탓일까? ㅜ.ㅜ","date":"Oct 22, 2025","views":47740,"impressions":233912,"ctr":10.78,"avg_view_rate":100.36,"engagement":0.33,"likes":131,"comments":17,"shares":11},{"id":"8GG1t17d1j0","title":"드디어 개막전🚩시작","date":"May 8, 2026","views":18878,"impressions":28763,"ctr":4.29,"avg_view_rate":77.68,"engagement":0.57,"likes":83,"comments":14,"shares":11},{"id":"aQsiU_uS8hI","title":"정채연 캐릭터 감정표현 모음집","date":"May 7, 2026","views":4384,"impressions":17422,"ctr":4.64,"avg_view_rate":64.72,"engagement":1.28,"likes":34,"comments":13,"shares":9},{"id":"1FerYtMKjuU","title":"최예나 캐릭터 감정표현 모음집","date":"Jun 4, 2026","views":3710,"impressions":11206,"ctr":13.51,"avg_view_rate":71.25,"engagement":1.64,"likes":25,"comments":11,"shares":25},{"id":"j_GSsG01AY0","title":"hermanos vs FINF - DAY2 MATCH3 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 16, 2026","views":5526,"impressions":61544,"ctr":7.49,"avg_view_rate":39.91,"engagement":0.83,"likes":28,"comments":11,"shares":7},{"id":"lseHA_4lnPI","title":"Day2 Match3,4｜2026 서든어택 챔피언십 시즌1","date":"May 16, 2026","views":9650,"impressions":75108,"ctr":10.4,"avg_view_rate":7.39,"engagement":0.61,"likes":36,"comments":10,"shares":13},{"id":"zJV3AU406Aw","title":"2026 서든어택 챔피언십 시즌1 오프라인 예선전 1부","date":"Apr 18, 2026","views":2992,"impressions":26554,"ctr":8.2,"avg_view_rate":2.5,"engagement":0.7,"likes":4,"comments":8,"shares":9},{"id":"wJVgRx0O5Wc","title":"PAUL vs 핑투 - DAY3 MATCH5 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 23, 2026","views":5354,"impressions":67656,"ctr":6.79,"avg_view_rate":34.94,"engagement":0.65,"likes":20,"comments":8,"shares":7},{"id":"Hx6CHSIJRzo","title":"Day1 Match1,2｜2026 서든어택 챔피언십 시즌1","date":"May 9, 2026","views":12267,"impressions":102422,"ctr":9.63,"avg_view_rate":6.73,"engagement":0.76,"likes":55,"comments":8,"shares":30},{"id":"glw9CPv_mLw","title":"[서든어택] 클래식 테마_로비","date":"Nov 2, 2017","views":6635,"impressions":42128,"ctr":11.86,"avg_view_rate":87.61,"engagement":1.61,"likes":32,"comments":7,"shares":68},{"id":"_M1YzjxHU6A","title":"채연’s 서든어택 V-Log","date":"May 7, 2026","views":3852,"impressions":19384,"ctr":2.52,"avg_view_rate":41.18,"engagement":0.91,"likes":27,"comments":7,"shares":1},{"id":"5EvDivk5tQ8","title":"2026 SEASON2 – Persona (Lina&Lynn) BGMㅣ서든어택","date":"Apr 2, 2026","views":3107,"impressions":28500,"ctr":4.58,"avg_view_rate":86.64,"engagement":1.09,"likes":15,"comments":6,"shares":13},{"id":"EHKrggpYiuI","title":"첫 경기부터 존재감 폭발?! 오시영 슈퍼루키 완벽 데뷔!!","date":"May 20, 2026","views":24697,"impressions":46037,"ctr":7.15,"avg_view_rate":75.96,"engagement":0.36,"likes":71,"comments":6,"shares":13},{"id":"r2HhUsPk7IM","title":"서든어택에 진심 in YENA l 최예나 l 서든어택","date":"Jun 4, 2026","views":1901,"impressions":15896,"ctr":6.49,"avg_view_rate":22.72,"engagement":9.89,"likes":112,"comments":6,"shares":70},{"id":"vS7c-_Uchks","title":"너의 C4향이 느껴진거야","date":"May 30, 2026","views":21817,"impressions":28786,"ctr":7.94,"avg_view_rate":80.51,"engagement":0.31,"likes":55,"comments":6,"shares":6},{"id":"CMmI6dhs10U","title":"종건급 세이브? 잘 들어라, \"백영재급\"이다.","date":"May 17, 2024","views":42952,"impressions":69490,"ctr":8.43,"avg_view_rate":74.11,"engagement":0.15,"likes":56,"comments":5,"shares":4},{"id":"d_Xvcsxx6PQ","title":"2026 시즌1 디렉터 라이브 쇼케이스 l 서든어택","date":"Mar 19, 2026","views":447,"impressions":10297,"ctr":3.64,"avg_view_rate":3.9,"engagement":1.12,"likes":-3,"comments":5,"shares":3},{"id":"sk8dPNGgUlg","title":"2026 챔피언십 시즌1 개막전 감다살 올킬!","date":"May 13, 2026","views":48308,"impressions":42294,"ctr":6.45,"avg_view_rate":99.14,"engagement":0.2,"likes":83,"comments":5,"shares":11},{"id":"ZchLRTb0GXw","title":"Day3 Match5,6｜2026 서든어택 챔피언십 시즌1","date":"May 23, 2026","views":8613,"impressions":71861,"ctr":9.51,"avg_view_rate":7.54,"engagement":0.58,"likes":38,"comments":5,"shares":7},{"id":"0BTeRprssiQ","title":"1·2주차 경기 요약🚩","date":"May 22, 2026","views":17378,"impressions":35695,"ctr":7.21,"avg_view_rate":46.0,"engagement":0.54,"likes":90,"comments":4,"shares":0},{"id":"asSKSTQ91Wg","title":"서든신이 만들어준 타이밍","date":"Apr 29, 2026","views":72795,"impressions":133403,"ctr":8.77,"avg_view_rate":67.17,"engagement":0.16,"likes":101,"comments":4,"shares":15},{"id":"xGpjU4qzTAc","title":"Let's Be 김경진입니다. 10년 만인가요..?","date":"Nov 28, 2025","views":965,"impressions":7777,"ctr":11.19,"avg_view_rate":3.42,"engagement":0.62,"likes":1,"comments":4,"shares":1},{"id":"5JuU6oaGlyM","title":"2026 서든어택 챔피언십 시즌1 오프라인 예선전 2부","date":"Apr 18, 2026","views":1380,"impressions":19847,"ctr":5.35,"avg_view_rate":10.15,"engagement":1.09,"likes":5,"comments":4,"shares":6},{"id":"IjijyY1kLqE","title":"멩탈 와장창! 서든 BJ들의 찐텐 당연하지 #shorts","date":"Jan 6, 2023","views":50580,"impressions":238697,"ctr":5.44,"avg_view_rate":86.45,"engagement":0.45,"likes":213,"comments":4,"shares":9},{"id":"EEXfEA0-5To","title":"본선 진출 팀 소개 | 2026 서든어택 챔피언십 시즌1","date":"May 9, 2026","views":2593,"impressions":43669,"ctr":4.98,"avg_view_rate":37.77,"engagement":0.81,"likes":14,"comments":3,"shares":4},{"id":"B7L9Xhkz9o0","title":"\"그날의 복수다\"","date":"Jun 2, 2026","views":6817,"impressions":23937,"ctr":8.68,"avg_view_rate":78.77,"engagement":0.5,"likes":30,"comments":3,"shares":1},{"id":"lcr9IFhZia8","title":"미! 쳤! 다! 포! 뇨!","date":"May 19, 2026","views":24122,"impressions":38466,"ctr":8.0,"avg_view_rate":93.82,"engagement":0.32,"likes":71,"comments":3,"shares":3},{"id":"0anYJVe5dfA","title":"만약 서든이 PC방 점유율 1위를 달성한다면","date":"Sep 9, 2024","views":2984,"impressions":20295,"ctr":2.69,"avg_view_rate":114.4,"engagement":0.44,"likes":10,"comments":3,"shares":0},{"id":"KHQGO8zcwo8","title":"Day4 Match7,8｜2026 서든어택 챔피언십 시즌1","date":"May 30, 2026","views":10713,"impressions":89676,"ctr":9.7,"avg_view_rate":13.2,"engagement":0.49,"likes":42,"comments":3,"shares":7},{"id":"4FyA_1o-gEI","title":"미키 VS. 랜딩 전성기 시절 시청자 경쟁한 썰  #shorts","date":"Aug 16, 2022","views":8588,"impressions":45276,"ctr":4.83,"avg_view_rate":90.32,"engagement":0.37,"likes":27,"comments":3,"shares":2},{"id":"g62yWT4vGSo","title":"뭐? Core-X에 스나 한 명을 조심하라고?","date":"May 27, 2026","views":20426,"impressions":35633,"ctr":6.19,"avg_view_rate":66.58,"engagement":0.33,"likes":64,"comments":3,"shares":0},{"id":"do9qpcIOXh8","title":"엄마, 아빠 미안해 l 서든어택","date":"Jan 3, 2024","views":4311,"impressions":24057,"ctr":13.01,"avg_view_rate":62.87,"engagement":9.63,"likes":92,"comments":3,"shares":320},{"id":"dcOYkTNsywA","title":"저세상 텐션 김진영의 \"대가리 박아!\" UDT선후배의 매운맛 케미!!! [밀리털이ep1 : 에이전트H & 덱스 1편]","date":"Sep 30, 2021","views":5335,"impressions":91555,"ctr":4.67,"avg_view_rate":26.16,"engagement":0.82,"likes":37,"comments":2,"shares":5},{"id":"iWTnLQ01yeg","title":"웬디의 서든스트리트 l 웬디 l 서든어택","date":"Apr 2, 2026","views":809,"impressions":29135,"ctr":1.39,"avg_view_rate":19.83,"engagement":1.85,"likes":10,"comments":2,"shares":3},{"id":"MLcHWooAKBk","title":"여긴 어디 나는 누구 l 생존쇼타임 생존 편 l 서든어택","date":"Jan 2, 2026","views":877,"impressions":3886,"ctr":2.03,"avg_view_rate":34.97,"engagement":1.82,"likes":5,"comments":2,"shares":9},{"id":"FqoLo5RZ_wI","title":"랜딩 선생님이 알려주는 AD고텝과 반고텝의 정석! #Shorts","date":"Jul 11, 2023","views":17967,"impressions":26296,"ctr":3.66,"avg_view_rate":83.4,"engagement":0.44,"likes":65,"comments":2,"shares":12},{"id":"au7dWx6YdM0","title":"2026 시즌1 새로워진 생존전과 함께 돌아온 서바이버! l 김설현 l 서든어택","date":"Jan 2, 2026","views":378,"impressions":8275,"ctr":2.68,"avg_view_rate":40.9,"engagement":2.12,"likes":5,"comments":2,"shares":1},{"id":"f3w3_v4S0Xs","title":"핵스나가 보급에 오면 벌어지는 일","date":"Dec 25, 2023","views":21058,"impressions":104282,"ctr":9.94,"avg_view_rate":99.85,"engagement":0.22,"likes":42,"comments":2,"shares":3},{"id":"gSKTYSMGDSM","title":"발가락이라도 내밀어봐 좀","date":"May 11, 2024","views":18161,"impressions":14128,"ctr":9.91,"avg_view_rate":91.61,"engagement":0.12,"likes":17,"comments":2,"shares":2},{"id":"WbAraZEeUKc","title":"서든어택 트레일러 THE LAST BULLET","date":"Jan 17, 2014","views":1006,"impressions":8466,"ctr":9.96,"avg_view_rate":54.0,"engagement":3.08,"likes":3,"comments":2,"shares":26},{"id":"_uqNm-DWspc","title":"'김재원 VS 장지수' 당연하지 폭로전 #shorts","date":"Dec 30, 2022","views":26199,"impressions":131617,"ctr":3.83,"avg_view_rate":139.72,"engagement":0.77,"likes":191,"comments":2,"shares":8},{"id":"83-w6J84eWE","title":"FPS 장인(?) 김블루 마음의 고향 나들이 왔습니다. #김블루 [서든어택]","date":"Nov 11, 2020","views":95,"impressions":882,"ctr":9.18,"avg_view_rate":29.53,"engagement":3.16,"likes":2,"comments":1,"shares":0},{"id":"M8IWHfyLi8w","title":"분명 위티에게🏅커리어를 물었는데","date":"May 4, 2025","views":4858,"impressions":37329,"ctr":6.11,"avg_view_rate":78.05,"engagement":0.58,"likes":27,"comments":1,"shares":0},{"id":"PiRSkMx-Y5s","title":"건강과 바꾼 프로선수의 노력","date":"May 29, 2026","views":22311,"impressions":48660,"ctr":8.24,"avg_view_rate":82.9,"engagement":0.41,"likes":78,"comments":1,"shares":13},{"id":"biRY-u9EkpU","title":"[서든어택] 여군 혜리 & 보미 캐릭터 메이킹 영상","date":"Apr 1, 2015","views":14,"impressions":250,"ctr":4.4,"avg_view_rate":27.55,"engagement":7.14,"likes":0,"comments":1,"shares":0},{"id":"5yiu1FX_I1k","title":"[서든어택 챔스리그 명장면] 이게 바로 진정한 세이브! 이승범선수 1:3 세이브 명장면","date":"May 9, 2014","views":171,"impressions":1755,"ctr":7.18,"avg_view_rate":75.26,"engagement":1.17,"likes":0,"comments":1,"shares":1},{"id":"J_AiXMBsQ5w","title":"서든에서 남친 만들기🥰가능할까❓PC방헌터스🍞대전","date":"Feb 28, 2025","views":5220,"impressions":47047,"ctr":3.02,"avg_view_rate":82.27,"engagement":0.29,"likes":11,"comments":1,"shares":3},{"id":"kM2qcuzTxVg","title":"[서든어택] 여름 화보 장인 신재은이 열일하는 영상 ⛱️","date":"Jun 27, 2019","views":508,"impressions":3952,"ctr":9.26,"avg_view_rate":33.38,"engagement":0.59,"likes":1,"comments":1,"shares":1},{"id":"I14QvP4EupU","title":"트리플에스의 버킷리스트는?!","date":"Oct 2, 2025","views":213,"impressions":1693,"ctr":2.66,"avg_view_rate":59.93,"engagement":0.94,"likes":1,"comments":1,"shares":0},{"id":"GqncFtLpyVA","title":"잠실? 대전? 서든에서 다시 한 판 붙어!","date":"Nov 27, 2025","views":488,"impressions":2966,"ctr":3.67,"avg_view_rate":120.36,"engagement":0.61,"likes":2,"comments":1,"shares":0},{"id":"uF-M_zRxJ-U","title":"대회에서 이게 가능하다고?! #Shorts","date":"Aug 18, 2023","views":19652,"impressions":84678,"ctr":11.08,"avg_view_rate":102.45,"engagement":0.32,"likes":56,"comments":1,"shares":5},{"id":"-hQ9j5qmDrc","title":"김설현 캐릭터 감정표현 모음집","date":"Jan 2, 2026","views":1096,"impressions":8608,"ctr":4.66,"avg_view_rate":73.42,"engagement":0.36,"likes":3,"comments":1,"shares":0},{"id":"zOm1ZcdYvmQ","title":"엔젤님이 우왁굳님과 결혼한 이유 #shorts","date":"Jul 19, 2022","views":7275,"impressions":56050,"ctr":3.66,"avg_view_rate":114.7,"engagement":0.14,"likes":5,"comments":1,"shares":4},{"id":"KbzXB_JDh34","title":"[서든어택] 강건 1:4 세이브 명장면 (15섬머 챔스 16강)","date":"Jun 4, 2015","views":1258,"impressions":14359,"ctr":8.12,"avg_view_rate":79.02,"engagement":0.48,"likes":3,"comments":1,"shares":2},{"id":"vMS6GeGYNOo","title":"헤드 싹쓸이+웃음소리 아트탄 상대 멘탈 붕괴 콤보 #Shorts","date":"Aug 25, 2023","views":16150,"impressions":67856,"ctr":8.71,"avg_view_rate":140.28,"engagement":0.21,"likes":30,"comments":1,"shares":3},{"id":"7-nRAyYGR0w","title":"태디를 찾아온 특별한 손님?!💌 l 태.D.★P. 3화 l 서든어택","date":"Aug 23, 2023","views":26,"impressions":449,"ctr":4.45,"avg_view_rate":24.14,"engagement":3.85,"likes":-1,"comments":1,"shares":1},{"id":"eLQPYGPz73k","title":"이주빈의 ‘서든 피버’","date":"Feb 26, 2026","views":1603,"impressions":7976,"ctr":2.68,"avg_view_rate":55.2,"engagement":0.06,"likes":0,"comments":1,"shares":0},{"id":"zNJn0pZ4zp4","title":"웬디 캐릭터 감정표현 모음집","date":"Apr 2, 2026","views":3085,"impressions":12606,"ctr":2.28,"avg_view_rate":54.35,"engagement":0.52,"likes":15,"comments":1,"shares":0},{"id":"cLS0svdSEyE","title":"애매하긴해🔫챔피언십 비하인드","date":"May 15, 2026","views":9900,"impressions":19982,"ctr":4.59,"avg_view_rate":70.61,"engagement":0.51,"likes":49,"comments":1,"shares":0},{"id":"sJGwLZ35tPY","title":"\"뚝배기 딱 대!!\" 두개골 뿌순 UDT 군밤 맛! [밀리털이 : 에이전트 H & 덱스 비하인드]","date":"Oct 14, 2021","views":195,"impressions":2598,"ctr":5.77,"avg_view_rate":34.11,"engagement":1.54,"likes":2,"comments":1,"shares":0},{"id":"x3QO29S4Qlc","title":"갓주일은 합니다! #Shorts","date":"Mar 22, 2023","views":51940,"impressions":262745,"ctr":6.28,"avg_view_rate":76.87,"engagement":0.93,"likes":474,"comments":1,"shares":10},{"id":"aagORmrwGJE","title":"[서든어택] 4강 1경기 스파르타 vs 머, 대나?! 슈퍼스타 서든어택 2019","date":"Dec 10, 2019","views":16,"impressions":168,"ctr":8.33,"avg_view_rate":3.03,"engagement":6.25,"likes":0,"comments":1,"shares":0},{"id":"jPZuPf8AxU4","title":"김진영 하사! 이러다 다 죽어!!!! 우린 밀덕 깐부잖아ㅜㅜ [밀리털이ep06 : 에이전트H & 김진영]","date":"Nov 18, 2021","views":288,"impressions":3556,"ctr":6.19,"avg_view_rate":39.68,"engagement":1.04,"likes":2,"comments":1,"shares":0},{"id":"h4jrEi5el2I","title":"2025 프로미스나인 감정표현 모음집","date":"May 29, 2025","views":1967,"impressions":8947,"ctr":10.42,"avg_view_rate":88.55,"engagement":0.56,"likes":3,"comments":1,"shares":7},{"id":"0W5F5arc6aI","title":"2026 츄 캐릭터 감정표현 모음집","date":"Jan 29, 2026","views":2646,"impressions":12297,"ctr":10.78,"avg_view_rate":68.97,"engagement":0.57,"likes":7,"comments":1,"shares":7},{"id":"nGA-ZI61sUY","title":"\"아 XX 짜증난다 이거\" 배신과 눈물로 얼룩진 마지막 레이스  [밀리추리 : 최종화]","date":"May 26, 2022","views":481,"impressions":3587,"ctr":10.57,"avg_view_rate":22.07,"engagement":-0.21,"likes":-2,"comments":1,"shares":0},{"id":"Tw42HZvYGPM","title":"서든어택에 진심 in YENA!","date":"Jun 4, 2026","views":2298,"impressions":6758,"ctr":7.56,"avg_view_rate":40.42,"engagement":2.05,"likes":39,"comments":1,"shares":7},{"id":"ZcDRFMJqggI","title":"쉬워요 마이건 얻기🔫PC방헌터스🚢부산","date":"Feb 22, 2025","views":3548,"impressions":20621,"ctr":2.66,"avg_view_rate":74.48,"engagement":0.34,"likes":9,"comments":1,"shares":2},{"id":"1BxsarGuAmE","title":"선고링 선생님의 울산 클랜 프리패스 하는 법ㅋㅋ #Shorts","date":"Jul 24, 2023","views":3231,"impressions":19291,"ctr":5.31,"avg_view_rate":62.96,"engagement":0.34,"likes":8,"comments":1,"shares":2},{"id":"Nmr2IbSNAQ0","title":"부부 싸움은 칼로 물 베기💏 미주일 싸움은 칼로 걍 베기🔪 [써돈어택 : 3화]","date":"Dec 22, 2022","views":276,"impressions":3031,"ctr":8.15,"avg_view_rate":20.91,"engagement":0.72,"likes":0,"comments":1,"shares":1},{"id":"tjNZ-lqAGUY","title":"[서든어택] 소미 캐릭터 메이킹 영상","date":"Mar 30, 2017","views":20,"impressions":273,"ctr":5.13,"avg_view_rate":23.76,"engagement":15.0,"likes":2,"comments":1,"shares":0},{"id":"SAW-u3dQi3I","title":"[서든어택] 김민경 감정표현 - 점프, 쿵!","date":"Apr 1, 2015","views":73,"impressions":536,"ctr":12.13,"avg_view_rate":109.42,"engagement":1.37,"likes":0,"comments":1,"shares":0},{"id":"R2PVLNIp0-E","title":"FINF.. 미안해요.. 이원상만큼은 꺼내고 싶지 않았는데..","date":"Jul 3, 2025","views":8086,"impressions":39358,"ctr":13.8,"avg_view_rate":65.27,"engagement":0.32,"likes":20,"comments":1,"shares":5},{"id":"fm_VitbB0zc","title":"[서든어택] 서든어택 노답 삼형제가 나타났다!?","date":"Jun 25, 2015","views":47,"impressions":808,"ctr":3.84,"avg_view_rate":33.66,"engagement":6.38,"likes":0,"comments":1,"shares":2},{"id":"JJ067qKfYhw","title":"안일권 하승진 선 넘는 키 차이","date":"Jan 15, 2023","views":10130,"impressions":31469,"ctr":7.51,"avg_view_rate":103.99,"engagement":0.55,"likes":54,"comments":1,"shares":1},{"id":"C3qaOYRIA-A","title":"서든어택의 무기, 앞으로 어떻게 되는 거죠?! 🔫 l 태.D.P 2화 l 서든어택","date":"May 31, 2023","views":161,"impressions":1773,"ctr":7.05,"avg_view_rate":28.24,"engagement":1.86,"likes":2,"comments":1,"shares":0},{"id":"WCeew4lT0so","title":"[서든어택] 정채연 캐릭터 메이킹 영상","date":"Apr 13, 2017","views":191,"impressions":1390,"ctr":6.04,"avg_view_rate":12.16,"engagement":4.19,"likes":3,"comments":1,"shares":4},{"id":"1eejubt_1qk","title":"태디컵 왕관을 쓰려는 자, 그 간판을 넘어라","date":"Mar 26, 2026","views":6785,"impressions":4434,"ctr":2.05,"avg_view_rate":75.85,"engagement":0.1,"likes":6,"comments":1,"shares":0},{"id":"hjVAlVMf_P8","title":"김경진이 쓰러지지 않아","date":"Dec 9, 2025","views":739,"impressions":3348,"ctr":6.3,"avg_view_rate":53.01,"engagement":1.22,"likes":8,"comments":1,"shares":0},{"id":"Lvj8tuO_XNE","title":"잠깐 결승전 가는 상상했다가…","date":"Mar 27, 2026","views":10087,"impressions":13980,"ctr":7.22,"avg_view_rate":78.81,"engagement":0.16,"likes":13,"comments":1,"shares":2},{"id":"B6ZNRhK5wV8","title":"남성 출연자 김진영이 귀신 본 썰  #shorts","date":"Jun 4, 2022","views":1462,"impressions":5521,"ctr":5.14,"avg_view_rate":106.59,"engagement":0.55,"likes":6,"comments":1,"shares":1},{"id":"YMJBjyEky3Y","title":"새로워진 프미나의 응원 레시피! l 프로미스나인 l 서든어택","date":"May 29, 2025","views":201,"impressions":2237,"ctr":4.6,"avg_view_rate":18.73,"engagement":1.49,"likes":1,"comments":1,"shares":1},{"id":"-wWf5lOHPfY","title":"조유리 게임에 참가하시겠습니까? l 서든어택 X 오징어 게임 시즌3","date":"Jun 26, 2025","views":169,"impressions":1663,"ctr":3.73,"avg_view_rate":16.14,"engagement":-4.73,"likes":-10,"comments":1,"shares":1},{"id":"6l2Dm5ef2ps","title":"남성 출연자 김진영, UDT에서 죽을 뻔한 썰 푼다 #shorts","date":"Aug 3, 2022","views":36628,"impressions":99827,"ctr":6.84,"avg_view_rate":124.89,"engagement":0.66,"likes":231,"comments":1,"shares":8},{"id":"YdarQx2qF1Q","title":"[서든어택] 110222_뱀파이어베슬_라이칸","date":"Nov 17, 2017","views":402,"impressions":2476,"ctr":12.56,"avg_view_rate":86.92,"engagement":1.49,"likes":3,"comments":1,"shares":2},{"id":"mPJMvk6CAJY","title":"상남자 특) 라플 듬 ㄹㅇㅋㅋ #Shorts","date":"Jun 4, 2023","views":9634,"impressions":3762,"ctr":6.51,"avg_view_rate":78.02,"engagement":0.16,"likes":12,"comments":1,"shares":2},{"id":"CB2HSTLsSyY","title":"2026 시즌1 새로워진 생존전과 함께 돌아온 서바이버!","date":"Dec 31, 2025","views":585,"impressions":7388,"ctr":1.92,"avg_view_rate":31.64,"engagement":0.68,"likes":2,"comments":1,"shares":1},{"id":"Aan8wsfhanY","title":"오늘 경기에 올킬이 나올까요? 써챔스픽 정답 공개!","date":"May 21, 2025","views":6509,"impressions":41065,"ctr":7.37,"avg_view_rate":83.2,"engagement":0.41,"likes":25,"comments":1,"shares":1},{"id":"BCY8h9Woejo","title":"[서든어택] 서든어택 2.0_로비","date":"Nov 2, 2017","views":1192,"impressions":8291,"ctr":11.12,"avg_view_rate":50.88,"engagement":0.34,"likes":0,"comments":1,"shares":3},{"id":"BFmJSoXeY2A","title":"\"이거... 방송에서 말해도 돼?!👀\" 오킹이 미X놈 소리 들은 이유는? [밀리추리 : 2화]","date":"May 5, 2022","views":280,"impressions":3519,"ctr":5.29,"avg_view_rate":32.42,"engagement":1.43,"likes":3,"comments":1,"shares":0},{"id":"w0RyWuZqNfI","title":"웬디가 서든에 ‘웬’일이야?!","date":"Apr 2, 2026","views":3719,"impressions":15205,"ctr":2.78,"avg_view_rate":30.31,"engagement":0.22,"likes":7,"comments":1,"shares":0},{"id":"qwGCPh9yq24","title":"챔피언십 우승은 역시 대두리","date":"Mar 29, 2026","views":2576,"impressions":8936,"ctr":2.12,"avg_view_rate":50.07,"engagement":0.31,"likes":6,"comments":1,"shares":1},{"id":"tnFyVKkJ1tc","title":"[서든어택] 놈놈놈 플레이 영상","date":"Jul 15, 2015","views":41,"impressions":251,"ctr":13.15,"avg_view_rate":64.14,"engagement":4.88,"likes":0,"comments":1,"shares":1},{"id":"R8k71Mkywvo","title":"서든 정모에서 만난 클랜 누나","date":"Aug 21, 2025","views":104,"impressions":1916,"ctr":4.18,"avg_view_rate":12.77,"engagement":-0.96,"likes":-2,"comments":1,"shares":0},{"id":"Gvk-X1SCiMM","title":"제리 폼 죽었다는 나쁜말은 ㄴㄴ","date":"Jun 3, 2025","views":6710,"impressions":34884,"ctr":11.03,"avg_view_rate":90.25,"engagement":0.27,"likes":17,"comments":1,"shares":0},{"id":"nnbWcnX9CZc","title":"그 친구들 당장 잡아와💣ㅣ태.D.P 1화ㅣ서든어택","date":"Mar 20, 2023","views":824,"impressions":8154,"ctr":8.5,"avg_view_rate":29.18,"engagement":1.09,"likes":7,"comments":1,"shares":1},{"id":"-8WZyZ6nrvc","title":"??? : 요즘은 젤리곰 안 뿌리나?","date":"Mar 31, 2026","views":236,"impressions":11550,"ctr":1.55,"avg_view_rate":62.03,"engagement":0.42,"likes":0,"comments":1,"shares":0},{"id":"VutlD61-JWE","title":"[서든어택] 오리지널 테마_로비","date":"Nov 2, 2017","views":4955,"impressions":28695,"ctr":10.34,"avg_view_rate":73.28,"engagement":0.79,"likes":4,"comments":1,"shares":34},{"id":"4iA_1b8J_X8","title":"※돌발상황※ 에이전트H 화나서 촬영 중단 #shorts","date":"May 24, 2022","views":15488,"impressions":72135,"ctr":4.83,"avg_view_rate":159.5,"engagement":0.1,"likes":13,"comments":1,"shares":2},{"id":"52k-g9Eb3rI","title":"[서든어택] 클래식 테마_샵","date":"Nov 2, 2017","views":1403,"impressions":11101,"ctr":10.53,"avg_view_rate":80.45,"engagement":0.29,"likes":2,"comments":1,"shares":1},{"id":"frEE6o31VU0","title":"[서든어택] 기상캐스터 이현승 캐릭터 메이킹 영상","date":"Jun 28, 2018","views":19,"impressions":99,"ctr":6.06,"avg_view_rate":12.46,"engagement":5.26,"likes":0,"comments":1,"shares":0},{"id":"c9SMQABQjsI","title":"티알지 주워 쓰던 중딩 시절","date":"Aug 23, 2025","views":123,"impressions":2312,"ctr":2.98,"avg_view_rate":22.67,"engagement":2.44,"likes":-1,"comments":1,"shares":3},{"id":"audqb4KR8cU","title":"[서든어택] 처돌이 캐릭터 감정표현2 - 처돌이 훈련 중","date":"Oct 10, 2019","views":30,"impressions":501,"ctr":5.79,"avg_view_rate":121.2,"engagement":6.67,"likes":0,"comments":1,"shares":1},{"id":"qEH8kK4RY-Y","title":"[서든어택] 170427_진짜를찾아라_대기실","date":"Jan 26, 2018","views":86,"impressions":836,"ctr":5.86,"avg_view_rate":162.04,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"w29yyc3jGrU","title":"[서든어택] 랜딩 vs 서든운영자 별풍선 5천개빵 대결","date":"Mar 3, 2015","views":78,"impressions":768,"ctr":8.07,"avg_view_rate":6.11,"engagement":-2.56,"likes":-2,"comments":0,"shares":0},{"id":"zyrt0OW6G-o","title":"2014 마운틴듀 서든어택 챔피언스리그 윈터 일반부 8강 A조 2경기 1세트","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":23.05,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"moFHZsSJG6w","title":"[서든어택] 김소혜 캐릭터 감정표현2 - 매력어필","date":"Jul 12, 2018","views":11,"impressions":97,"ctr":8.25,"avg_view_rate":88.54,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"4IVlu4NrQ6A","title":"고스트스텝이 모에요?ㅣ추성훈vs심으뜸ㅣ서든어택","date":"Mar 30, 2023","views":16,"impressions":271,"ctr":4.43,"avg_view_rate":10.22,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ejWSeDiT7z8","title":"[서든어택] BJ 서든대첩 몽키 개인화면 (vs 이설)","date":"Aug 17, 2015","views":1,"impressions":35,"ctr":2.86,"avg_view_rate":0.1,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"vVyw-CC7rhg","title":"[서든어택] SATV 시즌2 제3화 : 걸스데이 미니콘서트 X 클랜정모편","date":"Oct 7, 2014","views":8,"impressions":323,"ctr":2.17,"avg_view_rate":2.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"xjXPr1P0okA","title":"[서든어택] 하연수 캐릭터 메이킹 영상","date":"Jul 16, 2015","views":4,"impressions":248,"ctr":1.21,"avg_view_rate":6.41,"engagement":-50.0,"likes":-2,"comments":0,"shares":0},{"id":"_sTPVoAyQ8s","title":"2013 꿀잼 업데이트 제1탄, 눈싸움 [스노우가든 플레이 영상]","date":"Dec 23, 2013","views":9,"impressions":227,"ctr":2.64,"avg_view_rate":46.69,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"TOzR78dti5I","title":"[서든어택] 챔스리그 명장면 :  UlsaN_ClaN  vs UlsaN_S","date":"Sep 14, 2015","views":4,"impressions":158,"ctr":2.53,"avg_view_rate":75.22,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"6jZ8QrNnbCI","title":"[서든어택] 2017 트와이스 팬미팅 현장 스케치","date":"Jun 19, 2017","views":7,"impressions":83,"ctr":3.61,"avg_view_rate":18.94,"engagement":14.29,"likes":1,"comments":0,"shares":0},{"id":"7witXk9-1OU","title":"[서든어택] 하연수의 서든앤더 시티 행사 스케치","date":"Dec 16, 2015","views":1,"impressions":46,"ctr":2.17,"avg_view_rate":0.39,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Escedt_5-ws","title":"[서든어택] 10주년 기념 영상","date":"Aug 20, 2015","views":9,"impressions":384,"ctr":2.08,"avg_view_rate":56.31,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"zFddcciDgsE","title":"Day2 Match3,4 ｜ 2025 서든어택 챔피언십 시즌1","date":"May 17, 2025","views":93,"impressions":1078,"ctr":6.03,"avg_view_rate":14.0,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nNJ519y2070","title":"[서든어택] 박나래 캐릭터 감정표현3 - 나래 코기 댄스","date":"Dec 13, 2018","views":5,"impressions":95,"ctr":4.21,"avg_view_rate":89.11,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ufxrYhMNd60","title":"[서든어택] 청하 캐릭터 감정표현3 - 도발 청하","date":"Jan 3, 2019","views":8,"impressions":108,"ctr":7.41,"avg_view_rate":82.29,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"RrgN8PigVpo","title":"겹쳐지지 않는 두 개의 시간, 2026 서든어택 시즌2: PERSONA","date":"Mar 18, 2026","views":449,"impressions":9889,"ctr":2.05,"avg_view_rate":37.69,"engagement":0.67,"likes":2,"comments":0,"shares":1},{"id":"ZiJUQnuyZg8","title":"[서든어택] EP.14 나실인vs김동민 아무나 이겨라 !! | #미리보는 SSSA |","date":"Oct 31, 2019","views":6,"impressions":119,"ctr":3.36,"avg_view_rate":41.67,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"mXjIqvRM5KA","title":"레이서 캐릭터 감정표현 영상 모음집 #Shorts I 서든어택","date":"Jul 14, 2022","views":115,"impressions":1403,"ctr":3.21,"avg_view_rate":97.07,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"fi9zRdevnTg","title":"2024 SEASON1 - MECHANIC (ZOE THEME) BGM l 서든어택","date":"Jan 4, 2024","views":188,"impressions":1624,"ctr":4.86,"avg_view_rate":44.14,"engagement":2.13,"likes":4,"comments":0,"shares":0},{"id":"vXktatuuf28","title":"[서든어택] 8/17(금) 서든 LIVE 하이라이트","date":"Aug 18, 2018","views":1,"impressions":33,"ctr":0.0,"avg_view_rate":99.99,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"AcJoo_yoZWQ","title":"[서든어택] 전소미&정채연 서든어택 팬미팅 현장 스케치","date":"Aug 18, 2017","views":23,"impressions":372,"ctr":4.57,"avg_view_rate":22.45,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"muKL6HGL8xI","title":"마술사 캐릭터 감정표현 #Shorts [서든어택]","date":"Oct 14, 2021","views":28,"impressions":360,"ctr":2.78,"avg_view_rate":88.1,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"in6oIb-Y76k","title":"1초동안 몇 명이 죽나요?","date":"Nov 23, 2024","views":29,"impressions":376,"ctr":1.06,"avg_view_rate":91.24,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"hEbLUx9IDeY","title":"[서든어택] 2017 서든어택 챔피언스리그 6주차 제3보급","date":"Sep 4, 2017","views":1,"impressions":37,"ctr":2.7,"avg_view_rate":62.9,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ziRwhB3W6kg","title":"오드아이 캐릭터 감정표현_표창 던지기 [서든어택]","date":"","views":2,"impressions":39,"ctr":2.56,"avg_view_rate":87.61,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"En68cPExtVo","title":"나를 '캐리머신'이라고 불러줄래요..? [스터디파존]","date":"Jun 23, 2021","views":0,"impressions":60,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"kfxZHqH-YI0","title":"아이언 탈출 매드무비","date":"Mar 13, 2024","views":63,"impressions":425,"ctr":1.88,"avg_view_rate":55.61,"engagement":-1.59,"likes":-1,"comments":0,"shares":0},{"id":"EZHAeU-Fdg0","title":"[서든어택] 고준희 녹음 메이킹 영상","date":"Feb 11, 2016","views":5,"impressions":185,"ctr":2.16,"avg_view_rate":16.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"_ZxPamYyrZ4","title":"[서든어택] 오마이걸(OH MY GIRL) 캐릭터 메이킹 필름","date":"May 3, 2018","views":10,"impressions":124,"ctr":4.03,"avg_view_rate":4.77,"engagement":-10.0,"likes":-1,"comments":0,"shares":0},{"id":"FaV23aL-9WY","title":"[서든어택] 130129_공룡모드_battle01","date":"Dec 7, 2017","views":6,"impressions":348,"ctr":1.15,"avg_view_rate":23.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"xs9laG--cvc","title":"실시간 시청자 오열.. 이승엽 올킬 쿠폰 장외 홈런 레전드","date":"May 18, 2024","views":190,"impressions":1757,"ctr":1.54,"avg_view_rate":257.63,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"BGv0KAL88zo","title":"츄가 서든러에게 발렌타인데이에 CHUU천하는 영상 l 츄 l 서든어택","date":"Jan 29, 2026","views":295,"impressions":12201,"ctr":1.78,"avg_view_rate":9.5,"engagement":0.34,"likes":1,"comments":0,"shares":0},{"id":"GPPuxxaz3sY","title":"[서든어택] 8/23(목) 서든 LIVE 다시보기","date":"Aug 23, 2018","views":0,"impressions":63,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"QgU6APz3mW0","title":"정의를 향한 추격 2023 서든패스 시즌1: JUSTICE l 서든어택","date":"Jan 5, 2023","views":7,"impressions":423,"ctr":0.95,"avg_view_rate":37.88,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"pdaaF_6RUT0","title":"[서든어택] 아이짱 감정표현2 - 러브러브 빔","date":"Feb 25, 2016","views":5,"impressions":89,"ctr":4.49,"avg_view_rate":73.47,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"a9-Gp6MGH44","title":"[서든어택] SATV - 보답 업데이트 매치 2차전! 유령잡기 모드 승자는??","date":"Jul 29, 2015","views":11,"impressions":149,"ctr":6.71,"avg_view_rate":11.22,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"tXrtcdwn1-I","title":"2014 마운틴듀 서든어택 챔피언스리그 윈터 여성부 8강 B조 1경기 1세트","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":2.92,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"0YOXerwvP4c","title":"폭 해체 할 때 공감 I 서든어택 X LVUP","date":"Jan 1, 2022","views":2,"impressions":83,"ctr":2.41,"avg_view_rate":26.72,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"_UoJoB9cuXQ","title":"[서든어택] 넥슨 2차 서든어택 챔피언스리그 일반부 16강 4경기 1set","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.77,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"9O3B4fqp42E","title":"서든 효능: 기력 증진 편 l 올해는 서든해 l 서든어택","date":"Aug 8, 2025","views":10,"impressions":885,"ctr":0.79,"avg_view_rate":33.27,"engagement":10.0,"likes":0,"comments":0,"shares":1},{"id":"W0NLhyhsHN0","title":"견제 해봐!! 내가 해체할...어..? LVUP X SA 챔피언십 시즌4 #1 결승전 하이라이트 [서든어택]","date":"Nov 2, 2021","views":1,"impressions":83,"ctr":1.2,"avg_view_rate":92.64,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"o15uQFUc9mc","title":"루나틱 3보급을 끝장낸 바로 '그 경기' | OFF THE RECORD | 2025 챔피언십 S2","date":"Dec 4, 2025","views":100,"impressions":2593,"ctr":1.93,"avg_view_rate":55.19,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"xtPK-x9GKjk","title":"[서든어택] 헬로나라 캐릭터 메이킹 영상","date":"Jan 5, 2017","views":9,"impressions":83,"ctr":6.02,"avg_view_rate":9.69,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Mp2aB7N8YtM","title":"빵빵 터지는 하이라이트! l 2023 LVUP 챔피언십 시즌3 l 서든어택","date":"Aug 11, 2023","views":4,"impressions":221,"ctr":1.36,"avg_view_rate":27.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"K96t4Cw1jOU","title":"[서든어택] 영구제 잔호크&카를로스Ⅱ 캐릭터 지급!! [티저]","date":"Dec 7, 2015","views":0,"impressions":10,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"DoCIu5wfDyw","title":"번쩍! 땡그랑! | i'am VS 짤랑이네 - DAY5 MATCH1 하이라이트 | 2024 서든어택 챔피언십 시즌1","date":"May 25, 2024","views":33,"impressions":699,"ctr":3.29,"avg_view_rate":44.95,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"t6NmVb523Ho","title":"2024 SEASON4 – NOMAD (KAYA THEME) BGM l 서든어택","date":"Sep 12, 2024","views":576,"impressions":4286,"ctr":5.51,"avg_view_rate":62.29,"engagement":0.17,"likes":1,"comments":0,"shares":0},{"id":"UICZEz7YOKc","title":"[서든어택] 2018 에이핑크 캐릭터 메이킹 영상","date":"Sep 20, 2018","views":12,"impressions":217,"ctr":5.07,"avg_view_rate":34.51,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"NSM8HPbNV3c","title":"[서든어택] 4강 승자전 스파르타 vs 온드보이 [슈퍼스타 서든어택 2019]","date":"Dec 16, 2019","views":49,"impressions":785,"ctr":5.22,"avg_view_rate":5.48,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"MRAqcwqVy9k","title":"[서든어택] BJ 서든대첩! 꿀탱탱 개인화면 (vs 액시스마이콜)","date":"Aug 7, 2015","views":2,"impressions":74,"ctr":2.7,"avg_view_rate":9.18,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"14evREc5xms","title":"[서든어택] 2018-19 챔피언스리그 조별리그 E조 하이라이트","date":"Jan 24, 2019","views":3,"impressions":57,"ctr":5.26,"avg_view_rate":13.85,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ADF9YwnuVrc","title":"[서든어택] 에일리 감정표현2 –너나잘해2","date":"Oct 29, 2015","views":7,"impressions":127,"ctr":4.72,"avg_view_rate":88.0,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Gp8JZneon1U","title":"누구 보고하는 말이야❓🤔","date":"Nov 7, 2025","views":168,"impressions":924,"ctr":1.84,"avg_view_rate":73.84,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"S3Qztho3AcA","title":"몸뚱아리 챌린지! (feat.나선욱 캐릭터) #Shorts","date":"Aug 29, 2023","views":139,"impressions":1449,"ctr":4.21,"avg_view_rate":49.53,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"AWGUHtKUh3g","title":"우승 팀 헌정 영상🏆| 2025 서든어택 챔피언십 시즌1","date":"Jul 4, 2025","views":29,"impressions":1454,"ctr":1.31,"avg_view_rate":32.55,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"LzufHAk_Xfw","title":"[서든어택] 클린어택 티저 영상 - PC방 편","date":"Jul 3, 2018","views":2,"impressions":43,"ctr":4.65,"avg_view_rate":91.95,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"EZWr2MZJNkA","title":"미주 캐릭터 감정표현_미주의 포토타임","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":95.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"O79TTTqn2Ww","title":"심연을 관통하는 차가운 총성 l 2023 시즌3: 어비스 l 서든어택","date":"Jul 6, 2023","views":8,"impressions":239,"ctr":2.09,"avg_view_rate":23.07,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"1kczSINqOis","title":"[서든어택] 130129_공룡모드_battle02","date":"Dec 7, 2017","views":4,"impressions":432,"ctr":0.46,"avg_view_rate":57.98,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"UKU3UX-EmDc","title":"[서든어택] 스타BJ올스타! 조일장의 클래식 서버2","date":"Aug 27, 2015","views":6,"impressions":83,"ctr":7.23,"avg_view_rate":0.85,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nm7g1XFqi8o","title":"[서든어택] 챔스리그 명장면 : SPOTLIGHT VS -mosfos(후반1R)","date":"Jan 26, 2016","views":2,"impressions":60,"ctr":3.33,"avg_view_rate":11.44,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"AOpNt2Pj9ew","title":"[서든어택] 썸머 페스티벌 캐릭터 감정표현_썸머 댄스","date":"Aug 13, 2020","views":7,"impressions":157,"ctr":2.55,"avg_view_rate":76.39,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"OW8qDDapNM0","title":"🥜 라떼 오빠들 VS. 막내온탑 하영! 프로게이머와 아이돌이 붙는다면?! [라떼 PC방 EP.3]","date":"Dec 12, 2020","views":19,"impressions":412,"ctr":3.4,"avg_view_rate":40.3,"engagement":-5.26,"likes":-1,"comments":0,"shares":0},{"id":"hxcRPsynBD0","title":"[서든어택] 길로틴 시스템 오픈!","date":"Jun 12, 2020","views":0,"impressions":0,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"EL9-SRxS7FE","title":"2014 마운틴듀 서든어택 챔피언스리그 윈터 일반부 8강 A조 1경기 1세트","date":"","views":3,"impressions":0,"ctr":0.0,"avg_view_rate":19.97,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"YY0lUgxNdrk","title":"[서든어택] 왕눈이 캐릭터 감정표현","date":"Oct 31, 2019","views":110,"impressions":775,"ctr":10.58,"avg_view_rate":87.71,"engagement":3.64,"likes":1,"comments":0,"shares":3},{"id":"JYyGDCk05WM","title":"[서든어택] 130129_공룡모드_battle01_180","date":"Dec 7, 2017","views":5,"impressions":321,"ctr":1.25,"avg_view_rate":27.55,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"kOK_e96dV88","title":"10초 안에 말할 수 있을까","date":"Oct 31, 2024","views":8,"impressions":355,"ctr":0.85,"avg_view_rate":78.53,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"TpZstJTiR60","title":"[서든어택] BJ 서든대첩 결승전! BJ 로이조 vs BJ 몽키","date":"Sep 2, 2015","views":4,"impressions":71,"ctr":4.23,"avg_view_rate":1.41,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"J8E0Uso9Yqk","title":"여동생한테 맞고 화내는 오빠 #shorts","date":"Dec 16, 2022","views":16429,"impressions":50005,"ctr":5.55,"avg_view_rate":144.85,"engagement":0.25,"likes":38,"comments":0,"shares":3},{"id":"CC7hHqPf3sg","title":"tripleS 캐릭터 감정표현_tripleS 댄스!","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":50.89,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"wIQUflEkYr8","title":"[서든어택] 최고다윽박 캐릭터 감정표현1 - 자연의 왕!","date":"Dec 12, 2019","views":13,"impressions":149,"ctr":8.05,"avg_view_rate":72.23,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"qI-Aq7DNJsQ","title":"[서든어택] BJ 서든대첩! 액시스마이콜 개인화면 (vs 몽키)","date":"Aug 19, 2015","views":1,"impressions":62,"ctr":0.0,"avg_view_rate":0.42,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"s84K0uyHjM4","title":"[서든어택] 샘 해밍턴 감정표현 - 화난샘","date":"May 14, 2015","views":9,"impressions":110,"ctr":6.36,"avg_view_rate":75.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"QJfloVehzt4","title":"[서든어택] 러블리즈 녹음 메이킹 영상","date":"May 3, 2016","views":9,"impressions":238,"ctr":2.52,"avg_view_rate":5.58,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"E513k7sjQ5M","title":"아이고 서든러 형제님 반갑습니다 | 서든남 | 서든어택","date":"Oct 27, 2022","views":40,"impressions":456,"ctr":6.14,"avg_view_rate":28.96,"engagement":-10.0,"likes":-4,"comments":0,"shares":0},{"id":"lylqWJ9qLBI","title":"[서든어택] 마법의 \"제발 나와라\" 노래 버프.avi","date":"May 27, 2014","views":29,"impressions":196,"ctr":2.04,"avg_view_rate":10.19,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"fdrLpDPdylg","title":"[서든어택] 여자친구 캐릭터 감정표현_도발 워킹","date":"Aug 27, 2020","views":5,"impressions":131,"ctr":2.29,"avg_view_rate":75.44,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"e0X2Bq-Jt1Y","title":"미주 캐릭터 감정표현 모음집 #Shorts I 서든어택 캐릭터","date":"Jan 27, 2022","views":90,"impressions":1195,"ctr":1.34,"avg_view_rate":82.07,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"jqJTODcf5p0","title":"[서든어택] 이애란 감정표현 6종","date":"Jan 14, 2016","views":47,"impressions":447,"ctr":8.05,"avg_view_rate":83.1,"engagement":4.26,"likes":1,"comments":0,"shares":1},{"id":"j3r-10ioKSk","title":"[서든어택] 출발 런런런 업데이트","date":"Feb 4, 2016","views":3,"impressions":47,"ctr":2.13,"avg_view_rate":6.82,"engagement":-66.67,"likes":-2,"comments":0,"shares":0},{"id":"8AOpaP8Nm2Y","title":"[서든어택] 오렌지 캬라멜 캐릭터 녹음 메이킹 영상","date":"Oct 2, 2014","views":3,"impressions":118,"ctr":2.54,"avg_view_rate":14.74,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"A5mQ9XZ-mZQ","title":"[서든어택] 진짜여친 감정표현2 - 좀비 댄스","date":"Apr 27, 2017","views":7,"impressions":126,"ctr":4.76,"avg_view_rate":117.25,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"7mANRAd8o6I","title":"[서든어택] 상남자 마동석! 메이킹 필름","date":"Jan 22, 2015","views":88,"impressions":1062,"ctr":7.16,"avg_view_rate":46.09,"engagement":1.14,"likes":0,"comments":0,"shares":1},{"id":"EWRQM9t7PP0","title":"[서든어택] 160206_대머전_감스트","date":"Feb 29, 2016","views":57,"impressions":335,"ctr":6.57,"avg_view_rate":7.06,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"QDgtucicXsE","title":"[서든어택] 새로운 생존모드를 원해? 3/17(목) Coming Soon!","date":"Mar 14, 2016","views":4,"impressions":121,"ctr":3.31,"avg_view_rate":53.3,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"2bcHbeUac4g","title":"이름만 부르다가 해설 끝나겠어요!! #Shorts l 서든어택","date":"Jun 2, 2023","views":15,"impressions":198,"ctr":0.51,"avg_view_rate":57.51,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"STNuzdr6pd4","title":"응원소녀 캐릭터 감정표현_골킥 l 서든어택","date":"","views":3,"impressions":0,"ctr":0.0,"avg_view_rate":87.22,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Kui3B6nGoTs","title":"[서든어택]_2013_711구조대 UCC 참고영상","date":"Jun 13, 2013","views":25,"impressions":317,"ctr":5.36,"avg_view_rate":39.39,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nUtqs36-zJ8","title":"김영욱이 할 수 있는게.. 많구나?!","date":"Nov 26, 2025","views":216,"impressions":1001,"ctr":1.9,"avg_view_rate":78.06,"engagement":0.93,"likes":2,"comments":0,"shares":0},{"id":"Je-3Nsk6gUo","title":"촬영부터 녹음까지~표은지의 서든어택 캐릭터 제작기! [서든어택]","date":"Aug 12, 2021","views":34,"impressions":783,"ctr":2.55,"avg_view_rate":10.64,"engagement":-5.88,"likes":-2,"comments":0,"shares":0},{"id":"JYTCukaH2p0","title":"[서든어택] BJ서윤 캐릭터 메이킹 영상","date":"Nov 29, 2018","views":53,"impressions":254,"ctr":5.12,"avg_view_rate":10.52,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"_9U9mOl-Lmw","title":"막아봐!! 내가 해체할게!! 2021 LVUP X SA 챔피언십 시즌4 #1 본선 [서든어택]","date":"Oct 22, 2021","views":2,"impressions":79,"ctr":1.27,"avg_view_rate":74.58,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"JyrpK3VfYXg","title":"[서든어택] 무술가 캐릭터 감정표현_쌍절곤 시범","date":"May 14, 2020","views":8,"impressions":128,"ctr":5.47,"avg_view_rate":50.88,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ne6eA0qBVpk","title":"서든어택 2021 시즌1: 부트캠프_티징 [서든어택]","date":"Dec 17, 2020","views":3,"impressions":197,"ctr":0.0,"avg_view_rate":43.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"I7YGbK6p9uI","title":"[서든어택] 흔한 서든 캐릭터의 현실반영","date":"Mar 15, 2018","views":20,"impressions":200,"ctr":8.5,"avg_view_rate":69.87,"engagement":5.0,"likes":0,"comments":0,"shares":1},{"id":"Rzx93Ae2avI","title":"2022 서든어택 시즌3: 매드닉스 '광기의 시작' l 서든패스","date":"Jun 23, 2022","views":4,"impressions":255,"ctr":0.39,"avg_view_rate":28.79,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"IzbRGz3b5Kc","title":"[서든어택] 150721_유령잡기모드_대기실","date":"Dec 28, 2017","views":189,"impressions":1125,"ctr":16.0,"avg_view_rate":54.68,"engagement":1.06,"likes":2,"comments":0,"shares":0},{"id":"laGi8be0z88","title":"[서든어택] 마법소녀 캐릭터 감정표현1 - 마법소녀 변신?!","date":"Oct 18, 2018","views":15,"impressions":101,"ctr":12.87,"avg_view_rate":79.43,"engagement":6.67,"likes":1,"comments":0,"shares":0},{"id":"FB6Jisf1D0Y","title":"‘너 나가!!’ 서로를 부수고 싸우고 잡아먹는 진격의 팀원 트레이드 [써돈어택 : 7화]","date":"Jan 26, 2023","views":12,"impressions":206,"ctr":4.85,"avg_view_rate":28.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"czltZ8QrwXo","title":"브레이브걸스 캐릭터 감정표현_웨이브 [서든어택]","date":"","views":2,"impressions":42,"ctr":2.38,"avg_view_rate":67.98,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"qRQmoqkPav8","title":"[서든어택]BJ브레드배 제3보급 생존대회_썽 암살편","date":"Mar 27, 2020","views":4,"impressions":77,"ctr":6.49,"avg_view_rate":50.87,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"V31YvaOJvV4","title":"[서든어택] 2019 BJ 멸망전 손대한 VS 머더 | 페오샷장근 VS 핵스나 2부","date":"Jan 30, 2019","views":4,"impressions":55,"ctr":5.45,"avg_view_rate":4.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"QHYScxxqkbI","title":"[서든어택] SATV2 9화, 대결해 듀오!!","date":"Feb 11, 2015","views":22,"impressions":530,"ctr":3.77,"avg_view_rate":15.41,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"bT0DKihBGFk","title":"먹고 살려면 뭐라도 해야지. 장동민 & 오킹의 탈영한 조회수 추격전! [밀리털이 : 티저]","date":"Sep 23, 2021","views":5,"impressions":176,"ctr":1.7,"avg_view_rate":57.44,"engagement":-20.0,"likes":-1,"comments":0,"shares":0},{"id":"aVvnfcb98RI","title":"[서든어택] 러블리즈 팬미팅 현장 스케치","date":"Dec 25, 2017","views":2,"impressions":68,"ctr":2.94,"avg_view_rate":18.71,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"9kbJ5BHxfV4","title":"[서든어택] 탈출구역 플레이 영상","date":"Feb 25, 2015","views":137,"impressions":1164,"ctr":9.71,"avg_view_rate":64.46,"engagement":2.19,"likes":2,"comments":0,"shares":1},{"id":"UoTxod0Ruls","title":"[서든어택] 시즌3 6화, 대작 업데이트 4탄 : 막는자 VS 뚫는자","date":"Feb 23, 2016","views":4,"impressions":124,"ctr":1.61,"avg_view_rate":8.87,"engagement":-25.0,"likes":-1,"comments":0,"shares":0},{"id":"TExPD0IlUlw","title":"참을 수 없는 보급의 유혹","date":"Jan 20, 2026","views":281,"impressions":1423,"ctr":0.14,"avg_view_rate":65.52,"engagement":0.36,"likes":1,"comments":0,"shares":0},{"id":"pOcBF2ANdks","title":"보물찾기4️⃣브레드의🐻‍❄️위장술","date":"Aug 19, 2025","views":72,"impressions":1801,"ctr":0.11,"avg_view_rate":91.76,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"krjfD_KJyt4","title":"챔스리그 명장면 시즌2 #6 - 1vs4 벼랑 끝 환상 올킬 세이브","date":"Apr 8, 2014","views":48,"impressions":473,"ctr":9.09,"avg_view_rate":78.01,"engagement":4.17,"likes":0,"comments":0,"shares":2},{"id":"vVpiBq9XTv4","title":"Day7 Match13 ｜ 2025 서든어택 챔피언십 시즌2","date":"Dec 6, 2025","views":205,"impressions":6513,"ctr":2.55,"avg_view_rate":6.3,"engagement":0.98,"likes":2,"comments":0,"shares":0},{"id":"BQiTd74Y3aE","title":"[서든어택] 2019 BJ 멸망전 흑풍랜드 VS 손대한 | 미소천사그니 VS 페오샷장근 1부","date":"Jan 28, 2019","views":1,"impressions":35,"ctr":2.86,"avg_view_rate":4.77,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"stAfDM7iQIA","title":"서든어택이 자낳대로 열리고 있다는 것 아셨나요? l 2023 자낳대 한방에 몰아보기!","date":"Nov 4, 2023","views":6,"impressions":241,"ctr":2.49,"avg_view_rate":32.23,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"IC1lZW0Npqs","title":"[서든어택] 160109_대머전_불양","date":"Jan 12, 2016","views":1,"impressions":26,"ctr":3.85,"avg_view_rate":3.74,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"sf-QyFEAqOs","title":"[퍼제 vs 악마] Day4 Match7 | 2026 서든어택 챔피언십 시즌1","date":"","views":5,"impressions":0,"ctr":0.0,"avg_view_rate":7.89,"engagement":20.0,"likes":0,"comments":0,"shares":1},{"id":"tx4dPE-2Kbk","title":"오겜 팬심 인증하는 참가자 서든러의 연기력","date":"Jul 18, 2025","views":37,"impressions":669,"ctr":1.35,"avg_view_rate":30.57,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"rKF2oXB-GxI","title":"2025 파이널시즌 디렉터 라이브 쇼케이스 l 서든어택","date":"Dec 13, 2025","views":42,"impressions":2489,"ctr":1.45,"avg_view_rate":0.71,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"bcddJapeXFk","title":"타임어택 OFF_BGM I 서든어택","date":"","views":12,"impressions":545,"ctr":2.02,"avg_view_rate":10.76,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"TCTcgp9WYPU","title":"[서든어택] 성소 캐릭터 감정표현1 - 공중 텀블링","date":"Dec 1, 2016","views":3,"impressions":67,"ctr":4.48,"avg_view_rate":75.38,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"psokiY1YgP8","title":"서든하기 딱 좋은 나이? l U-23 대항전 서든하이! l 서든어택","date":"Aug 10, 2023","views":5,"impressions":188,"ctr":2.66,"avg_view_rate":26.49,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"hWV2st8UxKQ","title":"태어나서 사람 처음 웃겨봅니두(頭) [밀리털이 : 야전삽 짱재 & 황충원 비하인드]","date":"Nov 4, 2021","views":6,"impressions":156,"ctr":2.56,"avg_view_rate":37.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"1Zn-lJRnbxg","title":"[서든어택] 할로윈 좀비 캐릭터 감정표현1 - 헤드좀비 댄스","date":"Oct 17, 2019","views":76,"impressions":739,"ctr":8.53,"avg_view_rate":95.49,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"F98hZgyTi3o","title":"[서든어택] 2017 서든어택 BJ 연승왕전, 왕좌의 게임 5주차","date":"Sep 22, 2017","views":10,"impressions":182,"ctr":5.49,"avg_view_rate":20.39,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GFFcV8pwbuI","title":"이렇게 재밌는데, 같이 해야겠지?","date":"May 17, 2024","views":6,"impressions":354,"ctr":0.28,"avg_view_rate":50.75,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"wRXgTk873AE","title":"이래서 갓티갓티 하는구나","date":"May 20, 2025","views":75,"impressions":731,"ctr":1.23,"avg_view_rate":54.64,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"eCNGnkLaQaE","title":"[서든 가이드] 기초 훈련 - 07.플리마켓 안내","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":6.31,"engagement":200.0,"likes":0,"comments":0,"shares":2},{"id":"w1DrnPvGTNY","title":"[서든어택] 2015-16 윈터 챔스리그 9회 예고","date":"Jan 12, 2016","views":2,"impressions":60,"ctr":3.33,"avg_view_rate":70.16,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"wgD0DdlwEQA","title":"[서든어택] 130307_통제구역6_bgm","date":"Dec 7, 2017","views":517,"impressions":4181,"ctr":9.9,"avg_view_rate":106.99,"engagement":0.58,"likes":3,"comments":0,"shares":0},{"id":"MLvfBthCfdY","title":"[서든어택] 150226_탈출구역_hostzb","date":"Dec 28, 2017","views":21,"impressions":401,"ctr":4.99,"avg_view_rate":25.88,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"dbbB139nlaQ","title":"[서든어택 팀보이스] Xenics-Storm VS UlsaN_ClaN","date":"Sep 14, 2015","views":1,"impressions":12,"ctr":8.33,"avg_view_rate":2.03,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"meFWYl6klr4","title":"[서든어택] 2019 BJ 멸망전 올스타전 1부","date":"Feb 12, 2019","views":18,"impressions":211,"ctr":8.06,"avg_view_rate":6.94,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"vcepSkTQ4Z8","title":"서든BJ 형 누나들 다 따라잡은 서든하이팀 근황","date":"Dec 26, 2023","views":60,"impressions":1223,"ctr":0.65,"avg_view_rate":62.27,"engagement":-1.67,"likes":-1,"comments":0,"shares":0},{"id":"2UpnZyKcTPM","title":"[서든어택] 오늘은 서린이날 우리들 세상 | 유인나의 서든라디오📻","date":"May 5, 2019","views":1,"impressions":34,"ctr":2.94,"avg_view_rate":99.4,"engagement":100.0,"likes":1,"comments":0,"shares":0},{"id":"AlRf4YOoFD0","title":"[서든어택 명장면 #6 유리하다고 방심은 금물! 김기범 프로방스 4:1세이브]","date":"Nov 25, 2013","views":12,"impressions":317,"ctr":2.21,"avg_view_rate":77.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"hNO51Eeov3I","title":"구경 한번 와보세요. | lunatic vs Divine - DAY5 MATCH10 하이라이트｜ 2025 서든어택 챔피언십 시즌1","date":"Jun 7, 2025","views":117,"impressions":1546,"ctr":4.46,"avg_view_rate":36.64,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"jqRcA6IPfkA","title":"[서든어택] 미모의 참가자 대거 출연!! , \"슈퍼스타 서든어택\" 스폐셜 영상 2편","date":"Sep 22, 2019","views":7,"impressions":93,"ctr":5.38,"avg_view_rate":15.63,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"q6S8AA3cC-U","title":"오빠, 환승할래요? / 나의 선택은...","date":"May 10, 2024","views":26,"impressions":391,"ctr":1.79,"avg_view_rate":51.69,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"9iBaFPw8Uyc","title":"브레드의 10가지 TMI #Shorts  l 서든어택","date":"May 21, 2023","views":37,"impressions":248,"ctr":3.23,"avg_view_rate":48.01,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"rSMEdYqnE90","title":"[서든어택] 김도연 & 최유정 팬미팅 현장 스케치","date":"Nov 29, 2017","views":3,"impressions":76,"ctr":3.95,"avg_view_rate":9.74,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"A-wd0hXTd-E","title":"더욱🔥강력해져 돌아온 2026 챔피언십 시즌1 안내 l 서든어택","date":"Mar 26, 2026","views":276,"impressions":10100,"ctr":1.81,"avg_view_rate":42.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"5pzeFUyq53g","title":"[서든어택] 런런런 본편","date":"Feb 4, 2016","views":6,"impressions":144,"ctr":3.47,"avg_view_rate":26.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"NwaHIXIumwQ","title":"서든 티어 어디세요❓PC방헌터스🚢부산","date":"Feb 21, 2025","views":10591,"impressions":61233,"ctr":4.04,"avg_view_rate":70.47,"engagement":0.23,"likes":20,"comments":0,"shares":4},{"id":"PpAhEo37otc","title":"[서든어택] 시노자키 아이 감정표현2 - 러브러브 빔~","date":"Jul 30, 2015","views":20,"impressions":252,"ctr":6.35,"avg_view_rate":79.71,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"1lAFOXnjkaE","title":"희진&츄 텐션 뭐냐고..! [서든어택]","date":"Apr 1, 2021","views":6,"impressions":310,"ctr":1.29,"avg_view_rate":17.92,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"F3KuWlZQqv8","title":"이다혜 치어리더가 직접 보여주는 서든 실제 감정표현! #Shorts l 서든어택","date":"Jun 1, 2023","views":96,"impressions":1239,"ctr":2.02,"avg_view_rate":74.14,"engagement":1.04,"likes":1,"comments":0,"shares":0},{"id":"wr7xYnlekNo","title":"[서든어택] 204호 캐릭터 감정표현","date":"Oct 31, 2019","views":15,"impressions":153,"ctr":8.5,"avg_view_rate":87.82,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"48LxIQ-UHQ4","title":"몰래 먹는 음식이 개꿀맛","date":"Feb 10, 2023","views":105,"impressions":1053,"ctr":1.23,"avg_view_rate":79.1,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"sBnjbzFhD_k","title":"생존전도 해주잖아!! l 2026 생존 멸망전 DAY1 l 서든어택","date":"Jan 21, 2026","views":168,"impressions":5266,"ctr":2.09,"avg_view_rate":27.6,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"7XaTpuZmXKA","title":"[서든어택] 김세정 캐릭터 메이킹 영상","date":"Jul 6, 2017","views":5,"impressions":111,"ctr":3.6,"avg_view_rate":42.81,"engagement":-20.0,"likes":-1,"comments":0,"shares":0},{"id":"H_jsdVEXoxM","title":"랜딩 X 보혜 \"스겜! 이건 무조건 스피드가 답이야!\" [S.C.C. 킬 페스티벌 : 에테몬과 아이들]","date":"Jan 13, 2023","views":1,"impressions":101,"ctr":0.99,"avg_view_rate":0.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"BSYkFkgEfMs","title":"이주은 캐릭터 감정표현_이주은 인사","date":"","views":5,"impressions":0,"ctr":0.0,"avg_view_rate":137.65,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"lHglDKG1_kY","title":"그래서 누가 이김?","date":"Jun 25, 2025","views":375,"impressions":1333,"ctr":8.33,"avg_view_rate":92.79,"engagement":0.27,"likes":1,"comments":0,"shares":0},{"id":"mXOObFKExw4","title":"2015 립톤 서든어택 챔피언스리그 섬머 10주차 일반부 8강 2경기","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":3.81,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"WpBYCfCFGfQ","title":"[서든어택] 사격녀 예정화 메이킹 영상","date":"Apr 16, 2015","views":6,"impressions":107,"ctr":2.8,"avg_view_rate":27.03,"engagement":16.67,"likes":1,"comments":0,"shares":0},{"id":"SgRbgSE6Tmg","title":"새로워지는 생존전, 여러분은 어떠신가요? l 태디톡 l 서든어택","date":"Jan 2, 2026","views":220,"impressions":3977,"ctr":1.03,"avg_view_rate":10.27,"engagement":0.45,"likes":0,"comments":0,"shares":1},{"id":"AG8PUMk44IE","title":"[서든어택] 2017 서든어택 하이라이트 13주차 하이라이트 일반부 이승규 섬광탄 세이브","date":"Oct 25, 2017","views":7,"impressions":123,"ctr":4.88,"avg_view_rate":78.13,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"mvNRysT6sXA","title":"이런거 보면 icsu가 새삼 대단하게 느껴지네..","date":"Dec 8, 2023","views":2179,"impressions":10256,"ctr":6.63,"avg_view_rate":92.18,"engagement":0.37,"likes":6,"comments":0,"shares":2},{"id":"nk7zXGbaK_s","title":"[서든어택] 퓨즈티 3차 서든어택 챔피언스리그 일반부 16강 3경기 1set","date":"","views":4,"impressions":0,"ctr":0.0,"avg_view_rate":10.53,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"KqdGQT-rmPc","title":"[챔스리그 명장면 #4 \"순식간에 벌어지는 완벽 올킬!\"]","date":"Mar 13, 2014","views":399,"impressions":5337,"ctr":6.97,"avg_view_rate":94.68,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Ys7-gJU_C8E","title":"2015 립톤 서든어택 챔피언스리그 섬머 6주차 일반부 16강 C조 2경기","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":0.95,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"J1kUzd6A8j4","title":"왁굳형은 진짜 세금 더 내라... 게임하라고 불렀더니 데이트썰 풀어주는 엔젤님👼🏻 [방장러쉬 5화]","date":"Jul 21, 2022","views":58,"impressions":752,"ctr":6.78,"avg_view_rate":6.75,"engagement":-3.45,"likes":-2,"comments":0,"shares":0},{"id":"0-SNxjicXVo","title":"[서든어택] BJ버스대첩! 로이조 개인화면 (vs 액시스마이콜)","date":"Nov 24, 2015","views":2,"impressions":64,"ctr":3.13,"avg_view_rate":0.44,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"P3FzwTnQaTY","title":"[서든어택] 다시보는 챔스리그 명장면 S-Class!_12주차","date":"Feb 19, 2016","views":1,"impressions":43,"ctr":0.0,"avg_view_rate":36.19,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"K88Kyse09b8","title":"[서든어택] 160327_대머전_머독","date":"Apr 11, 2016","views":2,"impressions":18,"ctr":5.56,"avg_view_rate":0.94,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"rrxRJJLoOc4","title":"게임 앞에선 오빠 동생 그런거 없다","date":"May 17, 2024","views":307,"impressions":1828,"ctr":4.81,"avg_view_rate":81.12,"engagement":0.65,"likes":2,"comments":0,"shares":0},{"id":"B1FpXkA1fJw","title":"아팠어, 아팠어? | UlsaN VS SUPLEX - DAY3 MATCH5 하이라이트 | 2024 서든어택 챔피언십 시즌2","date":"Nov 9, 2024","views":58,"impressions":556,"ctr":2.88,"avg_view_rate":29.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"LmOplnLJ_P4","title":"2024 (G)I-DLE 캐릭터 감정표현 모음집","date":"Jul 4, 2024","views":92,"impressions":666,"ctr":5.56,"avg_view_rate":85.26,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"LWXvLWvcbX4","title":"[서든어택] 서든 마스터즈 본편","date":"Dec 22, 2016","views":28,"impressions":1092,"ctr":2.38,"avg_view_rate":21.74,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ia_YCT6XqrQ","title":"헤드샷으로 차오르는 도파민 안티에이징","date":"Aug 4, 2025","views":149,"impressions":2534,"ctr":1.5,"avg_view_rate":74.08,"engagement":1.34,"likes":1,"comments":0,"shares":1},{"id":"TKGDptbaL8g","title":"우리 라핌이들 게임하면 이렇게 되는구나..?  l 서든어택","date":"Sep 29, 2022","views":32,"impressions":256,"ctr":5.86,"avg_view_rate":18.63,"engagement":-18.75,"likes":-6,"comments":0,"shares":0},{"id":"K5Ae62T9few","title":"서든의 뮤즈, 신세경이 전하는 반가운 소식! l 2024 신세경 Ⅱ l 서든어택","date":"May 30, 2024","views":16,"impressions":343,"ctr":3.21,"avg_view_rate":43.37,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"2Wq4Vj42vxo","title":"[서든어택] 챔스리그 기획자 오기택이 말한다 2부 (feat. 온상민, 임준영)","date":"Apr 3, 2017","views":3,"impressions":97,"ctr":2.06,"avg_view_rate":68.09,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nyv__fE1HBg","title":"[서든어택 명장면#10 야속한 팀워크... 월샷은 이렇게 하세요!]","date":"Dec 27, 2013","views":5,"impressions":172,"ctr":1.74,"avg_view_rate":49.25,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"3nRPl329lkA","title":"[서든어택] 오마이걸 캐릭터 메이킹 영상","date":"May 28, 2020","views":8,"impressions":111,"ctr":3.6,"avg_view_rate":32.86,"engagement":-12.5,"likes":-1,"comments":0,"shares":0},{"id":"BTzVDpipeNc","title":"[서든어택] 2016 EXID 녹음 메이킹 현장","date":"Jan 21, 2016","views":7,"impressions":194,"ctr":2.06,"avg_view_rate":7.01,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"dt9o3A0KaN0","title":"[서든어택] 신구&김수미 좀비 몰래카메라","date":"Feb 27, 2015","views":6,"impressions":134,"ctr":3.73,"avg_view_rate":34.97,"engagement":-33.33,"likes":-2,"comments":0,"shares":0},{"id":"Ed8cmNlez8I","title":"래퍼가 즐겨 하는 게임이 긁으면 어떻게 될까? - [서든다큐 : 서든어택..디..디스리스펙미?]","date":"Jul 18, 2024","views":17,"impressions":350,"ctr":2.0,"avg_view_rate":14.68,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"JhR6OWGiANU","title":"안개 속에서 피어나는 불꽃 l 2024 서든어택 시즌 2: 인페르노 (feat.HANA)","date":"Mar 28, 2024","views":71,"impressions":726,"ctr":5.37,"avg_view_rate":50.25,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"HEWBxTwKOlo","title":"[서든어택] 챔스리그 명장면 :  자각몽 VS 쿠거게이밍 전반 3R","date":"Feb 15, 2016","views":1,"impressions":42,"ctr":2.38,"avg_view_rate":56.15,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"mYIIwCL7Vbc","title":"[서든어택] 쏴춘기 Final, 넥슨을 털어라 플레이 영상","date":"Apr 1, 2015","views":36,"impressions":467,"ctr":2.57,"avg_view_rate":26.17,"engagement":2.78,"likes":-1,"comments":0,"shares":2},{"id":"rlZJnSKRkp4","title":"2024 프로미스나인 캐릭터 감정표현","date":"Aug 29, 2024","views":394,"impressions":5596,"ctr":2.88,"avg_view_rate":67.44,"engagement":0.25,"likes":1,"comments":0,"shares":0},{"id":"LCXf6oAXzgc","title":"본 영상은 대외비로 삭제될 수 있습니다. l 태디와 내부자들 1화 l 서든어택","date":"Feb 22, 2024","views":9,"impressions":231,"ctr":1.3,"avg_view_rate":6.87,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"3AJFxG5cPoc","title":"츄&지원 캐릭터 감정표현 모음집","date":"Feb 29, 2024","views":232,"impressions":4274,"ctr":1.8,"avg_view_rate":62.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"bMnWkwZtUWU","title":"자네.. 수류탄은 언제 던진다고 생각하나..?  LVUP X SA 챔피언십 시즌4 #1 결승전 하이라이트 [서든어택]","date":"Nov 12, 2021","views":4,"impressions":80,"ctr":3.75,"avg_view_rate":14.45,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"y5Afvd3tawM","title":"[서든어택] 여자친구 LIVE 방송 하이라이트!!","date":"Sep 7, 2020","views":15,"impressions":197,"ctr":5.58,"avg_view_rate":27.01,"engagement":13.33,"likes":2,"comments":0,"shares":0},{"id":"2krYsogevrc","title":"손담비 캐릭터 감정표현_요염 댄스 [서든어택]","date":"Sep 29, 2020","views":7,"impressions":189,"ctr":2.65,"avg_view_rate":92.8,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"9PfkQEa6_m4","title":"2024 시즌2 디렉터 라이브 쇼케이스 l 서든어택","date":"Jun 13, 2024","views":2,"impressions":267,"ctr":0.37,"avg_view_rate":4.94,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"9jEfl_Y9MSQ","title":"웃음참기 vs 집중력 대결? 개그맨이 네네누나를 이기는 방법😂 [방장러쉬 4화]","date":"Jul 14, 2022","views":1,"impressions":119,"ctr":0.0,"avg_view_rate":2.18,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"lKA1q1DDN5s","title":"고민시 캐릭터 감정표현_살랑 댄스","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":49.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"yahCKKt4M4Y","title":"구미호 캐릭터 감정표현_댄스 l 서든어택","date":"","views":3,"impressions":0,"ctr":0.0,"avg_view_rate":61.59,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"il6yxMSx1Jg","title":"이것이 찬스다! l LVUP 챔피언십 시즌4 l 서든어택","date":"Nov 3, 2023","views":19,"impressions":234,"ctr":0.43,"avg_view_rate":42.21,"engagement":5.26,"likes":1,"comments":0,"shares":0},{"id":"SC3fIOVUkD4","title":"[서사대] 심화 학습: 티어 구간 별 랭크전 팁 l 랜딩 선생님ㅣ제 3강","date":"Jul 14, 2023","views":34,"impressions":345,"ctr":6.96,"avg_view_rate":28.57,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"w_0RHsVQ6fg","title":"[서든어택] 퓨즈티 3차 서든어택 챔피언스리그 여성부 16강 8경기","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.71,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"FW9Gze47JOs","title":"[서든어택 BJ대정령 캐릭터 출시! 대정령 메이킹 필름]","date":"Mar 28, 2014","views":129,"impressions":1332,"ctr":8.63,"avg_view_rate":80.37,"engagement":0.78,"likes":0,"comments":0,"shares":1},{"id":"4NsVO-qrs3Y","title":"[서든어택] 2018 2차  지역리그&여성부리그 결승전 베스트 플레이어","date":"Sep 6, 2018","views":1,"impressions":66,"ctr":1.52,"avg_view_rate":93.96,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Kz7HDP5Btp4","title":"이주은 캐릭터 감정표현_이주은 응원","date":"","views":5,"impressions":0,"ctr":0.0,"avg_view_rate":80.76,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"pNdj59cL1ik","title":"[서든어택] 트리오 맵 플레이 영상","date":"Dec 5, 2014","views":8,"impressions":99,"ctr":6.06,"avg_view_rate":38.52,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"j-3ClYjcwFo","title":"💪피지컬 하면 이 팀이지~🤔외 몰ㄹr","date":"Nov 21, 2024","views":21,"impressions":451,"ctr":0.89,"avg_view_rate":64.61,"engagement":4.76,"likes":1,"comments":0,"shares":0},{"id":"8xX2dFUVKlo","title":"[서든어택] 데스룸 업데이트","date":"May 3, 2016","views":19,"impressions":226,"ctr":7.96,"avg_view_rate":63.33,"engagement":5.26,"likes":0,"comments":0,"shares":1},{"id":"hHmlHTB67R4","title":"[서든어택] 2015 박보영 녹음 영상","date":"Oct 1, 2015","views":108,"impressions":1300,"ctr":6.31,"avg_view_rate":13.06,"engagement":1.85,"likes":2,"comments":0,"shares":0},{"id":"GVyvwtQMUsQ","title":"미주 캐릭터 감정표현_미주의 댄스 I 서든어택","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":84.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"hjjUKZYIs_U","title":"남성 출연자 김진영 충격적 근황 #shorts","date":"Aug 2, 2022","views":2733,"impressions":9369,"ctr":5.11,"avg_view_rate":101.75,"engagement":0.37,"likes":10,"comments":0,"shares":0},{"id":"p9SpK0mFZK4","title":"[서든어택] 오마이걸 LIVE OH MY 서든어택! 하이라이트","date":"May 11, 2018","views":8,"impressions":98,"ctr":8.16,"avg_view_rate":14.66,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GZsxBn08d9M","title":"[서든어택] 엠블럼 시스템 가이드 영상","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":46.03,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"sNPIrfWV8Tg","title":"[서든어택 SATV 7화 가인편 - 1부]","date":"Jan 24, 2014","views":10,"impressions":220,"ctr":4.55,"avg_view_rate":13.53,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"XQm2-XAaQTs","title":"??? : 서든러가 원한다면..","date":"Feb 4, 2025","views":37,"impressions":556,"ctr":0.0,"avg_view_rate":23.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"-Rf69cRvakc","title":"[서든어택] 2014 서든어택, 이런 사람 꼭 있다? TVCF - 길막편","date":"Aug 14, 2014","views":35,"impressions":338,"ctr":5.62,"avg_view_rate":67.48,"engagement":2.86,"likes":1,"comments":0,"shares":0},{"id":"AGojrrDvYf0","title":"[서든어택] 스타BJ올스타! 이윤열의 클래식 서버","date":"Aug 27, 2015","views":4,"impressions":42,"ctr":4.76,"avg_view_rate":0.43,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"2qYE1AHUAXU","title":"[서든어택] 2017 서든어택 챔피언스리그 10주차 하이라이트 일반부 김희성 올킬","date":"Sep 26, 2017","views":2,"impressions":50,"ctr":4.0,"avg_view_rate":111.13,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"3b5NPs35o6c","title":"[서든어택] 갓설현 감정표현1 – 애교부리기","date":"Dec 3, 2015","views":5,"impressions":151,"ctr":1.99,"avg_view_rate":75.51,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"33OJef-DetY","title":"연속 우승이👃코 앞에🎧준자냥냥 승리 인터뷰","date":"Nov 16, 2024","views":90,"impressions":1020,"ctr":2.84,"avg_view_rate":72.14,"engagement":1.11,"likes":1,"comments":0,"shares":0},{"id":"ylp64sXn2t4","title":"서든러가 직접 만드는 챔피언십이 열린다?! l 챔피언십 프리시즌","date":"Feb 11, 2025","views":3,"impressions":584,"ctr":0.34,"avg_view_rate":29.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"aYsperU-HMo","title":"💩 귀신 보는 후임부터 말이 통하는 멧돼지까지! 사장님 오늘 과장이 좀 심하신데요?! [라떼 PC방 EP.7]","date":"Jan 9, 2021","views":8,"impressions":144,"ctr":4.17,"avg_view_rate":58.71,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nnqNV8bUgPc","title":"[서든어택] 퓨즈티 3차 서든어택 챔피언스리그 일반부 8강 3경기 2set","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":3.25,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"G9t5l9gZdVA","title":"[서든어택] 160312_대머전_감스트","date":"Apr 5, 2016","views":6,"impressions":115,"ctr":0.87,"avg_view_rate":11.67,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ZoZBIAD3OrE","title":"[서든 가이드] 전술 훈련 - 03.아이템 분해 학습","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":11.71,"engagement":200.0,"likes":0,"comments":0,"shares":2},{"id":"VhNmqMyHr7Y","title":"하…망했네 l 생존쇼타임 팀 대결 편 l 서든어택","date":"Jan 8, 2026","views":81,"impressions":4124,"ctr":0.99,"avg_view_rate":40.79,"engagement":1.23,"likes":1,"comments":0,"shares":0},{"id":"Ha0w6mRwpkg","title":"진짜 우승하면 어떡하지? | 사신 vs 준자냥냥 결승전 TRASH TALK | 2024 서든어택 챔피언십 시즌1","date":"Jun 15, 2024","views":15,"impressions":410,"ctr":1.95,"avg_view_rate":13.18,"engagement":6.67,"likes":0,"comments":0,"shares":1},{"id":"qSWN6Y1wQsI","title":"서든패스 시즌4_블리츠 [서든어택]","date":"Sep 29, 2020","views":11,"impressions":172,"ctr":4.07,"avg_view_rate":41.35,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"d8wILffNCKU","title":"4강 1, 2경기 하이라이트 [서든어택 클랜 명예의 전당 시즌 1]","date":"Oct 26, 2020","views":7,"impressions":63,"ctr":4.76,"avg_view_rate":3.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"FrplbbaAoTg","title":"오늘은 특식이다!! | FINF vs icsu - DAY4 MATCH8 하이라이트 | 2024 서든어택 챔피언십 시즌2","date":"Nov 16, 2024","views":54,"impressions":653,"ctr":6.58,"avg_view_rate":55.39,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"hf8UauabgxA","title":"[서든어택] 박나래 캐릭터 감정표현1 - 사이즈 체인지!","date":"Dec 13, 2018","views":7,"impressions":128,"ctr":4.69,"avg_view_rate":79.52,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"x3x4hrXZNBA","title":"[서든어택] 블랙쉐도우 전용 근접무기, 브레스 너클 소개 영상","date":"Jul 15, 2015","views":59,"impressions":711,"ctr":7.03,"avg_view_rate":73.09,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"5l8xKDmEJL8","title":"[서든어택] 오마이걸 캐릭터 감정표현2","date":"May 28, 2020","views":8,"impressions":115,"ctr":6.09,"avg_view_rate":77.21,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"5muBVMc2ZJg","title":"2015 립톤 서든어택 챔피언스리그 섬머 여성부 결승전 Part1","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.52,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"abUM_tlj3yg","title":"미안해요.. 영감..  I 서든어택 X LVUP","date":"Dec 18, 2021","views":1,"impressions":70,"ctr":1.43,"avg_view_rate":14.89,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"kcYUJ6iu1RQ","title":"[서든 가이드] 전술 훈련 - 04.생존전 안내","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":1.04,"engagement":200.0,"likes":0,"comments":0,"shares":2},{"id":"IrOuNhparsY","title":"넥슨? 그게 뭐?","date":"Jul 15, 2024","views":59,"impressions":1049,"ctr":1.14,"avg_view_rate":75.19,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"W4ZVwGtOMyc","title":"[서든어택] 170511_파이널존_lastone5","date":"Jan 26, 2018","views":34,"impressions":540,"ctr":6.3,"avg_view_rate":99.06,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"7BYtg1xZRro","title":"[서든어택] 2019 BJ 멸망전 머더 VS 로리 | 핵스나 VS 킹용락 1부","date":"Feb 11, 2019","views":3,"impressions":79,"ctr":3.8,"avg_view_rate":26.24,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"aK2QBj9ItB8","title":"[서든어택2] 정식오픈! 공식 통합 트레일러 영상","date":"Jul 8, 2016","views":0,"impressions":0,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"85vMUCuehXM","title":"[서든어택] 서든어택 2.0_고수 전용 서버 로비","date":"Nov 2, 2017","views":454,"impressions":3083,"ctr":10.38,"avg_view_rate":47.81,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Qenb_fPor80","title":"하는 이유를 알겠네,, l LVUP X SA 챔피언십 시즌2","date":"Jul 1, 2022","views":1,"impressions":65,"ctr":1.54,"avg_view_rate":21.01,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Nr-9CJ771_E","title":"[서든어택] 160228_대머전_로이조","date":"Mar 10, 2016","views":1,"impressions":24,"ctr":4.17,"avg_view_rate":1.12,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"buwLuHleMQY","title":"서든어택 TVCF 60초 버전","date":"Aug 20, 2014","views":128,"impressions":1748,"ctr":5.78,"avg_view_rate":65.65,"engagement":-1.56,"likes":-2,"comments":0,"shares":0},{"id":"ziq-8EAJ8h0","title":"겨울소녀 캐릭터 감정표현 약 올리기 2 I 서든어택 캐릭터","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":53.9,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GXr71Oe-xAg","title":"서든어택 챔피언스리그 2014 섬머_일반부 8강 B조 2경기 1세트","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.16,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"VOcX_do_8qY","title":"원수는 어디에서 만난다고…? | LVUP X 2022 챔피언십 시즌2","date":"Jun 17, 2022","views":1,"impressions":62,"ctr":1.61,"avg_view_rate":5.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"gWKdNuItlV0","title":"숏 패스만 브리핑 해줘!! I 서든어택","date":"Sep 9, 2022","views":4,"impressions":151,"ctr":2.65,"avg_view_rate":59.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GPpkDRD1qSA","title":"[서든어택] 태극기 사수작전 가이드영상","date":"Jun 18, 2015","views":9,"impressions":90,"ctr":8.89,"avg_view_rate":55.68,"engagement":11.11,"likes":1,"comments":0,"shares":0},{"id":"Fxsr2hDC55I","title":"[서든어택] 갓모드 갓BJ 갓방송! 이설 (4)","date":"Jan 11, 2018","views":1,"impressions":24,"ctr":4.17,"avg_view_rate":0.53,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Td1zekqKTfw","title":"[서든어택] 썸머 유인나 캐릭터 감정표현1 - 바캉스 가자!","date":"Jul 11, 2019","views":8,"impressions":155,"ctr":4.52,"avg_view_rate":91.65,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"aFMnNQBHuEc","title":"[서든어택] 청룡:眞 캐릭터 감정표현_승리 세레머니","date":"Jun 11, 2020","views":5,"impressions":161,"ctr":3.11,"avg_view_rate":71.04,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ExKvSUSWUzU","title":"개편하고 댕편해진 플리마켓 2.0 !","date":"Feb 2, 2024","views":184,"impressions":2713,"ctr":0.63,"avg_view_rate":28.09,"engagement":-0.54,"likes":-1,"comments":0,"shares":0},{"id":"wHr0NAu8wYY","title":"서든 이벤트 매치에 참여한 네모 병정의 정체는?!","date":"Jul 19, 2025","views":95,"impressions":1089,"ctr":1.1,"avg_view_rate":71.68,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Q2G_4KQKw2o","title":"[서든어택] 170601_시즌전_홍보BGM","date":"Jan 26, 2018","views":16,"impressions":491,"ctr":2.44,"avg_view_rate":26.77,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"kf5V71ywDcA","title":"[서든어택] 담력 마스터 이시영 캐릭터 메이킹 영상","date":"Dec 22, 2016","views":7,"impressions":48,"ctr":2.08,"avg_view_rate":40.12,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"_j8dyIGtSlU","title":"이게 바로 경력직 신입?! 군림보의 서든 플레이 유튜브 최초 공개!  [S.C.C. 킬 페스티벌: 군림보]","date":"Sep 29, 2022","views":17,"impressions":162,"ctr":9.26,"avg_view_rate":27.38,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"JHDzZlIKPAg","title":"프로미스나인 캐릭터 감정표현 모음집 #Shorts | 서든어택 캐릭터","date":"Apr 28, 2022","views":387,"impressions":4068,"ctr":2.58,"avg_view_rate":63.13,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"F18Ra-ToejY","title":"[서든어택] '게임을 게임하다' 이곳이 어딘데?","date":"Jul 26, 2019","views":0,"impressions":14,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"yAPklivth0g","title":"Day3 Match5,6 ｜ 2025 서든어택 챔피언십 시즌2","date":"Nov 1, 2025","views":117,"impressions":2675,"ctr":3.48,"avg_view_rate":10.83,"engagement":2.56,"likes":0,"comments":0,"shares":3},{"id":"se_4uIMJOUY","title":"올킬 쿠폰 각 떴냐? 떴으니까 올리ㅈ...","date":"Jun 14, 2024","views":243,"impressions":4817,"ctr":0.48,"avg_view_rate":88.69,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"5xb_eGSw-Zk","title":"[서든어택]남규리 캐릭터 감정표현_남규리의 사랑표현","date":"Apr 2, 2020","views":14,"impressions":119,"ctr":10.08,"avg_view_rate":89.95,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Lx0NSW9rxvU","title":"면도로 승리하다 (feat. 유정석) BGM l 털밀어택: 서든어택 X 도루코","date":"Oct 10, 2024","views":2,"impressions":331,"ctr":0.3,"avg_view_rate":1.32,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"zJL2-WwxxGI","title":"[서든어택] 130129_공룡모드_boss","date":"Dec 7, 2017","views":11,"impressions":414,"ctr":1.93,"avg_view_rate":156.56,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"KSXtPYz3IaY","title":"[서든어택] 통합시즌_서든패스 :  미래를 보여드립니다.","date":"Jul 25, 2019","views":0,"impressions":188,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":0,"comments":0,"shares":0},{"id":"X3s_K5IdRmw","title":"[서든어택] 갓모드 갓BJ 갓방송! 로이조(1)","date":"Jan 3, 2018","views":1,"impressions":66,"ctr":1.52,"avg_view_rate":0.33,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"FthvfKmkvgw","title":"최예나 캐릭터 감정표현_최예나 펑펑!","date":"","views":1447,"impressions":0,"ctr":0.0,"avg_view_rate":80.55,"engagement":0.35,"likes":1,"comments":0,"shares":4},{"id":"i_BHzD8dD6U","title":"라라 파존에 입문하다..? [서든어택 오리지널 시리즈]","date":"May 12, 2021","views":5,"impressions":83,"ctr":4.82,"avg_view_rate":32.07,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"97nkpBO4YhE","title":"VIVIZ 캐릭터 감정표현_칭찬댄스","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":98.46,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"wu941C9251Q","title":"진짜 큰 거 온다!! 꽉 잡아!! I 서든ON택 페스티벌","date":"Dec 13, 2021","views":2,"impressions":65,"ctr":1.54,"avg_view_rate":12.43,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"2ZkMiH1Zqg0","title":"[서든어택] 뱀파이어 호러 플레이 영상!","date":"Aug 7, 2014","views":126,"impressions":1277,"ctr":7.83,"avg_view_rate":81.11,"engagement":0.79,"likes":0,"comments":0,"shares":1},{"id":"YnWFg0EPiLs","title":"[서든어택] 160322_대머전_대정령","date":"Apr 6, 2016","views":1,"impressions":20,"ctr":5.0,"avg_view_rate":0.65,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"WSFwv40M6Zg","title":"VIP 클럽 테마 BGM [서든어택]","date":"","views":34,"impressions":430,"ctr":3.72,"avg_view_rate":41.67,"engagement":2.94,"likes":1,"comments":0,"shares":0},{"id":"FqPksJPa_lw","title":"[서든어택2] 프롤로그 스파이 후속 영상 공개!","date":"Jun 27, 2016","views":0,"impressions":0,"ctr":0.0,"avg_view_rate":0.0,"engagement":0,"likes":-1,"comments":0,"shares":0},{"id":"x88zJhxT_pI","title":"[서든어택] 마동석 팬미팅 영상","date":"Apr 16, 2015","views":2,"impressions":156,"ctr":0.64,"avg_view_rate":43.06,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"OuQ-t2No_j0","title":"권은비&츠키 캐릭터 감정표현 모음집!","date":"Aug 28, 2025","views":364,"impressions":1633,"ctr":8.08,"avg_view_rate":57.41,"engagement":0.27,"likes":1,"comments":0,"shares":0},{"id":"20r7aW66JA8","title":"서든어택 챔피언스리그 2014 섬머_여성부 8강 A조 4경기 3세트","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.62,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GlQdmN7ahcs","title":"[서든 가이드] 심화 훈련 - 01.마이건2 안내","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":5.58,"engagement":100.0,"likes":0,"comments":0,"shares":2},{"id":"4dw6_ktJjA0","title":"레전드 지인찬스 식빵언니 서든에 오다!! #Shorts [서든어택]","date":"Sep 2, 2021","views":12,"impressions":164,"ctr":0.61,"avg_view_rate":18.59,"engagement":-8.33,"likes":-1,"comments":0,"shares":0},{"id":"DoRnkn2C4EM","title":"'어서왁. 챔피언십은 처음이지?' | FINF vs auswac - DAY1 MATCH1 하이라이트｜ 2025 서든어택 챔피언십 시즌1","date":"May 10, 2025","views":158,"impressions":2745,"ctr":3.57,"avg_view_rate":36.74,"engagement":0.63,"likes":1,"comments":0,"shares":0},{"id":"GecGMy_Y6Xw","title":"인간 벚꽃 정채연, 서든에서 5월의 매혹적인 장미로 귀환?! 🌹🎬\n매력 한도초과의 그녀, 정채연과 함께 전장을 압도하세요!\n\n🎁 영구제 수집 이벤트 \n정채연 영구제 1개 획득","date":"May 7, 2026","views":3548,"impressions":0,"ctr":0.0,"avg_view_rate":71.74,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"HNTLg4M00YE","title":"[서든어택] 풀체인지 서든 LIVE 캐릭터 BJ들을 소개합니다🥖","date":"Feb 27, 2019","views":6,"impressions":47,"ctr":6.38,"avg_view_rate":18.85,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"uP5Ufj3pD0s","title":"[서든어택] SATV 시즌2 10화","date":"Mar 6, 2015","views":28,"impressions":279,"ctr":3.58,"avg_view_rate":3.82,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"xB1n0rnPmh0","title":"[서든어택] 이태원 클라쓰 캐릭터 홍보 영상","date":"Apr 29, 2020","views":14,"impressions":138,"ctr":7.97,"avg_view_rate":44.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ZVEm0o9KnC0","title":"[서든어택] 선미 캐릭터 감정표현_선미의 킬콤보","date":"Jul 30, 2020","views":3,"impressions":110,"ctr":2.73,"avg_view_rate":73.73,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"kyH0fhGP_tE","title":"[서든어택] 오진어택 3탄 듀오 토너먼트 게임플레이 가이드","date":"Jan 12, 2018","views":2,"impressions":27,"ctr":3.7,"avg_view_rate":55.65,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"19vwuGCD7dY","title":"서든어택 TVCF 대정령편 - 제3보급(걸스데이vs송소희)","date":"Feb 3, 2014","views":53,"impressions":779,"ctr":2.82,"avg_view_rate":78.84,"engagement":1.89,"likes":1,"comments":0,"shares":0},{"id":"OtpZhWsME8k","title":"보물찾기5️⃣수요팅🧑‍🤝‍🧑사람구경하기","date":"Aug 20, 2025","views":81,"impressions":2029,"ctr":0.2,"avg_view_rate":62.71,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"izQY0qYOfz8","title":"[서든어택] 2017 서든어택 BJ연승왕전, 왕좌의 게임 3주차","date":"Sep 13, 2017","views":9,"impressions":110,"ctr":8.18,"avg_view_rate":5.07,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"sj2jAAuoIq8","title":"[서든라이더] 적을 폭★파해 버리는 카트가 있다?!?!","date":"Apr 1, 2019","views":10,"impressions":85,"ctr":11.76,"avg_view_rate":48.04,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"MvMlXEYq8g8","title":"역시 마무리는 스나가","date":"Jun 15, 2024","views":11,"impressions":313,"ctr":0.64,"avg_view_rate":52.78,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"NiOle988cJE","title":"[서든어택] 나래&도연 IN 서든랜드 메이킹 영상","date":"Dec 13, 2018","views":5,"impressions":82,"ctr":3.66,"avg_view_rate":32.31,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"6Q3-KSHEfwQ","title":"김동우의 난구 풀이 - 폭 1뱅크샷","date":"Jun 7, 2024","views":49,"impressions":680,"ctr":0.74,"avg_view_rate":50.89,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"tAEsz0YwYzQ","title":"[서든어택]BJ브레드배 제3보급 생존대회_브레드 눕방편","date":"Mar 27, 2020","views":4,"impressions":65,"ctr":1.54,"avg_view_rate":3.91,"engagement":-25.0,"likes":-1,"comments":0,"shares":0},{"id":"YP_KDV71mcs","title":"[서든어택] 니글 니글 캐릭터 감정표현2 – 니글 니글2","date":"","views":3,"impressions":0,"ctr":0.0,"avg_view_rate":80.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"tzC5FZmbKJs","title":"전장에 불어오는 새로운 바람 l 2024 서든어택 시즌1: 메카닉 (feat. 이미쉘 LeeMichelle)","date":"Jan 4, 2024","views":58,"impressions":606,"ctr":5.12,"avg_view_rate":39.98,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"sKXV_a04XRo","title":"사실은…이런 뒷얘기가 있어😼","date":"May 16, 2025","views":372,"impressions":2241,"ctr":2.86,"avg_view_rate":58.17,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"MB4B3_20rEQ","title":"챔피언십에선 테토남, 멸망전에선 에겐남?!","date":"Jan 23, 2026","views":466,"impressions":1672,"ctr":0.42,"avg_view_rate":63.11,"engagement":0.21,"likes":1,"comments":0,"shares":0},{"id":"dCms3CNcS70","title":"김설현 캐릭터 감정표현_전투 준비!","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":69.78,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"naIU3J9hNik","title":"[서든어택] PC방 피로연 이벤트!","date":"May 20, 2016","views":1,"impressions":59,"ctr":0.0,"avg_view_rate":11.75,"engagement":-100.0,"likes":-1,"comments":0,"shares":0},{"id":"iaAkWQoJyKs","title":"알바가 Loose 할 땐? 서든 Shot!","date":"Jul 21, 2024","views":5,"impressions":185,"ctr":1.08,"avg_view_rate":64.15,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"50cfpd-Mw48","title":"이건 기회야 형님들한테 깊은 인상을 남겨줄거야","date":"Oct 28, 2025","views":285,"impressions":1826,"ctr":2.85,"avg_view_rate":134.83,"engagement":1.05,"likes":2,"comments":0,"shares":1},{"id":"ZMmDDZNASGs","title":"[서든어택] BJ 서든대첩! 액시스마이콜 개인화면 (vs 꿀탱탱)","date":"Aug 7, 2015","views":2,"impressions":56,"ctr":3.57,"avg_view_rate":0.61,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"FoLg9BefX6A","title":"'나야, 김두리' | 준자냥냥 VS UlsaN - DAY1 MATCH1 하이라이트 | 2024 서든어택 챔피언십 시즌2","date":"Oct 26, 2024","views":80,"impressions":934,"ctr":6.32,"avg_view_rate":41.26,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"NL4lkHM9OjE","title":"만루홈런 이승엽 | icsu VS likethat - DAY3 MATCH2 하이라이트 | 2024 서든어택 챔피언십 시즌1","date":"May 11, 2024","views":127,"impressions":1487,"ctr":7.06,"avg_view_rate":36.31,"engagement":0.79,"likes":1,"comments":0,"shares":0},{"id":"tts5l3nY_9o","title":"2024 시즌1 디렉터 라이브 쇼케이스 l 서든어택","date":"Mar 21, 2024","views":1,"impressions":226,"ctr":0.44,"avg_view_rate":0.74,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"6nZHdKGoVqU","title":"[서든어택] 한복소녀의 북춤","date":"Sep 11, 2019","views":11,"impressions":158,"ctr":5.06,"avg_view_rate":72.86,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"5Sm6HdFZsPg","title":"[서든어택] 추석맞이 특별 이벤트 I♥윷","date":"Sep 28, 2017","views":34,"impressions":166,"ctr":16.27,"avg_view_rate":89.23,"engagement":5.88,"likes":1,"comments":0,"shares":1},{"id":"CJAwPtHt6-Y","title":"김진영 vs 에이전트 H!!! UDT 선후배의 한판승부! 🔥 [밀리털이ep2 : 에이전트H & 덱스 2편]","date":"Oct 7, 2021","views":1319,"impressions":13669,"ctr":7.17,"avg_view_rate":26.96,"engagement":1.36,"likes":18,"comments":0,"shares":0},{"id":"MYsfE-5j4oQ","title":"2023 LVUP 챔피언십 결선 2주차 하이라이트 #Shorts","date":"Mar 24, 2023","views":16,"impressions":155,"ctr":1.29,"avg_view_rate":42.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"jtJhZTME5tk","title":"[서든어택] 클래식 테마_게임룸","date":"Nov 2, 2017","views":3766,"impressions":20401,"ctr":11.2,"avg_view_rate":101.95,"engagement":0.4,"likes":7,"comments":0,"shares":8},{"id":"IUV6MOO95nk","title":"[서든어택] BJ 이설 감정표현 - 경운기 댄스","date":"Jun 18, 2015","views":61,"impressions":2063,"ctr":2.52,"avg_view_rate":66.78,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"c8V2erarBT4","title":"[서사대] 기초 학습: 고텝과 뒤돌기 키 l 랜딩 선생님ㅣ제 2강","date":"Jul 11, 2023","views":86,"impressions":939,"ctr":6.6,"avg_view_rate":42.66,"engagement":5.81,"likes":0,"comments":0,"shares":5},{"id":"xUGOviovoz4","title":"서든피라미드 캐릭터 감정표현 모음집","date":"Apr 4, 2024","views":610,"impressions":5707,"ctr":3.22,"avg_view_rate":74.83,"engagement":1.15,"likes":5,"comments":0,"shares":2},{"id":"Z0hJPLrT7-c","title":"시티캣에서 4단 부스터?? I LVUP X SA 챔피언십 시즌1","date":"Apr 1, 2022","views":5,"impressions":100,"ctr":5.0,"avg_view_rate":23.23,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"o422oPFUb90","title":"Day4 Match7,8 ｜ 2025 서든어택 챔피언십 시즌1","date":"May 31, 2025","views":98,"impressions":1187,"ctr":3.96,"avg_view_rate":12.9,"engagement":6.12,"likes":1,"comments":0,"shares":5},{"id":"LJ26GEIedRM","title":"우리 근-본 클랜 울산이야","date":"Nov 29, 2024","views":430,"impressions":4138,"ctr":2.03,"avg_view_rate":100.85,"engagement":0.47,"likes":2,"comments":0,"shares":0},{"id":"BnqBzJRdeTQ","title":"[서든어택] 트와이스(TWICE) 팬미팅 현장 스케치","date":"Mar 19, 2018","views":1,"impressions":60,"ctr":1.67,"avg_view_rate":28.9,"engagement":100.0,"likes":1,"comments":0,"shares":0},{"id":"DQ_RKqqqgrE","title":"오빠, 골드 찍게 해드릴게요 | 환승서든 협곡오빠 편 | 서든어택","date":"May 1, 2024","views":33,"impressions":247,"ctr":4.05,"avg_view_rate":8.55,"engagement":18.18,"likes":1,"comments":0,"shares":5},{"id":"RNqyuVmIqN0","title":"보물찾기1️⃣먼저 찾는 사람 임자!","date":"Aug 18, 2025","views":108,"impressions":2988,"ctr":0.17,"avg_view_rate":51.23,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"dT_XNi73llI","title":"검은 토끼 캐릭터 감정표현_세배 l 서든어택","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":93.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"oMMLIIygaYw","title":"[서든어택]남규리 캐릭터 감정표현_약올리는 남규리","date":"Apr 2, 2020","views":9,"impressions":111,"ctr":6.31,"avg_view_rate":71.2,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GpRPYj-1IIw","title":"서도녀 캐릭터 감정표현_#Shorts I 서든어택 캐릭터","date":"Dec 30, 2021","views":291,"impressions":3747,"ctr":1.89,"avg_view_rate":69.07,"engagement":1.37,"likes":4,"comments":0,"shares":0},{"id":"E2aJKwNwNJY","title":"2014 마운틴듀 서든어택 챔피언스리그 윈터 여성부 8강 A조 1경기 1세트","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.22,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ZMsOp3_06i4","title":"2015 서든어택 슈퍼 페스티벌 그랜드 파이널 1일차 일반부 4강 1경기 part1","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":0.42,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"EvZV8MPK17c","title":"피크닉걸 캐릭터 감정표현_사뿐사뿐 걷기 l 서든어택","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":44.51,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"37m3F7sLDL8","title":"최근 밝혀진 충격적인 성장 실험 결과 ㄷㄷ","date":"Aug 5, 2025","views":33,"impressions":560,"ctr":0.18,"avg_view_rate":89.43,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"DXwXxHtVg1E","title":"[서든어택] 네스티 1차 서든어택 챔피언스리그 여성부 8강 2경기","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"EnNKT_nbi9o","title":"[서든어택] 장도연 캐릭터 감정표현2 - 도연 하이패션 포즈","date":"Dec 13, 2018","views":6,"impressions":82,"ctr":7.32,"avg_view_rate":66.14,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"pdQ12iDl_ZU","title":"[서든어택] SATV 시즌3 제5의 멤버 선발편 1탄!","date":"Oct 23, 2015","views":10,"impressions":250,"ctr":4.0,"avg_view_rate":12.72,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"TDxONcVquSQ","title":"[서든어택] 치어리더 박기량&이수진 녹음 메이킹 영상","date":"Nov 12, 2015","views":14,"impressions":121,"ctr":2.48,"avg_view_rate":13.14,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"aIyGhO-swuA","title":"김경섭 감독님 사랑해","date":"Mar 24, 2026","views":1380,"impressions":3219,"ctr":1.43,"avg_view_rate":52.43,"engagement":0.07,"likes":1,"comments":0,"shares":0},{"id":"gVNl8jcD2X4","title":"챔피언십 이야기 같이 나눠볼까요? l 태디톡 l 서든어택","date":"Mar 9, 2026","views":29,"impressions":2529,"ctr":0.99,"avg_view_rate":0.47,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"9xs2m_Oc2Vs","title":"[서든어택] 2018-19 챔피언스리그 조별리그 G조 하이라이트","date":"Jan 30, 2019","views":6,"impressions":61,"ctr":8.2,"avg_view_rate":9.67,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"H8BysOPbTwU","title":"트와이스 캐릭터 감정표현_애교  l 서든어택","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":86.24,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"Ci0NaBHf04A","title":"《서든어택 X 오징어 게임 시즌3》오프라인 이벤트 매치 LIVE","date":"Jul 13, 2025","views":37,"impressions":636,"ctr":5.19,"avg_view_rate":1.72,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"6-29hv1NHaQ","title":"결승전에 왔으면 칼침 한방 맞아야겠지..? #Shorts l 서든어택","date":"Jun 23, 2023","views":11,"impressions":197,"ctr":0.0,"avg_view_rate":70.7,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"16TfjfFiltc","title":"[문돼의 어택] 전화 한 번이면 3보급 쓸어버리는 남자…","date":"Aug 17, 2023","views":82,"impressions":703,"ctr":4.84,"avg_view_rate":122.49,"engagement":2.44,"likes":2,"comments":0,"shares":0},{"id":"PUjd4USs8Jc","title":"??? : 그럼 파마스 밴 풀어라","date":"Jun 14, 2024","views":310,"impressions":2885,"ctr":2.11,"avg_view_rate":123.45,"engagement":0.32,"likes":0,"comments":0,"shares":1},{"id":"g7n9sPaLUJs","title":"[서든어택 유저 공모전 UCC 수상작 공개#1 최우수상 \"고교어택\"]","date":"Jan 13, 2014","views":69,"impressions":733,"ctr":9.0,"avg_view_rate":36.44,"engagement":0.0,"likes":-1,"comments":0,"shares":1},{"id":"B8Bqk_WLY24","title":"그저 평범하게 서든하는 형","date":"Aug 27, 2025","views":125,"impressions":1152,"ctr":0.87,"avg_view_rate":63.88,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"bUAdO-9oWJg","title":"[서든어택] 2017 서든어택 챔피언스리그 3주차_16강_1SET","date":"Aug 1, 2017","views":3,"impressions":48,"ctr":6.25,"avg_view_rate":52.36,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"86oLFUpuSyI","title":"[서든어택] 110719_Episode1_Ninja","date":"Nov 17, 2017","views":15,"impressions":323,"ctr":3.72,"avg_view_rate":33.75,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"6wQ_5kOfFjc","title":"[서든어택] 정채연 캐릭터 감정표현2 - 우아한 채연댄스","date":"Apr 13, 2017","views":29,"impressions":736,"ctr":3.53,"avg_view_rate":75.07,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"fdECZCPTogg","title":"[서든어택] 주이&낸시 캐릭터 메이킹 영상","date":"Feb 28, 2018","views":15,"impressions":101,"ctr":9.9,"avg_view_rate":11.53,"engagement":6.67,"likes":1,"comments":0,"shares":0},{"id":"_bxJQ-2bjNs","title":"게임을 시작하시겠습니까?","date":"Jun 26, 2025","views":193,"impressions":2754,"ctr":2.54,"avg_view_rate":55.61,"engagement":0.52,"likes":1,"comments":0,"shares":0},{"id":"XmNr6w56hG0","title":"나띠에게는 잔인하지만, 벨에게는 통쾌한 것은?","date":"Oct 30, 2025","views":378,"impressions":6155,"ctr":2.13,"avg_view_rate":39.11,"engagement":1.06,"likes":3,"comments":0,"shares":1},{"id":"vqWDvlWukNc","title":"허성태 캐릭터 감정표현_허성태의 도발 l 서든어택","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":72.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"WGQqC8JL_2w","title":"혜리 캐릭터 감정표현_서든 한판?","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":93.34,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"F6KNXae-wCM","title":"2014 마운틴듀 서든어택 챔피언스리그 윈터 여성부 8강 A조 1경기 3세트","date":"","views":2,"impressions":0,"ctr":0.0,"avg_view_rate":31.06,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"HnSHwdMTRKc","title":"[서든어택] 총 상금 1억 원의 미션 쇼! 서든 LIVE 예고편","date":"Aug 15, 2018","views":11,"impressions":67,"ctr":0.0,"avg_view_rate":46.09,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"YblwQWh0afE","title":"벼랑 끝의 포뇨","date":"Nov 25, 2025","views":1866,"impressions":8110,"ctr":12.0,"avg_view_rate":84.19,"engagement":0.32,"likes":6,"comments":0,"shares":0},{"id":"LomwJxJVQwQ","title":"[서든어택] 김소은 캐릭터 메이킹 영상","date":"Mar 5, 2015","views":20,"impressions":223,"ctr":4.93,"avg_view_rate":18.6,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"jpXvh5JJeHw","title":"태디컵 찢은 레전드 테토남","date":"Mar 29, 2026","views":4744,"impressions":11763,"ctr":3.43,"avg_view_rate":73.6,"engagement":0.11,"likes":5,"comments":0,"shares":0},{"id":"fVR2wSMif5U","title":"페어리 캐릭터 감정표현 모음집 #Shorts I 서든어택 캐릭터","date":"Mar 10, 2022","views":123,"impressions":1877,"ctr":1.12,"avg_view_rate":69.24,"engagement":0.81,"likes":1,"comments":0,"shares":0},{"id":"vCdHz0Psq3Y","title":"퓨즈티 서든어택 챔피언스리그 2013 Winter 일반부 4강 2경기","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":0.19,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"LI9ouxAq3Lc","title":"서든 실력 향상을 원한다면? 알려듀오! l 서든어택","date":"Sep 26, 2024","views":1,"impressions":254,"ctr":0.0,"avg_view_rate":27.67,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"qRKQwPcrqFI","title":"[서든어택] 에일리의 You&I 서든잘해 팬미팅 현장","date":"Feb 4, 2016","views":2,"impressions":44,"ctr":4.55,"avg_view_rate":24.3,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"IzLc3h_rERo","title":"거대한 윷을 던져 진격하라! 최종 상금 획득을 향한 라스트 댄스💃🕺 [써돈어택 : 4화]","date":"Dec 29, 2022","views":116,"impressions":1119,"ctr":9.03,"avg_view_rate":23.63,"engagement":0.86,"likes":1,"comments":0,"shares":0},{"id":"neNhakG0sRU","title":"[서든어택] 2017 서든어택 챔피언스리그 결승전 & 윈터 쇼케이스 현장 스케치","date":"Nov 20, 2017","views":1,"impressions":38,"ctr":2.63,"avg_view_rate":13.28,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"om4jt1TLd5U","title":"[서든어택] 갓모드 갓BJ 갓방송! 강은비 (3)","date":"Jan 15, 2018","views":34,"impressions":369,"ctr":6.5,"avg_view_rate":43.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"gGg8ZHgWQuQ","title":"[서든어택] 김소은 캐릭터 감정표현2 - 포옹하기","date":"Mar 6, 2015","views":12,"impressions":203,"ctr":5.42,"avg_view_rate":80.93,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"QFS_t0AlUdw","title":"유저 실력이 선수급🏴‍☠️댓글이벤트🏴‍☠️PC방헌터스🏆광주팀 결성","date":"Feb 12, 2025","views":87,"impressions":446,"ctr":0.67,"avg_view_rate":59.24,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"J6atMMJWGII","title":"[서든어택] 2017 서든어택 챔피언스리그 10주차 하이라이트 일반부 박진상 옥상 플레이","date":"Sep 26, 2017","views":3,"impressions":97,"ctr":3.09,"avg_view_rate":90.17,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"4A6h1zyu7gk","title":"고말숙 vs 박민정 서열정리 시켜드림 l 서든어택","date":"Aug 1, 2024","views":123,"impressions":1227,"ctr":4.16,"avg_view_rate":18.16,"engagement":0.81,"likes":1,"comments":0,"shares":0},{"id":"2Y3n3X1IxnU","title":"\"오빠 게임이 중요해? 내가 중요해?\" 등골이 싸늘해지는 여자친구의 질문🥶 [ 라떼싸지방 : 허영지 편 ] #shorts","date":"Jul 15, 2021","views":18,"impressions":322,"ctr":0.93,"avg_view_rate":35.86,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"eN5W5GdyuLM","title":"[서든어택] 박소담 캐릭터 감정표현3 - 뿌잉 뿌잉","date":"Mar 3, 2016","views":5,"impressions":78,"ctr":2.56,"avg_view_rate":55.48,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"AFjE5GgLLC0","title":"2026 츄 캐릭터 감정표현_심쿵 츄♡","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":90.23,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"3Uv71LrKgko","title":"청룡의 신 캐릭터 감정표현_청룡의 춤","date":"","views":1,"impressions":0,"ctr":0.0,"avg_view_rate":70.86,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"x2gEsJ6VRyA","title":"[서든어택] 여자친구 캐릭터 메이킹 영상!","date":"Aug 27, 2020","views":12,"impressions":391,"ctr":2.3,"avg_view_rate":26.67,"engagement":16.67,"likes":2,"comments":0,"shares":0},{"id":"ceuLaG3co6U","title":"[서든어택] 갓설현 캐릭터 출시!","date":"Dec 3, 2015","views":27,"impressions":871,"ctr":2.07,"avg_view_rate":32.27,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"qEYBTxoo3oY","title":"[서든어택] 2018-19 여성부 챔피언스리그 8강 4경기 하이라이트","date":"Mar 20, 2019","views":2,"impressions":74,"ctr":1.35,"avg_view_rate":13.75,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"V_-RoPiyqPI","title":"[서든어택] 풀체인지 서든 LIVE 5회 다시보기","date":"Feb 25, 2019","views":1,"impressions":78,"ctr":1.28,"avg_view_rate":0.67,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"xravvcjjw-U","title":"[서든어택] 토너먼트 업데이트 가이드 영상!!","date":"Aug 6, 2020","views":21,"impressions":145,"ctr":13.79,"avg_view_rate":15.97,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"rSmzDFGanI0","title":"만약 내가 오징어 게임에 참가한다면?","date":"Jul 11, 2025","views":245,"impressions":2652,"ctr":1.62,"avg_view_rate":167.6,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nARN2xF0yaE","title":"[서든어택] 2015 에이핑크 녹음 메이킹 현장","date":"Sep 24, 2015","views":22,"impressions":343,"ctr":4.37,"avg_view_rate":60.34,"engagement":4.55,"likes":1,"comments":0,"shares":0},{"id":"_YsUlEWLZsk","title":"김연경 캐릭터 감정표현 모음집 #Shorts [서든어택]","date":"Sep 2, 2021","views":103,"impressions":761,"ctr":4.2,"avg_view_rate":74.47,"engagement":-0.97,"likes":-1,"comments":0,"shares":0},{"id":"hDG2KDILR_A","title":"[서든어택] 챔스리그 결승!! 명장면 : Xenics-Storm vs 핑투","date":"Sep 22, 2015","views":7,"impressions":184,"ctr":3.8,"avg_view_rate":103.94,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"dprs1DaA-lQ","title":"로계는 내가 막아 | PURPLE vs 악마 - DAY4 MATCH8 하이라이트｜ 2025 서든어택 챔피언십 시즌1","date":"May 31, 2025","views":220,"impressions":2316,"ctr":5.27,"avg_view_rate":34.62,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"j0-_F5AtzR0","title":"서든 특: 게임이 예쁘고 신세경이 재밌어요","date":"Apr 14, 2022","views":81,"impressions":269,"ctr":9.29,"avg_view_rate":14.21,"engagement":3.7,"likes":2,"comments":0,"shares":1},{"id":"FEPXp_BxmTs","title":"[서든어택 챔스리그 명장면] 스치면 사망, 개피라면 전략은 단 하나!","date":"Jun 18, 2014","views":3,"impressions":160,"ctr":0.63,"avg_view_rate":50.11,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"DfpBE065XJ8","title":"피 1 그리고 고사리 단 한 발","date":"Jun 22, 2024","views":81,"impressions":971,"ctr":1.03,"avg_view_rate":91.96,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ZfVjTkBKeZY","title":"혼자서 비를 막는다고? I 서든어택","date":"Sep 10, 2022","views":20,"impressions":408,"ctr":4.9,"avg_view_rate":38.79,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"GnoOde_kD0Q","title":"[PAUL vs 핑투] Day3 Match5 | 2026 서든어택 챔피언십 시즌1","date":"","views":8,"impressions":0,"ctr":0.0,"avg_view_rate":3.86,"engagement":25.0,"likes":0,"comments":0,"shares":2},{"id":"eiCuIOoO4QA","title":"트와이스 캐릭터 감정표현_트와이스 도발 [서든어택]","date":"","views":3,"impressions":40,"ctr":2.5,"avg_view_rate":58.23,"engagement":-33.33,"likes":-1,"comments":0,"shares":0},{"id":"DqrjBRHZTNs","title":"랄랄 캐릭터 감정표현 모음 #Shorts [서든어택]","date":"May 27, 2021","views":322,"impressions":2655,"ctr":4.48,"avg_view_rate":73.84,"engagement":0.62,"likes":2,"comments":0,"shares":0},{"id":"GkOLSDgba0Y","title":"자, 다음. l 2023 LVUP 챔피언십 S1 l  서든어택","date":"Mar 3, 2023","views":3,"impressions":163,"ctr":1.84,"avg_view_rate":62.92,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"ZMo-udqqIEE","title":"[서든어택] 코커 김민아 감정표현2 - 코리안코커 김민아","date":"Feb 27, 2020","views":6,"impressions":85,"ctr":4.71,"avg_view_rate":73.91,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"nYyP1UpOJMQ","title":"김소연 캐릭터 감정표현_광기의 피아노 연주 [서든어택]","date":"","views":3,"impressions":43,"ctr":4.65,"avg_view_rate":93.79,"engagement":0.0,"likes":0,"comments":0,"shares":0},{"id":"6jnw8RbJ42k","title":"[서든어택] 소미 캐릭터 감정표현1 - Dancing SomiⅠ","date":"Mar 30, 2017","views":8,"impressions":97,"ctr":7.22,"avg_view_rate":67.15,"engagement":0.0,"likes":0,"comments":0,"shares":0}];
+
+const CHANNELS = ['서든어택','카스온라인','더파이널스','SAZ','낙원','낙원글로벌','오버워치'];
+const CREATORS = ['심승선','이유정','이수민','임기백'];
+const CR_CLS   = ['cr0','cr1','cr2','cr3'];
+const CR_INIT  = {'심승선':'심','이유정':'유','이수민':'수','임기백':'임'};
+const CH_NAMES = ['서든어택','카스온라인','더파이널스','SAZ','낙원글로벌','낙원','오버워치'];
+const SKEY        = 'sa_dash_v5';
+// ▼ GitHub Pages 배포 후 본인 레포로 변경하세요
+// 예: 'https://raw.githubusercontent.com/유저명/레포명/main'
+const GITHUB_RAW  = '';   // 예: 'https://raw.githubusercontent.com/유저명/레포명/main'
+const GITHUB_API  = '';   // 예: 'https://api.github.com/repos/유저명/레포명'
+const MON_MAP  = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+
+// ── 1년 기준 KPI (롱폼 / 숏폼) ──────────────────────────────────
+// views:중앙조회수, impr:노출수, ctr:%, avr:평균조회율%, eng:참여율%
+const CH_KPI = {
+  '서든어택':  { long:{views:4681,  impr:41620, ctr:7.6, avr:35.4, eng:0.7}, short:{views:13166, impr:24602, ctr:7.7, avr:69.8, eng:0.7} },
+  '카스온라인':{ long:{views:3766,  impr:44890, ctr:7.7, avr:38.3, eng:1.7}, short:{views:8650,  impr:21897, ctr:7.2, avr:93.7, eng:1.7} },
+  '더파이널스':{ long:{views:125,   impr:3821,  ctr:5.1, avr:43.1, eng:2.0}, short:{views:1419,  impr:1384,  ctr:7.9, avr:50.4, eng:2.0} },
+  'SAZ':       { long:{views:2452,  impr:8104,  ctr:16.6,avr:55.7, eng:3.3}, short:{views:2142,  impr:4784,  ctr:10.9,avr:100.8,eng:3.3} },
+  '낙원':      { long:{views:46408, impr:516602,ctr:7.2, avr:42.4, eng:4.2}, short:null },
+  '낙원글로벌':{ long:null, short:null },
+  '오버워치':  { long:null, short:null }
+};
+
+// ── localStorage ──────────────────────────────────────────────
+function loadST() { try { return JSON.parse(localStorage.getItem(SKEY)||'{}'); } catch(e) { return {}; } }
+function saveST() { try { localStorage.setItem(SKEY, JSON.stringify(ST)); } catch(e) {} }
+let ST = loadST();
+if (!ST.meta)   ST.meta   = {};
+if (!ST.chData) ST.chData = {};
+
+// ── state ──────────────────────────────────────────────────────
+let curCh    = '서든어택';
+let allRows  = [];
+let filtered = [];
+let checked  = new Set();
+let sortKey  = 'date';
+let sortDir  = -1;
+let fmtFlt   = '';
+let catFlt   = '';
+let pg       = 1;
+let heatMaps = {};
+let popTgt   = null;
+
+// ── date utils ────────────────────────────────────────────────
+function fmtDate(s) {
+  if (!s) return '—';
+  var p = /^([A-Za-z]+)\s+(\d+),\s*(\d+)$/.exec(s);
+  if (p) { var m=MON_MAP[p[1]]; if(m) return p[3]+'. '+m+'. '+parseInt(p[2])+'.'; }
+  return s;
+}
+function dateVal(s) {
+  if (!s) return 0;
+  var p = /^([A-Za-z]+)\s+(\d+),\s*(\d+)$/.exec(s);
+  if (p) { var m=MON_MAP[p[1]]||0; return parseInt(p[3])*10000+m*100+parseInt(p[2]); }
+  var p2 = /^(\d{4})\.\s*(\d+)\.\s*(\d+)/.exec(s);
+  if (p2) return parseInt(p2[1])*10000+parseInt(p2[2])*100+parseInt(p2[3]);
+  return 0;
+}
+
+// ── KPI 표시 ──────────────────────────────────────────────────
+function setKPIVal(id, val, digits) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  if (val===null||val===undefined||!isFinite(val)) { el.textContent='—'; return; }
+  el.textContent = digits!==undefined ? val.toFixed(digits) : val.toLocaleString();
+}
+function setAnnualKPI(ch) {
+  var d = CH_KPI[ch] || {long:null, short:null};
+  var fields = ['views','impr','ctr','avr','eng'];
+  var digits  = {views:undefined,impr:undefined,ctr:1,avr:1,eng:1};
+  ['l','s'].forEach(function(fmt) {
+    var dat = fmt==='l' ? d.long : d.short;
+    fields.forEach(function(f) {
+      var el = document.getElementById('a-'+fmt+'-'+f);
+      if (!el) return;
+      if (!dat) { el.textContent='—'; } 
+      else { setKPIVal('a-'+fmt+'-'+f, dat[f], digits[f]); }
+    });
+  });
+}
+function calcDataKPI(rows) {
+  if (!rows.length) return null;
+  var vArr = rows.map(function(r){ return r.views||0; }).slice().sort(function(a,b){ return a-b; });
+  var mid = Math.floor(vArr.length/2);
+  var med = vArr.length%2!==0 ? vArr[mid] : Math.round((vArr[mid-1]+vArr[mid])/2);
+  var si=0,sc=0,sa=0,se=0;
+  rows.forEach(function(r){ si+=r.impressions||0; sc+=r.ctr||0; sa+=r.avg_view_rate||0; se+=r.engagement||0; });
+  var n=rows.length;
+  return {views:med,impr:Math.round(si/n),ctr:sc/n,avr:sa/n,eng:se/n};
+}
+function setDataKPI(ch) {
+  var annual = CH_KPI[ch] || {long:null, short:null};
+
+  // 포맷이 지정된 행 우선, 없으면 전체 allRows로 fallback
+  var lRows  = allRows.filter(function(r){ return r.fmt==='롱폼'; });
+  var sRows  = allRows.filter(function(r){ return r.fmt==='숏폼'; });
+  var allFmt = allRows.filter(function(r){ return r.fmt==='롱폼'||r.fmt==='숏폼'; });
+
+  // 포맷 지정 데이터가 없으면 전체 데이터로 fallback (롱폼/숏폼 행 모두에 전체 평균 표시)
+  var useFallback = allFmt.length === 0;
+  var lCalc  = calcDataKPI(useFallback ? allRows : lRows);
+  var sCalc  = calcDataKPI(useFallback ? allRows : sRows);
+
+  var fields = ['views','impr','ctr','avr','eng'];
+  var digits = {views:undefined, impr:undefined, ctr:1, avr:1, eng:1};
+
+  [['l', lCalc, annual.long], ['s', sCalc, annual.short]].forEach(function(x) {
+    var fmt=x[0], calc=x[1], ann=x[2];
+    fields.forEach(function(f) {
+      var valEl = document.getElementById('d-'+fmt+'-'+f);
+      var card  = document.getElementById('d-'+fmt+'-'+f+'-c');
+      if (!valEl||!card) return;
+      card.classList.remove('hi','lo');
+      if (!calc) { valEl.textContent='—'; return; }
+      var v = calc[f];
+      valEl.textContent = digits[f]!==undefined ? v.toFixed(digits[f]) : v.toLocaleString();
+      if (ann && ann[f]!=null) {
+        if (v > ann[f]*1.01)      card.classList.add('hi');
+        else if (v < ann[f]*0.99) card.classList.add('lo');
+      }
+    });
+  });
+}
+
+function updateKPI(ch) {
+  setAnnualKPI(ch);
+  setDataKPI(ch);
+}
+
+// ── channel load ──────────────────────────────────────────────
+function applyRows(ch, rows) {
+  var meta = ST.meta[ch] || {};
+  allRows = rows.map(function(r) {
+    var m = meta[r.id]||{};
+    return Object.assign({},r,{fmt:m.fmt||'',cat:m.cat||'',creator:m.creator||''});
+  });
+  document.getElementById('hm-total').textContent = allRows.length.toLocaleString();
+  document.getElementById('up-title').textContent = ch+' 데이터 업로드';
+  updateKPI(ch);
+  applyFilters();
+}
+
+function loadCh(ch) {
+  curCh = ch;
+  checked.clear();
+  fmtFlt = ''; catFlt = '';
+  pg = 1;
+  document.querySelectorAll('.tg[data-g="fmt"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
+  document.querySelectorAll('.tg[data-g="cat"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
+
+  // ① GitHub API로 data/ 폴더 파일 목록 조회 → 채널명 매칭 최신 파일 fetch
+  if (GITHUB_API && GITHUB_RAW) {
+    fetch(GITHUB_API + '/contents/data')
+      .then(function(res) {
+        if (!res.ok) throw new Error('api fail');
+        return res.json();
+      })
+      .then(function(files) {
+        // 파일 목록에서 채널명 매칭: 260608_서든어택.xlsx → 서든어택
+        var matched = files.filter(function(f) {
+          if (!f.name.match(/\.xlsx?$/i)) return false;
+          var base = f.name.replace(/\.xlsx?$/i,'').replace(/^\d+_/,'');
+          return base.indexOf(ch) >= 0;
+        });
+        if (!matched.length) throw new Error('no file');
+        // 날짜 prefix 기준 가장 최신 파일 선택 (내림차순 정렬 후 첫 번째)
+        matched.sort(function(a,b){ return b.name.localeCompare(a.name); });
+        var latest = matched[0];
+        // 날짜 파싱해서 헤더에 표시
+        var dateMatch = latest.name.match(/^(\d{6})_/);
+        if (dateMatch) {
+          var d = dateMatch[1]; // 260608
+          var dateStr = '20'+d.slice(0,2)+'.'+d.slice(2,4)+'.'+d.slice(4,6)+'.';
+          document.getElementById('up-title').textContent = ch + ' · ' + dateStr + ' 기준';
+        }
+        var rawUrl = GITHUB_RAW + '/data/' + latest.name;
+        return fetch(rawUrl);
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('fetch fail');
+        return res.arrayBuffer();
+      })
+      .then(function(buf) {
+        var wb   = XLSX.read(new Uint8Array(buf), {type:'array'});
+        var ws   = wb.Sheets[wb.SheetNames[0]];
+        var raw  = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        var rows = parseSheet(raw);
+        if (!rows.length) throw new Error('empty');
+        ST.chData[ch] = rows; saveST();
+        showUploadStatus(ch, rows.length, null);
+        applyRows(ch, rows);
+      })
+      .catch(function() { fallbackLoad(ch); });
+  } else {
+    fallbackLoad(ch);
+  }
+}
+
+function fallbackLoad(ch) {
+  var rows;
+  if (ch === '서든어택' && !ST.chData['서든어택']) {
+    rows = BUILTIN_SA;
+  } else {
+    rows = ST.chData[ch] || [];
+  }
+  showUploadStatus(ch, rows.length, null);
+  applyRows(ch, rows);
+}
+
+function showUploadStatus(ch, count, err) {
+  var st = document.getElementById('up-stat-inline');
+  if (!st) return;
+  if (err) {
+    st.className='upstat us-err'; st.style.display=''; st.textContent='오류: '+err;
+  } else if (count > 0) {
+    st.className='upstat us-ok'; st.style.display=''; st.textContent=count.toLocaleString()+'건 로드됨';
+  } else {
+    st.className='upstat us-none'; st.style.display=''; st.textContent='데이터 없음';
+  }
+}
+
+
+document.querySelectorAll('.chtab').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.chtab').forEach(function(b){ b.classList.remove('on'); });
+    btn.classList.add('on');
+    loadCh(btn.dataset.ch);
+  });
+});
+
+// ── file upload ───────────────────────────────────────────────
+function chFromFilename(name) {
+  var base = name.replace(/\.[^.]+$/,'').replace(/^\d+_/,'');
+  for (var i=0; i<CH_NAMES.length; i++) { if (base.indexOf(CH_NAMES[i])>=0) return CH_NAMES[i]; }
+  return null;
+}
+function handleDrop(e) {
+  var files = e.dataTransfer && e.dataTransfer.files;
+  if (files && files.length) processFiles(files);
+}
+function handleFileInput(inp) {
+  if (inp.files && inp.files.length) processFiles(inp.files);
+  inp.value='';
+}
+function processFiles(files) {
+  var arr=[], i;
+  for (i=0; i<files.length; i++) arr.push(files[i]);
+  var res = document.getElementById('up-results');
+  res.innerHTML=''; res.classList.remove('show');
+  var total=arr.length, done=0, results=[];
+  arr.forEach(function(file) {
+    var ch = chFromFilename(file.name);
+    if (!ch) { done++; results.push({ch:file.name,n:0,err:'채널명 미인식'}); if(done===total) finishUpload(results); return; }
+    var reader=new FileReader();
+    reader.onload=(function(chName){ return function(e) {
+      try {
+        var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
+        var ws=wb.Sheets[wb.SheetNames[0]];
+        var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+        var rows=parseSheet(raw);
+        if(!rows.length) throw new Error('데이터 없음');
+        ST.chData[chName]=rows; saveST();
+        results.push({ch:chName,n:rows.length,err:null});
+      } catch(err) { results.push({ch:chName,n:0,err:err.message}); }
+      done++; if(done===total) finishUpload(results);
+    };})(ch);
+    reader.onerror=(function(chName){ return function(){ results.push({ch:chName,n:0,err:'읽기 실패'}); done++; if(done===total) finishUpload(results); };})(ch);
+    reader.readAsArrayBuffer(file);
+  });
+}
+function finishUpload(results) {
+  var res=document.getElementById('up-results'), ok=0;
+  res.innerHTML='';
+  results.forEach(function(r) {
+    var p=document.createElement('span');
+    p.className='upstat '+(r.err?'us-err':'us-ok');
+    p.textContent=r.ch+(r.err?' · '+r.err:' · '+r.n.toLocaleString()+'건');
+    res.appendChild(p);
+    if(!r.err) ok++;
+  });
+  res.classList.add('show');
+  loadCh(curCh);
+  showToast('✅ '+ok+'개 채널 업로드 완료'+(results.length-ok?' · ❌ '+(results.length-ok)+'개 실패':''));
+}
+function parseSheet(raw) {
+  var hIdx=-1, headers=[], i;
+  for (i=0; i<Math.min(6,raw.length); i++) {
+    var row=raw[i].map(function(c){ return String(c).trim(); });
+    if (row.indexOf('동영상 제목')>=0||row.indexOf('콘텐츠')>=0) { hIdx=i; headers=row; break; }
+  }
+  if (hIdx<0) throw new Error('헤더를 찾을 수 없습니다');
+  function col(h){ for(var j=0;j<headers.length;j++){ if(headers[j].indexOf(h)>=0) return j; } return -1; }
+  var iId=col('콘텐츠'),iT=col('동영상 제목'),iD=col('게시 시간');
+  var iV=col('조회수'),iI=col('노출수'),iC=col('노출 클릭률');
+  var iA=col('평균 조회율'),iL=col('좋아요'),iCm=col('추가된 댓글'),iS=col('공유');
+  var rows=[];
+  for (i=hIdx+1; i<raw.length; i++) {
+    var r=raw[i], title=String(r[iT]||'').trim();
+    if(!title||title==='합계') continue;
+    var v=parseFloat(r[iV])||0, li=parseFloat(r[iL])||0, cm=parseFloat(r[iCm])||0, sh=parseFloat(r[iS])||0;
+    var eng=v>0?Math.round(((li+cm+sh)/v)*10000)/100:0;
+    rows.push({id:String(r[iId]||'row_'+i).trim(),title:title,date:String(r[iD]||'').trim(),
+      views:Math.round(v),impressions:Math.round(parseFloat(r[iI])||0),
+      ctr:Math.round((parseFloat(r[iC])||0)*100)/100,avg_view_rate:Math.round((parseFloat(r[iA])||0)*100)/100,
+      engagement:eng,likes:Math.round(li),comments:Math.round(cm),shares:Math.round(sh)});
+  }
+  return rows;
+}
+
+// ── heat map ──────────────────────────────────────────────────
+function buildHeat(rows) {
+  heatMaps = {};
+  // 포맷별 1년 기준값 매핑 (CH_KPI의 필드명 → row 필드명)
+  var KPI_FIELD = {views:'views', impressions:'impr', ctr:'ctr', avg_view_rate:'avr', engagement:'eng'};
+  var ann = CH_KPI[curCh] || {long:null, short:null};
+
+  ['views','impressions','ctr','avg_view_rate','engagement'].forEach(function(k) {
+    var m = {};
+    rows.forEach(function(r) {
+      var v = r[k];
+      if (typeof v !== 'number' || !isFinite(v)) { m[r.id] = ''; return; }
+
+      // 포맷이 지정된 경우에만 1년 기준과 비교
+      var base = null;
+      var kpiKey = KPI_FIELD[k];
+      if (r.fmt === '롱폼' && ann.long  && ann.long[kpiKey]  != null) base = ann.long[kpiKey];
+      if (r.fmt === '숏폼' && ann.short && ann.short[kpiKey] != null) base = ann.short[kpiKey];
+
+      if (base === null || base === 0) {
+        // 포맷 미지정이거나 기준값 없으면 색 없음
+        m[r.id] = '';
+        return;
+      }
+
+      var ratio = v / base; // 1.0 = 기준과 동일
+      if (ratio >= 1.0)       m[r.id] = 'hh';   // 평균 이상 → 초록
+      else if (ratio >= 0.5)  m[r.id] = 'ham';  // 50~100% → 주황
+      else                    m[r.id] = 'hl';   // 50% 미만 → 빨강
+    });
+    heatMaps[k] = m;
+  });
+}
+
+// ── filter / sort ─────────────────────────────────────────────
+function applyFilters() {
+  var q=(document.getElementById('f-q').value||'').toLowerCase();
+  filtered=allRows.filter(function(d){
+    if(q&&d.title.toLowerCase().indexOf(q)<0) return false;
+    if(fmtFlt&&d.fmt!==fmtFlt) return false;
+    if(catFlt&&d.cat!==catFlt) return false;
+    return true;
+  });
+  doSort(); pg=1; buildHeat(filtered); render();
+}
+function setFilter(el, group) {
+  document.querySelectorAll('.tg[data-g="'+group+'"]').forEach(function(t){ t.classList.remove('on'); });
+  el.classList.add('on');
+  if(group==='fmt') fmtFlt=el.dataset.v; else catFlt=el.dataset.v;
+  applyFilters();
+}
+function doSort() {
+  filtered.sort(function(a,b){
+    var av=sortKey==='date'?dateVal(a.date):a[sortKey];
+    var bv=sortKey==='date'?dateVal(b.date):b[sortKey];
+    return (av>bv?1:av<bv?-1:0)*sortDir;
+  });
+}
+function colSort(k){
+  sortDir=(sortKey===k)?-sortDir:-1; sortKey=k;
+  document.querySelectorAll('thead th').forEach(function(th){ th.classList.remove('srt'); });
+  var ths=document.querySelectorAll('thead th');
+  var map={title:1,date:2,views:3,impressions:4,ctr:5,avg_view_rate:6,engagement:7};
+  if(map[k]!==undefined) ths[map[k]].classList.add('srt');
+  ['title','date','views','impressions','ctr','avg_view_rate','engagement'].forEach(function(key){
+    var el=document.getElementById('si-'+key);
+    if(el) el.textContent=key===sortKey?(sortDir===-1?'↓':'↑'):'↕';
+  });
+  doSort(); buildHeat(filtered); pg=1; render();
+}
+function applySortSel(){
+  var v=document.getElementById('f-sort').value.split('-');
+  sortKey=v[0]; sortDir=v[1]==='d'?-1:1;
+  doSort(); buildHeat(filtered); pg=1; render();
+}
+
+// ── render ────────────────────────────────────────────────────
+function getPP(){ return parseInt(document.getElementById('per-page').value)||50; }
+function fmtN(n){ if(n>=1e6) return (n/1e6).toFixed(1)+'M'; if(n>=1e3) return (n/1e3).toFixed(1)+'K'; return n.toLocaleString(); }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function fmtBadge(t){
+  if(!t) return '<span class="tb tb-fn">—</span>';
+  var cls=t==='숏폼'?'tb-fs':t==='롱폼'?'tb-fl':t==='라이브'?'tb-fv':'tb-fn';
+  return '<span class="tb '+cls+'">'+esc(t)+'</span>';
+}
+var CAT_CLS={'리그 안내':'tb-c0','리그 서사':'tb-c1','하이라이트':'tb-c2','오프라인행사':'tb-c3','업데이트':'tb-c4','인플루언서':'tb-c5','채널지기':'tb-c6'};
+function catBadge(t){
+  if(!t) return '<span class="tb tb-fn">—</span>';
+  return '<span class="tb '+(CAT_CLS[t]||'tb-fn')+'">'+esc(t)+'</span>';
+}
+
+function render() {
+  var n=filtered.length;
+  document.getElementById('tbl-cnt').textContent=n.toLocaleString()+'개 콘텐츠';
+  document.getElementById('hm-total').textContent=allRows.length.toLocaleString();
+  document.getElementById('ex-cnt').textContent=checked.size;
+  var sb=document.getElementById('sbadge');
+  sb.style.display=checked.size?'':'none'; sb.textContent=checked.size+'건 선택';
+
+  var pp=getPP(), total=Math.ceil(n/pp);
+  if(pg>total&&total>0) pg=total;
+  var sl=filtered.slice((pg-1)*pp,pg*pp);
+  var tb=document.getElementById('tbody');
+  if(!sl.length){ tb.innerHTML='<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--t3)">데이터가 없습니다</td></tr>'; renderPg(0,pp); return; }
+
+  var html='';
+  for(var i=0;i<sl.length;i++){
+    var d=sl[i], ck=checked.has(d.id), rid=esc(d.id);
+    var hv=(heatMaps.views||{})[d.id]||'', hi=(heatMaps.impressions||{})[d.id]||'';
+    var hc=(heatMaps.ctr||{})[d.id]||'', ha=(heatMaps.avg_view_rate||{})[d.id]||'', he=(heatMaps.engagement||{})[d.id]||'';
+    html+='<tr class="'+(ck?'ck':'')+'" id="row-'+rid+'">';
+    html+='<td class="c-chk"><input type="checkbox" '+(ck?'checked':'')+' onchange="chkRow(\''+rid+'\',this)"></td>';
+    html+='<td class="c-ttl"><a class="tlink" href="https://youtube.com/watch?v='+rid+'" target="_blank" title="'+esc(d.title)+'">'+esc(d.title)+'</a></td>';
+    html+='<td class="c-dt dc">'+fmtDate(d.date)+'</td>';
+    html+='<td class="c-n nc '+hv+'">'+d.views.toLocaleString()+'</td>';
+    html+='<td class="c-n nc '+hi+'">'+d.impressions.toLocaleString()+'</td>';
+    html+='<td class="c-n nc '+hc+'">'+d.ctr.toFixed(2)+'</td>';
+    html+='<td class="c-n nc '+ha+'">'+d.avg_view_rate.toFixed(1)+'%</td>';
+    html+='<td class="c-n nc '+he+'">'+d.engagement.toFixed(2)+'</td>';
+    html+='<td class="c-fmt" onclick="openPop(event,\'fmt\',\''+rid+'\')" style="cursor:pointer">'+fmtBadge(d.fmt)+'</td>';
+    html+='<td class="c-cat" onclick="openPop(event,\'cat\',\''+rid+'\')" style="cursor:pointer">'+catBadge(d.cat)+'</td>';
+    html+='</tr>';
+  }
+  tb.innerHTML=html;
+  renderPg(total,pp);
+}
+
+function renderPg(total,pp){
+  var bar=document.getElementById('pgbar');
+  if(!total){ bar.innerHTML=''; return; }
+  var s=Math.min((pg-1)*pp+1,filtered.length), e=Math.min(pg*pp,filtered.length);
+  var btns='<button class="pgb" onclick="goPg('+(pg-1)+')" '+(pg===1?'disabled':'')+'>&#8249;</button>';
+  var W=2;
+  for(var i=1;i<=total;i++){
+    if(i===1||i===total||Math.abs(i-pg)<=W) btns+='<button class="pgb '+(i===pg?'cur':'')+'" onclick="goPg('+i+')">'+i+'</button>';
+    else if(Math.abs(i-pg)===W+1) btns+='<span style="padding:0 3px;color:var(--t3);font-size:12px;align-self:center">…</span>';
+  }
+  btns+='<button class="pgb" onclick="goPg('+(pg+1)+')" '+(pg===total?'disabled':'')+'>&#8250;</button>';
+  bar.innerHTML='<span class="pgi">'+filtered.length.toLocaleString()+'개 중 '+s+'–'+e+'</span><div class="pgbs">'+btns+'</div>';
+}
+function goPg(p){ pg=p; render(); }
+
+function chkRow(id,el){
+  el.checked?checked.add(id):checked.delete(id);
+  var r=document.getElementById('row-'+id); if(r) r.className=el.checked?'ck':'';
+  document.getElementById('ex-cnt').textContent=checked.size;
+  var sb=document.getElementById('sbadge'); sb.style.display=checked.size?'':'none'; sb.textContent=checked.size+'건 선택';
+}
+function togglePage(el){ var pp=getPP(); filtered.slice((pg-1)*pp,pg*pp).forEach(function(d){ el.checked?checked.add(d.id):checked.delete(d.id); }); render(); }
+function checkPage()  { var pp=getPP(); filtered.slice((pg-1)*pp,pg*pp).forEach(function(d){ checked.add(d.id); }); render(); }
+function uncheckPage(){ var pp=getPP(); filtered.slice((pg-1)*pp,pg*pp).forEach(function(d){ checked.delete(d.id); }); render(); }
+function checkAll()   { filtered.forEach(function(d){ checked.add(d.id); }); render(); }
+function uncheckAll() { checked.clear(); render(); }
+
+// ── popover ───────────────────────────────────────────────────
+function placePop(pop,anchor){
+  var rect=anchor.getBoundingClientRect(), pH=pop.offsetHeight||160, pW=pop.offsetWidth||120;
+  var top=window.innerHeight-rect.bottom<pH+8&&rect.top>pH+8 ? rect.top-pH-4 : rect.bottom+4;
+  var left=Math.max(8,Math.min(rect.left,window.innerWidth-pW-8));
+  pop.style.top=top+'px'; pop.style.left=left+'px';
+}
+function openPop(e,kind,id){
+  e.stopPropagation(); closeAllPops();
+  popTgt={id:id,kind:kind};
+  var pop=document.getElementById(kind+'-pop');
+  var cur=(allRows.find(function(d){ return d.id===id; })||{})[kind]||'';
+  pop.querySelectorAll('.popt').forEach(function(o){
+    o.classList.toggle('sel',o.dataset.v===cur);
+    o.textContent=o.dataset.v||(kind==='cr'?'미지정':'');
+    if(o.classList.contains('sel')) o.textContent+=' ✓';
+  });
+  pop.classList.add('op'); placePop(pop,e.currentTarget);
+}
+function closeAllPops(){
+  ['fmt-pop','cat-pop','cr-pop'].forEach(function(id){ document.getElementById(id).classList.remove('op'); });
+  popTgt=null;
+}
+['fmt-pop','cat-pop','cr-pop'].forEach(function(popId){
+  document.getElementById(popId).querySelectorAll('.popt').forEach(function(opt){
+    opt.addEventListener('click',function(e){
+      e.stopPropagation(); if(!popTgt) return;
+      var row=allRows.find(function(d){ return d.id===popTgt.id; });
+      if(row){ row[popTgt.kind]=opt.dataset.v; setMeta(curCh,popTgt.id,popTgt.kind,opt.dataset.v); }
+      var k=popTgt.kind; closeAllPops();
+      if(k==='fmt'){ buildHeat(filtered); updateKPI(curCh); }
+      render();
+    });
+  });
+});
+document.addEventListener('click',closeAllPops);
+
+function setMeta(ch,id,key,val){
+  if(!ST.meta[ch]) ST.meta[ch]={};
+  if(!ST.meta[ch][id]) ST.meta[ch][id]={};
+  ST.meta[ch][id][key]=val; saveST();
+}
+
+// ── copy to notion ────────────────────────────────────────────
+function doCopy(){
+  var sel=allRows.filter(function(d){ return checked.has(d.id); });
+  if(!sel.length){ showToast('⚠️ 체크된 콘텐츠가 없습니다'); return; }
+  var exCr=document.getElementById('ex-cr').value;
+  function cell(v){ return String(v).replace(/\|/g,'\\|').replace(/\n/g,' '); }
+  var lines=[];
+  lines.push('| '+cell(exCr||'—')+' / '+cell(curCh)+' |');
+  lines.push('|---|');
+  lines.push('');
+  lines.push('| 영상 제목 | 포맷 | 유형 | 게시일 | 조회수 | 노출수 | CTR | 평균 조회율 | 참여율 |');
+  lines.push('|---|---|---|---|--:|--:|--:|--:|--:|');
+  sel.forEach(function(d){
+    var url='https://www.youtube.com/watch?v='+d.id;
+    lines.push('| ['+cell(d.title)+']('+url+') | '+cell(d.fmt||'—')+' | '+cell(d.cat||'—')+' | '+cell(fmtDate(d.date))+' | '+cell(d.views.toLocaleString())+' | '+cell(d.impressions.toLocaleString())+' | '+cell(d.ctr.toFixed(2)+'%')+' | '+cell(d.avg_view_rate.toFixed(1)+'%')+' | '+cell(d.engagement.toFixed(2)+'%')+' |');
+  });
+  var text=lines.join('\n');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){ showToast('✅ '+sel.length+'건 복사 완료 — 노션에 붙여넣기 하세요'); }).catch(function(){ fallbackCopy(text,sel.length); });
+  } else { fallbackCopy(text,sel.length); }
+}
+function fallbackCopy(text,cnt){
+  var ta=document.createElement('textarea'); ta.value=text; ta.style.cssText='position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand('copy'); showToast('✅ '+cnt+'건 복사 완료'); } catch(e){ showToast('❌ 복사 실패'); }
+  document.body.removeChild(ta);
+}
+
+// ── reset ────────────────────────────────────────────────────
+function resetAllData() {
+  if (!confirm('모든 채널의 업로드 데이터와 포맷/유형/제작자 설정을 초기화합니다.\n계속하시겠습니까?')) return;
+  try { localStorage.removeItem(SKEY); } catch(e) {}
+  ST = {meta:{}, chData:{}};
+  loadCh(curCh);
+  showToast('✅ 데이터가 초기화되었습니다');
+}
+
+// ── toast ─────────────────────────────────────────────────────
+var toastT;
+function showToast(msg){
+  var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastT); toastT=setTimeout(function(){ t.classList.remove('on'); },2800);
+}
+
+// ── init ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){ loadCh('서든어택'); });
+
+</script>
+</body>
+</html>
