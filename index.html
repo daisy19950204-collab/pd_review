@@ -656,49 +656,51 @@ function loadCh(ch) {
   document.querySelectorAll('.tg[data-g="fmt"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
   document.querySelectorAll('.tg[data-g="cat"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
 
-  // ① GitHub API로 data/ 폴더 파일 목록 조회 → 채널명 매칭 최신 파일 fetch
-  if (GITHUB_API && GITHUB_RAW) {
-    fetch(GITHUB_API + '/contents')
-      .then(function(res) {
-        if (!res.ok) throw new Error('api fail');
-        return res.json();
-      })
-      .then(function(files) {
-        // 파일 목록에서 채널명 매칭: 260608_서든어택.xlsx → 서든어택
-        var matched = files.filter(function(f) {
-          if (!f.name.match(/\.xlsx?$/i)) return false;
-          var base = f.name.replace(/\.xlsx?$/i,'').replace(/^\d+_/,'');
-          return base.indexOf(ch) >= 0;
-        });
-        if (!matched.length) throw new Error('no file');
-        // 날짜 prefix 기준 가장 최신 파일 선택 (내림차순 정렬 후 첫 번째)
-        matched.sort(function(a,b){ return b.name.localeCompare(a.name); });
-        var latest = matched[0];
-        // 날짜 파싱해서 헤더에 표시
-        var dateMatch = latest.name.match(/^(\d{6})_/);
-        if (dateMatch) {
-          var d = dateMatch[1]; // 260608
-          var dateStr = '20'+d.slice(0,2)+'.'+d.slice(2,4)+'.'+d.slice(4,6)+'.';
-          document.getElementById('up-title').textContent = ch + ' · ' + dateStr + ' 기준';
-        }
-        var rawUrl = GITHUB_RAW + '/' + latest.name;
-        return fetch(rawUrl);
-      })
-      .then(function(res) {
-        if (!res.ok) throw new Error('fetch fail');
-        return res.arrayBuffer();
-      })
-      .then(function(buf) {
-        var wb   = XLSX.read(new Uint8Array(buf), {type:'array'});
-        var ws   = wb.Sheets[wb.SheetNames[0]];
-        var raw  = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-        var rows = parseSheet(raw);
-        if (!rows.length) throw new Error('empty');
-        ST.chData[ch] = rows; saveST();
-        showUploadStatus(ch, rows.length, null);
-        applyRows(ch, rows);
-      })
-      .catch(function() { fallbackLoad(ch); });
+  // ① GITHUB_RAW가 설정된 경우: 최근 날짜부터 순서대로 파일 fetch 시도
+  // API 불필요 — raw URL 직접 접근 (CORS 없음)
+  if (GITHUB_RAW) {
+    // 오늘부터 과거 180일치 날짜 목록 생성 (YYMMDD 형식)
+    var dates = [];
+    var now = new Date();
+    for (var di = 0; di < 180; di++) {
+      var d = new Date(now); d.setDate(now.getDate() - di);
+      var yy = String(d.getFullYear()).slice(2);
+      var mm = String(d.getMonth()+1).padStart(2,'0');
+      var dd = String(d.getDate()).padStart(2,'0');
+      dates.push(yy+mm+dd);
+    }
+
+    // 날짜 순서대로 파일 존재 여부 확인 (순차 fetch)
+    var tried = 0;
+    function tryNext() {
+      if (tried >= dates.length) { fallbackLoad(ch); return; }
+      var dateStr = dates[tried++];
+      var fname   = dateStr + '_' + ch + '.xlsx';
+      var url     = GITHUB_RAW + '/' + encodeURIComponent(fname);
+      fetch(url, {method:'HEAD'})
+        .then(function(res) {
+          if (!res.ok) { tryNext(); return; }
+          // 파일 존재 확인 → 실제 다운로드
+          return fetch(url)
+            .then(function(r2) { return r2.arrayBuffer(); })
+            .then(function(buf) {
+              var wb   = XLSX.read(new Uint8Array(buf), {type:'array'});
+              var ws   = wb.Sheets[wb.SheetNames[0]];
+              var raw  = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+              var rows = parseSheet(raw);
+              if (!rows.length) throw new Error('empty');
+              // 날짜 표시
+              var ds = '20'+dateStr.slice(0,2)+'.'+dateStr.slice(2,4)+'.'+dateStr.slice(4,6)+'.';
+              document.getElementById('up-title').textContent = ch + ' · ' + ds + ' 기준';
+              ST.chData[ch] = rows; saveST();
+              showUploadStatus(ch, rows.length, null);
+              applyRows(ch, rows);
+            })
+            .catch(function() { fallbackLoad(ch); });
+        })
+        .catch(function() { tryNext(); });
+    }
+    tryNext();
   } else {
     fallbackLoad(ch);
   }
