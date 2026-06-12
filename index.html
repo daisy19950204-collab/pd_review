@@ -76,10 +76,10 @@ body{font-family:'Pretendard',system-ui,sans-serif;background:var(--bg);color:va
 .kpi-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 8px;border-left:1px solid var(--bd);text-align:center}
 .kpi-val{font-size:16px;font-weight:700;color:var(--t1);font-family:'DM Mono',monospace;line-height:1}
 .kpi-unit{font-size:10px;color:var(--t3);margin-top:3px}
-.kpi-cell.hi{background:var(--gn-bg)}
-.kpi-cell.hi .kpi-val{color:var(--gn)}
-.kpi-cell.lo{background:var(--rd-bg)}
-.kpi-cell.lo .kpi-val{color:var(--rd)}
+.kpi-cell.hi{background:var(--rd-bg)}
+.kpi-cell.hi .kpi-val{color:var(--rd)}
+.kpi-cell.lo{background:var(--ac-bg)}
+.kpi-cell.lo .kpi-val{color:var(--ac)}
 .kpi-note{font-size:10px;color:var(--t3);font-weight:400;margin-left:8px}
 
 /* ── filter ── */
@@ -134,11 +134,11 @@ tr.ck td{background:var(--ac-bg)}
 .tlink:hover{color:var(--ac)}
 .dc{font-size:11.5px;color:var(--t3);font-family:'DM Mono',monospace}
 .nc{font-family:'DM Mono',monospace;font-size:12px;text-align:right;color:var(--t2)}
-.hh{color:#0d7a4e!important}
-.hmh{color:#0d7a4e!important}
-.ham{color:#d97706!important}
-.hl{color:#c0392b!important}
-.hml{color:#c0392b!important}
+.hh{color:#c0392b!important}
+.hmh{color:#c0392b!important}
+.ham{color:#0d7a4e!important}
+.hl{color:#1a56db!important}
+.hml{color:#1a56db!important}
 
 /* ── type/fmt badges ── */
 .tb{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:500;white-space:nowrap;cursor:pointer}
@@ -154,6 +154,12 @@ tr.ck td{background:var(--ac-bg)}
 .tb-c4{background:#f0fdf4;color:#15803d}
 .tb-c5{background:#fef9ec;color:#92400e}
 .tb-c6{background:#f0f9ff;color:#0369a1}
+.tb-c7{background:#fff1f2;color:#be123c}
+.tb-c8{background:#ecfeff;color:#0e7490}
+.tb-c9{background:#f7fee7;color:#4d7c0f}
+.tb-c10{background:#fef2f2;color:#b91c1c}
+.tb-c11{background:#eef2ff;color:#4338ca}
+.tb-c12{background:#faf5ff;color:#7e22ce}
 
 /* ── creator badge ── */
 .crb{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;cursor:pointer;transition:transform .1s;border:1.5px solid transparent}
@@ -310,7 +316,7 @@ select{cursor:pointer}
     <div class="kpi-sec-ttl">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
       업로드 데이터 평균
-      <span class="kpi-note">조회수 중앙값 · 1년 기준 대비 초록↑ 빨강↓</span>
+      <span class="kpi-note">조회수 중앙값 · 1년 기준 대비 빨강↑ 파랑↓</span>
     </div>
     <div class="kpi-hdr">
       <div class="kpi-hdr-lbl">포맷</div>
@@ -390,12 +396,17 @@ select{cursor:pointer}
           <div class="tg on" data-g="cat" data-v="" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#9a9a9f"></span>전체</div>
           <div class="tg" data-g="cat" data-v="리그 안내" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#5b21b6"></span>리그 안내</div>
           <div class="tg" data-g="cat" data-v="리그 서사" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#86198f"></span>리그 서사</div>
-          <div class="tg" data-g="cat" data-v="하이라이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#1a56db"></span>하이라이트</div>
-          <div class="tg" data-g="cat" data-v="오프라인행사" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#c2410c"></span>오프라인행사</div>
+          <div class="tg" data-g="cat" data-v="매드무비" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#be123c"></span>매드무비</div>
+          <div class="tg" data-g="cat" data-v="실험형" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#0e7490"></span>실험형</div>
           <div class="tg" data-g="cat" data-v="업데이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#15803d"></span>업데이트</div>
+          <div class="tg" data-g="cat" data-v="연예인" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#4d7c0f"></span>연예인</div>
+          <div class="tg" data-g="cat" data-v="예능형" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#b91c1c"></span>예능형</div>
+          <div class="tg" data-g="cat" data-v="오프라인행사" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#c2410c"></span>오프라인행사</div>
           <div class="tg" data-g="cat" data-v="인플루언서" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#92400e"></span>인플루언서</div>
+          <div class="tg" data-g="cat" data-v="이벤트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#4338ca"></span>이벤트</div>
           <div class="tg" data-g="cat" data-v="채널지기" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#0369a1"></span>채널지기</div>
-        </div>
+          <div class="tg" data-g="cat" data-v="티저" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#7e22ce"></span>티저</div>
+          <div class="tg" data-g="cat" data-v="하이라이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#1a56db"></span>하이라이트</div>        </div>
       </div>
     </div>
     <div>
@@ -490,11 +501,17 @@ select{cursor:pointer}
 <div class="pop" id="cat-pop">
   <div class="popt" data-v="리그 안내">리그 안내</div>
   <div class="popt" data-v="리그 서사">리그 서사</div>
-  <div class="popt" data-v="하이라이트">하이라이트</div>
-  <div class="popt" data-v="오프라인행사">오프라인행사</div>
+  <div class="popt" data-v="매드무비">매드무비</div>
+  <div class="popt" data-v="실험형">실험형</div>
   <div class="popt" data-v="업데이트">업데이트</div>
+  <div class="popt" data-v="연예인">연예인</div>
+  <div class="popt" data-v="예능형">예능형</div>
+  <div class="popt" data-v="오프라인행사">오프라인행사</div>
   <div class="popt" data-v="인플루언서">인플루언서</div>
+  <div class="popt" data-v="이벤트">이벤트</div>
   <div class="popt" data-v="채널지기">채널지기</div>
+  <div class="popt" data-v="티저">티저</div>
+  <div class="popt" data-v="하이라이트">하이라이트</div>
 </div>
 <div class="pop" id="cr-pop">
   <div class="popt" data-v="">미지정</div>
@@ -875,9 +892,9 @@ function buildHeat(rows) {
       }
 
       var ratio = v / base; // 1.0 = 기준과 동일
-      if (ratio >= 1.0)       m[r.id] = 'hh';   // 평균 이상 → 초록
-      else if (ratio >= 0.5)  m[r.id] = 'ham';  // 50~100% → 주황
-      else                    m[r.id] = 'hl';   // 50% 미만 → 빨강
+      if (ratio >= 1.0)       m[r.id] = 'hh';   // 평균 이상 → 빨강
+      else if (ratio >= 0.5)  m[r.id] = 'ham';  // 50~100% 보통 → 초록
+      else                    m[r.id] = 'hl';   // 50% 미만 망한 콘텐츠 → 파랑
     });
     heatMaps[k] = m;
   });
@@ -935,7 +952,7 @@ function fmtBadge(t){
   var cls=t==='숏폼'?'tb-fs':t==='롱폼'?'tb-fl':t==='라이브'?'tb-fv':'tb-fn';
   return '<span class="tb '+cls+'">'+esc(t)+'</span>';
 }
-var CAT_CLS={'리그 안내':'tb-c0','리그 서사':'tb-c1','하이라이트':'tb-c2','오프라인행사':'tb-c3','업데이트':'tb-c4','인플루언서':'tb-c5','채널지기':'tb-c6'};
+var CAT_CLS={'리그 안내':'tb-c0','리그 서사':'tb-c1','매드무비':'tb-c7','실험형':'tb-c8','업데이트':'tb-c4','연예인':'tb-c9','예능형':'tb-c10','오프라인행사':'tb-c3','인플루언서':'tb-c5','이벤트':'tb-c11','채널지기':'tb-c6','티저':'tb-c12','하이라이트':'tb-c2'};
 function catBadge(t){
   if(!t) return '<span class="tb tb-fn">—</span>';
   return '<span class="tb '+(CAT_CLS[t]||'tb-fn')+'">'+esc(t)+'</span>';
