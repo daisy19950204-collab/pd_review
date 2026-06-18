@@ -269,8 +269,9 @@ select{cursor:pointer}
     <div>
       <div class="up-main">엑셀 파일을 드래그하거나 클릭해서 업로드 (여러 채널 동시 가능)</div>
       <div class="up-sub">
-        <b>파일명 형식:</b> <b>YYMMDD_채널명.xlsx</b> (예: <b>260608_오버워치.xlsx</b> / <b>260608_SAZ.xlsx</b> / <b>260608_낙원.xlsx</b> / <b>260608_낙원글로벌.xlsx</b>)<br>
-        <b>GitHub 공유:</b> 레포 루트에 위 형식으로 업로드 → 모든 기기 자동 로드 (같은 채널 파일 여러 개면 가장 최신 날짜 자동 선택) &nbsp;|&nbsp; <b>로컬 임시:</b> 파일 드롭 시 이 브라우저에만 저장됨
+        <b>파일명 형식:</b> <b>YYMMDD_채널명_포맷.xlsx</b> (예: <b>260618_서든어택_숏폼.xlsx</b> / <b>260618_서든어택_롱폼.xlsx</b>)<br>
+        <b>자동 포맷:</b> 파일명 끝의 <b>_숏폼</b> 또는 <b>_롱폼</b>을 읽어서 모든 행의 포맷을 자동 지정합니다.<br>
+        <b>GitHub 공유:</b> 레포 루트에 위 형식으로 업로드 → 채널별 숏폼/롱폼 최신 파일을 각각 자동 병합 로드 &nbsp;|&nbsp; <b>로컬 임시:</b> 파일 드롭 시 이 브라우저에만 저장됨
       </div>
     </div>
   </div>
@@ -661,7 +662,12 @@ function applyRows(ch, rows) {
   var meta = ST.meta[ch] || {};
   allRows = rows.map(function(r) {
     var m = meta[r.id]||{};
-    return Object.assign({},r,{fmt:m.fmt||'',cat:m.cat||'',creator:m.creator||''});
+    // 파일명으로 자동 지정된 fmt를 기본값으로 유지하고, 사용자가 수동 수정한 값이 있으면 우선 적용
+    return Object.assign({}, r, {
+      fmt: (m.fmt !== undefined ? m.fmt : (r.fmt || '')),
+      cat: (m.cat !== undefined ? m.cat : (r.cat || '')),
+      creator: (m.creator !== undefined ? m.creator : (r.creator || ''))
+    });
   });
   document.getElementById('hm-total').textContent = allRows.length.toLocaleString();
   document.getElementById('up-title').textContent = ch+' 데이터 업로드';
@@ -670,7 +676,7 @@ function applyRows(ch, rows) {
 }
 
 // 파일 목록 캐시 (페이지 로드시 1회만 API 호출)
-var GH_FILE_MAP = null; // {채널명: {dateStr, name}} 형태로 저장
+var GH_FILE_MAP = null; // {채널명: {롱폼:{dateStr,name}, 숏폼:{dateStr,name}}}
 
 function encodeGHPath(name) {
   return name.split('').map(function(c){
@@ -678,7 +684,40 @@ function encodeGHPath(name) {
   }).join('');
 }
 
-// GitHub API로 파일 목록 1회 로드 → 콜백
+function normalizeFmtToken(token) {
+  token = String(token || '').trim().toLowerCase();
+  if (token === 'short' || token === 'shorts' || token === '숏폼') return '숏폼';
+  if (token === 'long' || token === 'longform' || token === '롱폼') return '롱폼';
+  return null;
+}
+
+function fileInfoFromFilename(name) {
+  var stem = String(name || '').replace(/\.[^.]+$/, '');
+  var m = stem.match(/^(\d{6})_(.+?)(?:_(숏폼|롱폼|shorts?|longform|long))?$/i);
+  if (!m) return null;
+  var dateStr = m[1];
+  var chPart = m[2];
+  var fmt = normalizeFmtToken(m[3]);
+  var chLower = chPart.toLowerCase();
+  var ch = null;
+  for (var i=0; i<CH_NAMES.length; i++) {
+    if (chLower === CH_NAMES[i].toLowerCase()) { ch = CH_NAMES[i]; break; }
+  }
+  if (!ch) return null;
+  return {dateStr: dateStr, ch: ch, fmt: fmt, name: name};
+}
+
+function mergeRowsByFormat(oldRows, newRows, fmt) {
+  oldRows = oldRows || [];
+  newRows = newRows || [];
+  if (!fmt) return newRows;
+  var kept = oldRows.filter(function(r){ return r.fmt !== fmt; });
+  var seen = {};
+  kept.concat(newRows).forEach(function(r){ seen[r.id] = r; });
+  return Object.keys(seen).map(function(id){ return seen[id]; });
+}
+
+// GitHub API로 파일 목록 1회 로드 → 채널별 숏폼/롱폼 최신 파일 선택
 function fetchGHFileMap(callback) {
   if (GH_FILE_MAP !== null) { callback(GH_FILE_MAP); return; }
   fetch(GITHUB_API + '/contents/')
@@ -687,16 +726,12 @@ function fetchGHFileMap(callback) {
       var map = {};
       files.forEach(function(f) {
         if (!f.name.match(/\.xlsx?$/i)) return;
-        var parts = f.name.replace(/\.[^.]+$/,'').match(/^(\d{6})_(.+)$/);
-        if (!parts) return;
-        var dateStr = parts[1], chPart = parts[2];
-        for (var i = 0; i < CH_NAMES.length; i++) {
-          if (chPart.toLowerCase() === CH_NAMES[i].toLowerCase()) {
-            var ch = CH_NAMES[i];
-            if (!map[ch] || dateStr > map[ch].dateStr)
-              map[ch] = {dateStr: dateStr, name: f.name};
-            break;
-          }
+        var info = fileInfoFromFilename(f.name);
+        if (!info) return;
+        if (!map[info.ch]) map[info.ch] = {};
+        var key = info.fmt || '기타';
+        if (!map[info.ch][key] || info.dateStr > map[info.ch][key].dateStr) {
+          map[info.ch][key] = {dateStr: info.dateStr, name: f.name, fmt: info.fmt};
         }
       });
       GH_FILE_MAP = map;
@@ -715,36 +750,45 @@ function loadCh(ch) {
 
   if (!GITHUB_RAW || !GITHUB_API) { fallbackLoad(ch); return; }
 
-  // localStorage에 이미 데이터 있으면 즉시 표시 후 백그라운드에서 최신 확인
-  if (ST.chData[ch] && ST.chData[ch].length) {
-    applyRows(ch, ST.chData[ch]);
-  }
+  // localStorage에 이미 데이터 있으면 즉시 표시 후 최신 GitHub 파일 확인
+  if (ST.chData[ch] && ST.chData[ch].length) applyRows(ch, ST.chData[ch]);
 
   fetchGHFileMap(function(map) {
     var entry = map[ch];
     if (!entry) { fallbackLoad(ch); return; }
-    // localStorage와 날짜 같으면 재다운로드 스킵
-    if (ST.chData[ch] && ST.chData[ch].length && ST.chMeta && ST.chMeta[ch] === entry.dateStr) {
+
+    var targets = [];
+    ['롱폼','숏폼'].forEach(function(fmt){ if (entry[fmt]) targets.push(entry[fmt]); });
+    // 구버전 파일명(YYMMDD_채널명.xlsx)도 있으면 fallback로 함께 로드
+    if (!targets.length && entry['기타']) targets.push(entry['기타']);
+    if (!targets.length) { fallbackLoad(ch); return; }
+
+    var metaKey = targets.map(function(t){ return (t.fmt||'기타')+':'+t.dateStr; }).sort().join('|');
+    if (ST.chData[ch] && ST.chData[ch].length && ST.chMeta && ST.chMeta[ch] === metaKey) {
       applyRows(ch, ST.chData[ch]); return;
     }
-    var rawUrl = GITHUB_RAW + '/' + encodeGHPath(entry.name);
-    fetch(rawUrl)
-      .then(function(r){ return r.arrayBuffer(); })
-      .then(function(buf) {
-        var wb  = XLSX.read(new Uint8Array(buf), {type:'array'});
-        var ws  = wb.Sheets[wb.SheetNames[0]];
-        var raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-        var rows = parseSheet(raw);
-        if (!rows.length) throw new Error('empty');
-        var ds = '20'+entry.dateStr.slice(0,2)+'.'+entry.dateStr.slice(2,4)+'.'+entry.dateStr.slice(4,6)+'.';
-        document.getElementById('up-title').textContent = ch + ' · ' + ds + ' 기준';
-        if (!ST.chMeta) ST.chMeta = {};
-        ST.chData[ch] = rows; ST.chMeta[ch] = entry.dateStr; saveST();
-        showUploadStatus(ch, rows.length, null);
-        // 현재 보고 있는 탭일 때만 화면 갱신
-        if (curCh === ch) applyRows(ch, rows);
-      })
-      .catch(function(){ fallbackLoad(ch); });
+
+    Promise.all(targets.map(function(t){
+      var rawUrl = GITHUB_RAW + '/' + encodeGHPath(t.name);
+      return fetch(rawUrl)
+        .then(function(r){ return r.arrayBuffer(); })
+        .then(function(buf) {
+          var wb  = XLSX.read(new Uint8Array(buf), {type:'array'});
+          var ws  = wb.Sheets[wb.SheetNames[0]];
+          var raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+          return parseSheet(raw, t.fmt);
+        });
+    }))
+    .then(function(list) {
+      var rows = [];
+      list.forEach(function(part){ rows = rows.concat(part); });
+      if (!rows.length) throw new Error('empty');
+      if (!ST.chMeta) ST.chMeta = {};
+      ST.chData[ch] = rows; ST.chMeta[ch] = metaKey; saveST();
+      showUploadStatus(ch, rows.length, null);
+      if (curCh === ch) applyRows(ch, rows);
+    })
+    .catch(function(){ fallbackLoad(ch); });
   });
 }
 
@@ -784,14 +828,8 @@ document.querySelectorAll('.chtab').forEach(function(btn) {
 
 // ── file upload ───────────────────────────────────────────────
 function chFromFilename(name) {
-  var base = name.replace(/\.[^.]+$/,'').replace(/^\d+_/,'');
-  var baseLower = base.toLowerCase();
-  for (var i=0; i<CH_NAMES.length; i++) {
-    if (base.indexOf(CH_NAMES[i])>=0) return CH_NAMES[i];
-    // 대소문자 무시 매칭 (SAZ, saz, Saz 등 모두 인식)
-    if (baseLower.indexOf(CH_NAMES[i].toLowerCase())>=0) return CH_NAMES[i];
-  }
-  return null;
+  var info = fileInfoFromFilename(name);
+  return info ? info.ch : null;
 }
 function handleDrop(e) {
   var files = e.dataTransfer && e.dataTransfer.files;
@@ -808,22 +846,26 @@ function processFiles(files) {
   res.innerHTML=''; res.classList.remove('show');
   var total=arr.length, done=0, results=[];
   arr.forEach(function(file) {
-    var ch = chFromFilename(file.name);
-    if (!ch) { done++; results.push({ch:file.name,n:0,err:'채널명 미인식'}); if(done===total) finishUpload(results); return; }
+    var info = fileInfoFromFilename(file.name);
+    if (!info || !info.ch) { done++; results.push({ch:file.name,n:0,err:'채널명 미인식'}); if(done===total) finishUpload(results); return; }
+    if (!info.fmt) { done++; results.push({ch:info.ch,n:0,err:'파일명 끝에 _숏폼 또는 _롱폼 필요'}); if(done===total) finishUpload(results); return; }
     var reader=new FileReader();
-    reader.onload=(function(chName){ return function(e) {
+    reader.onload=(function(fileInfo){ return function(e) {
       try {
         var wb=XLSX.read(new Uint8Array(e.target.result),{type:'array'});
         var ws=wb.Sheets[wb.SheetNames[0]];
         var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
-        var rows=parseSheet(raw);
+        var rows=parseSheet(raw, fileInfo.fmt);
         if(!rows.length) throw new Error('데이터 없음');
-        ST.chData[chName]=rows; saveST();
-        results.push({ch:chName,n:rows.length,err:null});
-      } catch(err) { results.push({ch:chName,n:0,err:err.message}); }
+        ST.chData[fileInfo.ch]=mergeRowsByFormat(ST.chData[fileInfo.ch], rows, fileInfo.fmt);
+        if (!ST.chMeta) ST.chMeta = {};
+        ST.chMeta[fileInfo.ch] = 'local';
+        saveST();
+        results.push({ch:fileInfo.ch+' '+fileInfo.fmt,n:rows.length,err:null});
+      } catch(err) { results.push({ch:fileInfo.ch+' '+fileInfo.fmt,n:0,err:err.message}); }
       done++; if(done===total) finishUpload(results);
-    };})(ch);
-    reader.onerror=(function(chName){ return function(){ results.push({ch:chName,n:0,err:'읽기 실패'}); done++; if(done===total) finishUpload(results); };})(ch);
+    };})(info);
+    reader.onerror=(function(fileInfo){ return function(){ results.push({ch:fileInfo.ch+' '+fileInfo.fmt,n:0,err:'읽기 실패'}); done++; if(done===total) finishUpload(results); };})(info);
     reader.readAsArrayBuffer(file);
   });
 }
@@ -841,7 +883,7 @@ function finishUpload(results) {
   loadCh(curCh);
   showToast('✅ '+ok+'개 채널 업로드 완료'+(results.length-ok?' · ❌ '+(results.length-ok)+'개 실패':''));
 }
-function parseSheet(raw) {
+function parseSheet(raw, forcedFmt) {
   var hIdx=-1, headers=[], i;
   for (i=0; i<Math.min(6,raw.length); i++) {
     var row=raw[i].map(function(c){ return String(c).trim(); });
@@ -861,7 +903,7 @@ function parseSheet(raw) {
     rows.push({id:String(r[iId]||'row_'+i).trim(),title:title,date:String(r[iD]||'').trim(),
       views:Math.round(v),impressions:Math.round(parseFloat(r[iI])||0),
       ctr:Math.round((parseFloat(r[iC])||0)*100)/100,avg_view_rate:Math.round((parseFloat(r[iA])||0)*100)/100,
-      engagement:eng,likes:Math.round(li),comments:Math.round(cm),shares:Math.round(sh)});
+      engagement:eng,likes:Math.round(li),comments:Math.round(cm),shares:Math.round(sh),fmt:forcedFmt||''});
   }
   return rows;
 }
