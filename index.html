@@ -169,6 +169,8 @@ tr.editing-row td{background:#fff7ed!important;box-shadow:inset 0 0 0 1.5px #f5c
 .tb-c17{background:#ecfdf5;color:#047857}
 .tb-c18{background:#f5f5f4;color:#57534e}
 .tb-c19{background:#eff6ff;color:#1d4ed8}
+.tb-c20{background:#fdf4ff;color:#a21caf}
+.tb-c21{background:#fef3e2;color:#b45309}
 
 /* ── creator badge ── */
 .crb{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;cursor:pointer;transition:transform .1s;border:1.5px solid transparent}
@@ -368,6 +370,7 @@ select{cursor:pointer}
       <div class="up-sub">
         <b>파일명 형식:</b> <b>YYMMDD_채널명_포맷.xlsx</b> (예: <b>260618_서든어택_숏폼.xlsx</b> / <b>260618_서든어택_롱폼.xlsx</b>)<br>
         <b>자동 포맷:</b> 파일명 끝의 <b>_숏폼</b> 또는 <b>_롱폼</b>을 읽어서 모든 행의 포맷을 자동 지정합니다.<br>
+        <b>자동 유형:</b> 제목에 <b>BGM</b>이 포함되면 유형이 자동으로 <b>BGM</b>으로, <b>감정표현</b>이 포함되면 <b>업데이트</b>로 자동 지정됩니다. (업로드 후 팝오버에서 언제든 수동 변경 가능)<br>
         <b>세팅 공유 파일:</b> <b>YYMMDD_채널명_세팅.json</b> 형식으로 올리면 포맷/유형/제작자/제작요소 설정이 모든 사용자에게 공유됩니다.<br>
         <b>GitHub 공유:</b> 레포 루트에 위 형식으로 업로드 → 채널별로 같은 포맷의 모든 날짜 파일을 병합해 3년치 히스토리로 자동 로드 &nbsp;|&nbsp; <b>로컬 임시:</b> 파일 드롭 시 이 브라우저에만 저장됨
       </div>
@@ -519,6 +522,8 @@ select{cursor:pointer}
           <div class="tg" data-g="cat" data-v="하이라이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#047857"></span>하이라이트</div>
           <div class="tg" data-g="cat" data-v="예능형" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#57534e"></span>예능형</div>
           <div class="tg" data-g="cat" data-v="스토리" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#1d4ed8"></span>스토리</div>
+          <div class="tg" data-g="cat" data-v="디렉터" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#a21caf"></span>디렉터</div>
+          <div class="tg" data-g="cat" data-v="광고" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#b45309"></span>광고</div>
         </div>
       </div>
       <div>
@@ -655,6 +660,9 @@ select{cursor:pointer}
   <div class="popt" data-v="하이라이트">하이라이트</div>
   <div class="popt" data-v="예능형">예능형</div>
   <div class="popt" data-v="스토리">스토리</div>
+  <div class="psep"></div>
+  <div class="popt" data-v="디렉터">디렉터</div>
+  <div class="popt" data-v="광고">광고</div>
 </div>
 <div class="pop" id="cr-pop">
   <div class="popt" data-v="">미지정</div>
@@ -720,6 +728,19 @@ const SKEY        = 'sa_dash_v5';
 const GITHUB_RAW  = 'https://raw.githubusercontent.com/daisy19950204-collab/pd_review/main';
 const GITHUB_API  = 'https://api.github.com/repos/daisy19950204-collab/pd_review';
 const MON_MAP  = {Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12};
+
+/* 제목 키워드 → 유형 자동 분류 규칙 (배열 순서대로 첫 매치 적용) */
+const AUTO_CAT_RULES = [
+  {kw:'BGM',     cat:'BGM'},
+  {kw:'감정표현', cat:'업데이트'}
+];
+function autoCatFromTitle(title){
+  title = String(title||'');
+  for (var i=0; i<AUTO_CAT_RULES.length; i++){
+    if (title.indexOf(AUTO_CAT_RULES[i].kw) >= 0) return AUTO_CAT_RULES[i].cat;
+  }
+  return '';
+}
 
 const CH_KPI = {
  '서든어택': { long:  { views: 6790,  impr: 56976, ctr: 5.4, avr: 34.8, eng: 1.7 }, short: { views: 12993, impr: 29037, ctr: 4.4, avr: 70.1, eng: 0.6 } },
@@ -1119,6 +1140,7 @@ function parseSheet(raw, forcedFmt) {
       views:Math.round(v),impressions:Math.round(parseFloat(r[iI])||0),
       ctr:Math.round((parseFloat(r[iC])||0)*100)/100,avg_view_rate:Math.round((parseFloat(r[iA])||0)*100)/100,
       engagement:eng,likes:Math.round(li),comments:Math.round(cm),shares:Math.round(sh),fmt:forcedFmt||'',
+      cat: autoCatFromTitle(title),
       fixedV: iFix>=0 ? Math.round(parseFloat(r[iFix])||0) : 0,
       newV:   iNew>=0 ? Math.round(parseFloat(r[iNew])||0) : 0,
       returnV:iRet>=0 ? Math.round(parseFloat(r[iRet])||0) : 0,
@@ -1302,7 +1324,8 @@ var CAT_CLS={
   '리그 예선전':'tb-c0','리그 오픈':'tb-c1','리그 현황':'tb-c2','리그 하이라이트':'tb-c3','리그 팀소개':'tb-c4',
   '리그 서사':'tb-c5','리그 예능':'tb-c6','리그 스케치':'tb-c7','리그 실험형':'tb-c8',
   '티저':'tb-c9','트레일러':'tb-c10','업데이트':'tb-c11','BGM':'tb-c12','연예인/인플루언서':'tb-c13',
-  '이벤트':'tb-c14','현장스케치':'tb-c15','실험형/밈형':'tb-c16','하이라이트':'tb-c17','예능형':'tb-c18','스토리':'tb-c19'
+  '이벤트':'tb-c14','현장스케치':'tb-c15','실험형/밈형':'tb-c16','하이라이트':'tb-c17','예능형':'tb-c18','스토리':'tb-c19',
+  '디렉터':'tb-c20','광고':'tb-c21'
 };
 function catBadge(t){
   if(!t) return '<span class="tb tb-fn">—</span>';
