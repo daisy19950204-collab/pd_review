@@ -172,6 +172,7 @@ tr.editing-row td{background:#fff7ed!important;box-shadow:inset 0 0 0 1.5px #f5c
 .tb-c20{background:#fdf4ff;color:#a21caf}
 .tb-c21{background:#fef3e2;color:#b45309}
 .tb-c22{background:#f7fee7;color:#3f6212}
+.tb-c23{background:#fef2f2;color:#dc2626}
 
 /* ── creator badge ── */
 .crb{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;cursor:pointer;transition:transform .1s;border:1.5px solid transparent}
@@ -503,6 +504,7 @@ select{cursor:pointer}
         <div class="tgrow">
           <div class="tg on" data-g="cat" data-v="" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#9a9a9f"></span>전체</div>
           <div class="tg" data-g="cat" data-v="__NONE__" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#cccbc5"></span>미지정</div>
+          <div class="tg" data-g="cat" data-v="리그 라이브" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#dc2626"></span>리그 라이브</div>
           <div class="tg" data-g="cat" data-v="리그 예선전" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#5b21b6"></span>리그 예선전</div>
           <div class="tg" data-g="cat" data-v="리그 오픈" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#86198f"></span>리그 오픈</div>
           <div class="tg" data-g="cat" data-v="리그 현황" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#1a56db"></span>리그 현황</div>
@@ -641,6 +643,7 @@ select{cursor:pointer}
 <div class="pop" id="cat-pop">
   <div class="popt" data-v="">미지정</div>
   <div class="psep"></div>
+  <div class="popt" data-v="리그 라이브">리그 라이브</div>
   <div class="popt" data-v="리그 예선전">리그 예선전</div>
   <div class="popt" data-v="리그 오픈">리그 오픈</div>
   <div class="popt" data-v="리그 현황">리그 현황</div>
@@ -1324,6 +1327,7 @@ function fmtBadge(t){
   return '<span class="tb '+cls+'">'+esc(t)+'</span>';
 }
 var CAT_CLS={
+  '리그 라이브':'tb-c23',
   '리그 예선전':'tb-c0','리그 오픈':'tb-c1','리그 현황':'tb-c2','리그 하이라이트':'tb-c3','리그 팀소개':'tb-c4',
   '리그 서사':'tb-c5','리그 예능':'tb-c6','리그 스케치':'tb-c7','리그 실험형':'tb-c8',
   '티저':'tb-c9','트레일러':'tb-c10','업데이트':'tb-c11','BGM':'tb-c12','연예인/인플루언서':'tb-c13',
