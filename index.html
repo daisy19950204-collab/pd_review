@@ -171,6 +171,7 @@ tr.editing-row td{background:#fff7ed!important;box-shadow:inset 0 0 0 1.5px #f5c
 .tb-c19{background:#eff6ff;color:#1d4ed8}
 .tb-c20{background:#fdf4ff;color:#a21caf}
 .tb-c21{background:#fef3e2;color:#b45309}
+.tb-c22{background:#f7fee7;color:#3f6212}
 
 /* ── creator badge ── */
 .crb{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:10px;font-weight:700;cursor:pointer;transition:transform .1s;border:1.5px solid transparent}
@@ -511,6 +512,7 @@ select{cursor:pointer}
           <div class="tg" data-g="cat" data-v="리그 예능" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#0369a1"></span>리그 예능</div>
           <div class="tg" data-g="cat" data-v="리그 스케치" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#be123c"></span>리그 스케치</div>
           <div class="tg" data-g="cat" data-v="리그 실험형" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#0e7490"></span>리그 실험형</div>
+          <div class="tg" data-g="cat" data-v="프리시즌" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#65a30d"></span>프리시즌</div>
           <div class="tg" data-g="cat" data-v="티저" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#4d7c0f"></span>티저</div>
           <div class="tg" data-g="cat" data-v="트레일러" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#b91c1c"></span>트레일러</div>
           <div class="tg" data-g="cat" data-v="업데이트" onclick="setFilter(this,'cat')"><span class="tdot" style="background:#4338ca"></span>업데이트</div>
@@ -649,6 +651,8 @@ select{cursor:pointer}
   <div class="popt" data-v="리그 스케치">리그 스케치</div>
   <div class="popt" data-v="리그 실험형">리그 실험형</div>
   <div class="psep"></div>
+  <div class="popt" data-v="프리시즌">프리시즌</div>
+  <div class="psep"></div>
   <div class="popt" data-v="티저">티저</div>
   <div class="popt" data-v="트레일러">트레일러</div>
   <div class="popt" data-v="업데이트">업데이트</div>
@@ -660,7 +664,6 @@ select{cursor:pointer}
   <div class="popt" data-v="하이라이트">하이라이트</div>
   <div class="popt" data-v="예능형">예능형</div>
   <div class="popt" data-v="스토리">스토리</div>
-  <div class="psep"></div>
   <div class="popt" data-v="디렉터">디렉터</div>
   <div class="popt" data-v="광고">광고</div>
 </div>
@@ -1325,7 +1328,7 @@ var CAT_CLS={
   '리그 서사':'tb-c5','리그 예능':'tb-c6','리그 스케치':'tb-c7','리그 실험형':'tb-c8',
   '티저':'tb-c9','트레일러':'tb-c10','업데이트':'tb-c11','BGM':'tb-c12','연예인/인플루언서':'tb-c13',
   '이벤트':'tb-c14','현장스케치':'tb-c15','실험형/밈형':'tb-c16','하이라이트':'tb-c17','예능형':'tb-c18','스토리':'tb-c19',
-  '디렉터':'tb-c20','광고':'tb-c21'
+  '디렉터':'tb-c20','광고':'tb-c21','프리시즌':'tb-c22'
 };
 function catBadge(t){
   if(!t) return '<span class="tb tb-fn">—</span>';
