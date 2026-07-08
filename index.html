@@ -274,17 +274,257 @@ tr.editing-row td{background:#fff7ed!important;box-shadow:inset 0 0 0 1.5px #f5c
 .trend-down{color:var(--ac);font-weight:700}
 .trend-flat{color:var(--t3)}
 .rank-wrap{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-.rank-box{flex:1;min-width:220px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sur2);padding:10px 12px}
+.rank-box{flex:1;min-width:220px;border:1px solid var(--bd);border-radius:var(--r);background:#fff;padding:10px 12px;box-shadow:var(--sh)}
 .rank-box-ttl{font-size:11.5px;font-weight:700;color:var(--t2);margin-bottom:8px}
 .rank-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;border-bottom:1px dashed var(--bd)}
 .rank-item:last-child{border-bottom:none}
-.rank-no{width:20px;height:20px;border-radius:50%;background:var(--sur);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t2);flex-shrink:0}
+.rank-no{width:20px;height:20px;border-radius:50%;background:var(--sur2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--t2);flex-shrink:0}
 .rank-no.top{background:var(--rd);color:#fff;border-color:var(--rd)}
 .rank-nm{flex:1;font-weight:500;color:var(--t1)}
 .rank-val{font-family:'DM Mono',monospace;font-size:11.5px;color:var(--t2)}
+.insight-detail-btn{margin-left:8px}
+
+/* ── 유형 상세 분석 페이지 ── */
+.detail-back{display:inline-flex;align-items:center;gap:5px;margin-bottom:14px}
+.detail-hero{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding-bottom:14px;border-bottom:1.5px solid var(--bd)}
+.detail-hero-nm{font-size:19px;font-weight:800;color:var(--t1)}
+.detail-hero-sub{font-size:12px;color:var(--t3);margin-top:3px}
+.detail-rankrow{display:flex;gap:12px;flex-wrap:wrap}
+.detail-rankcard{border:1px solid var(--bd);background:var(--sur2);border-radius:var(--r);padding:10px 16px;min-width:130px;text-align:center}
+.detail-rankcard .rk-lbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.detail-rankcard .rk-val{font-size:20px;font-weight:800;color:var(--ac);font-family:'DM Mono',monospace;line-height:1}
+.detail-rankcard .rk-val.top1{color:var(--rd)}
+.detail-rankcard .rk-of{font-size:10px;color:var(--t3);margin-top:2px}
+
+.dsec{margin-bottom:22px}
+.dsec-ttl{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--t1);display:flex;align-items:center;gap:6px}
+.dsec-ttl-final{font-size:22px;font-weight:900;margin-bottom:18px;letter-spacing:-.3px;color:var(--t1);padding-bottom:12px;border-bottom:3px solid var(--ac)}
+.dsec-ttl svg{width:14px;height:14px;stroke:var(--ac);fill:none;stroke-width:2;flex-shrink:0}
+.dsec-note{font-size:11px;color:var(--t3);margin-top:6px;line-height:1.5}
+
+.ychart-wrap{background:var(--sur2);border:1px solid var(--bd);border-radius:var(--r);padding:16px 14px 8px;display:flex;align-items:flex-end;gap:10px;min-height:170px}
+.ychart-col{flex:1;display:flex;flex-direction:column;align-items:center;min-width:40px}
+.ychart-bar-wrap{width:100%;display:flex;align-items:flex-end;justify-content:center;height:120px;position:relative}
+.ychart-bar{width:60%;min-width:22px;background:linear-gradient(180deg,var(--ac),#3f6fe8);border-radius:5px 5px 0 0;position:relative;transition:height .2s}
+.ychart-val{position:absolute;top:-19px;left:0;right:0;text-align:center;font-size:10.5px;font-weight:700;color:var(--t2);font-family:'DM Mono',monospace;white-space:nowrap}
+.ychart-lbl{font-size:11px;color:var(--t2);font-weight:600;margin-top:8px}
+.ychart-n{font-size:9.5px;color:var(--t3);margin-top:1px}
+
+.top10-list{display:flex;flex-direction:column;gap:0;border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.top10-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--sur);border-bottom:1px solid var(--bd)}
+.top10-item:last-child{border-bottom:none}
+.top10-item:nth-child(even){background:var(--sur2)}
+.top10-no{width:24px;height:24px;border-radius:50%;background:var(--sur2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--t2);flex-shrink:0}
+.top10-no.g1{background:#fde047;border-color:#eab308;color:#713f12}
+.top10-no.g2{background:#e5e7eb;border-color:#9ca3af;color:#374151}
+.top10-no.g3{background:#fed7aa;border-color:#f97316;color:#7c2d12}
+.top10-ttl{flex:1;min-width:0;font-size:12.5px;font-weight:500;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+.top10-ttl:hover{color:var(--ac)}
+.top10-meta{font-size:10.5px;color:var(--t3);font-family:'DM Mono',monospace;flex-shrink:0}
+.top10-views{font-size:13px;font-weight:800;color:var(--ac);font-family:'DM Mono',monospace;flex-shrink:0;min-width:70px;text-align:right}
+
+.ycreator-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.ycreator-table th{background:var(--sur2);padding:7px 8px;text-align:center;font-weight:600;color:var(--t2);border-bottom:1px solid var(--bd);white-space:nowrap}
+.ycreator-table td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap;font-family:'DM Mono',monospace}
+.ycreator-table td.yr{font-family:'Pretendard',sans-serif;font-weight:700;color:var(--t1);text-align:left;background:var(--sur2)}
+.ycreator-table td.crnm{font-family:'Pretendard',sans-serif;font-weight:600;color:var(--t1);text-align:left}
+
+.kw-cloud{display:flex;flex-wrap:wrap;gap:8px}
+.kw-tag{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:18px;background:var(--ac-bg);border:1px solid var(--ac-bd);font-size:12px;color:var(--ac);font-weight:700}
+.kw-tag .kw-n{font-size:10px;color:var(--t2);font-weight:500;background:var(--sur);border-radius:9px;padding:1px 7px}
+.kw-tag.lo{background:var(--sur2);border-color:var(--bd2);color:var(--t2)}
+
+/* ── 종합 분석 전용 페이지 ── */
+.an-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:16px;border-bottom:1.5px solid var(--bd)}
+.an-hdr-ttl{font-size:18px;font-weight:800;color:var(--t1)}
+.an-hdr-sub{font-size:12px;color:var(--t3);margin-top:3px}
+.an-subttl{font-size:12.5px;font-weight:700;color:var(--t2);margin-bottom:8px}
+
+.lchart-wrap{background:var(--sur2);border:1px solid var(--bd);border-radius:var(--r);padding:14px}
+.lchart-legend{display:flex;gap:16px;margin-top:8px;font-size:11px;color:var(--t2);flex-wrap:wrap}
+.lchart-legend .sw{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:5px}
+
+.lg-type-block{margin-bottom:22px;border:1px solid var(--bd);border-radius:var(--r);background:var(--sur);overflow:hidden}
+.lg-type-hdr{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:var(--sur2);border-bottom:1px solid var(--bd);flex-wrap:wrap;row-gap:4px}
+.lg-type-hdr-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;row-gap:4px}
+.lg-type-hdr-left .tb{font-size:15px;font-weight:800;padding:5px 14px;border-radius:12px}
+.lg-type-n{font-size:11px;color:var(--t3)}
+.lg-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.lg-table th{background:var(--sur2);padding:7px 8px;text-align:center;font-weight:600;color:var(--t2);border-bottom:1px solid var(--bd);white-space:nowrap}
+.lg-table td{padding:7px 8px;border-bottom:1px solid var(--bd);text-align:center;white-space:nowrap;font-family:'DM Mono',monospace}
+.lg-table tr:last-child td{border-bottom:none}
+.lg-ttl{max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap!important;text-align:left!important;font-family:'Pretendard',sans-serif!important}
+.lg-ttl a{color:var(--t1);text-decoration:none}
+.lg-ttl a:hover{color:var(--ac)}
+
+.lchart-totals{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:10px;font-size:12px;color:var(--t2)}
+.lchart-totals b{color:var(--t1);font-family:'DM Mono',monospace;margin-right:4px}
+
+.top10-badges{display:flex;gap:6px;flex-shrink:0}
+.top10-yr{font-size:11px;font-weight:800;color:#fff;background:var(--ac);border-radius:10px;padding:2px 9px;white-space:nowrap}
+.top10-cat{font-size:10.5px;color:var(--t3);flex-shrink:0;min-width:76px;text-align:right}
+.top10-typetag{font-size:9.5px;font-weight:800;border-radius:8px;padding:2px 7px;flex-shrink:0;white-space:nowrap}
+.top10-typetag.is-league{background:#fef3c7;color:#92400e}
+.top10-typetag.is-general{background:#dbeafe;color:#1e40af}
+.top10-item.top10-league{border-left:4px solid #d97706;background:#fffaf0}
+.top10-item.top10-general{border-left:4px solid #1a56db;background:#f6f9ff}
+.top10-item.top10-league:hover,.top10-item.top10-general:hover{filter:brightness(0.98)}
+
+.crpill{display:inline-flex;align-items:center;font-size:11px;font-weight:800;border-radius:10px;padding:2px 9px;white-space:nowrap}
+.crpill.p0{background:#eef3ff;color:#1a56db}
+.crpill.p1{background:#ebfaf3;color:#0d7a4e}
+.crpill.p2{background:#fdf0ee;color:#c0392b}
+.crpill.p3{background:#fef3e2;color:#92400e}
+.crpill.p4{background:#ecfeff;color:#0e7490}
+.crpill.p5{background:#fdf4ff;color:#a21caf}
+.crpill.pn{background:var(--sur2);color:var(--t3)}
+
+.lg-season-sub{margin-bottom:16px;padding-bottom:14px;border-bottom:1px dashed var(--bd)}
+.lg-season-sub:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.lg-season-sub-ttl{font-size:12.5px;font-weight:700;color:var(--t1);margin-bottom:8px}
+.top3-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.top3-col{background:var(--sur2);border:1px solid var(--bd);border-radius:6px;padding:8px 10px}
+.top3-col-ttl{font-size:10.5px;font-weight:700;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.3px}
+.top3-col-best{background:#fdecea;border-color:var(--rd);box-shadow:0 0 0 1px var(--rd) inset}
+.top3-col-best .top3-col-ttl{color:var(--rd)}
+.top3-best-badge{text-transform:none;letter-spacing:0;font-size:9.5px;color:var(--rd)}
+.top3-row{display:flex;align-items:center;gap:6px;font-size:11px;padding:4px 0;border-top:1px dashed var(--bd)}
+.top3-row:first-of-type{border-top:none}
+.top3-rk{width:16px;height:16px;border-radius:50%;background:var(--sur);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0}
+.top3-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--t1);text-decoration:none}
+.top3-nm:hover{color:var(--ac);text-decoration:underline}
+.top3-thumb-link{flex-shrink:0;display:block;line-height:0}
+.top3-thumb{width:44px;height:25px;object-fit:cover;border-radius:3px;background:var(--sur2);display:block}
+.top3-cr{color:var(--t3);font-size:10px;flex-shrink:0}
+.top3-val{font-family:'DM Mono',monospace;font-weight:700;color:var(--ac);flex-shrink:0}
+.top3-row-internal{background:transparent}
+.top3-row-internal .top3-nm{font-weight:500;color:var(--t1)}
+.top3-cr-internal{color:var(--rd)!important;font-weight:800}
+
+/* 시즌별 제작자(이유정 vs 외주) 비교: 승자/패자를 확실히 대비 */
+.pi-table td.cmp-win{background:#fde2df;color:#a3241a;font-weight:800;border-radius:4px;box-shadow:inset 0 0 0 1px #f2a89e}
+.pi-table td.cmp-lose{color:var(--t1);opacity:1;font-weight:600}
+
+.lg-rank-chain{font-size:12px;color:var(--t3);font-family:'Pretendard',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:420px}
+.lg-data-hdr{font-size:12px;font-weight:700;color:var(--t2);margin:14px 0 10px;padding-top:12px;border-top:1px dashed var(--bd)}
+.lg-narrative{padding:14px 16px;font-size:12.5px;color:var(--t2);line-height:1.75}
+.lg-narrative p{margin-bottom:10px}
+.narr-list{margin:2px 0 4px 20px;padding:0}
+.narr-list li{margin-bottom:7px}
+.val-hi{font-weight:800;color:var(--t1);font-family:'DM Mono',monospace}
+.season-bar-chart{background:var(--sur2);border:1px solid var(--bd);border-radius:var(--r);padding:12px 14px}
+.season-bar-row{display:flex;gap:16px;align-items:stretch}
+.season-bar-main{flex:1;min-width:0}
+.season-bar-sidenote{flex-shrink:0;width:150px;background:#ecfeff;border:1.5px solid #a5f3fc;border-radius:var(--r);padding:12px 14px;display:flex;flex-direction:column;justify-content:center;text-align:center}
+.sbs-label{font-size:10px;font-weight:700;color:#0e7490;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.sbs-value{font-size:18px;font-weight:800;color:#0e7490;font-family:'DM Mono',monospace;line-height:1.1}
+.sbs-sub{font-size:9.5px;color:#0e7490;opacity:.8;margin-top:4px;line-height:1.4}
+@media (max-width:520px){
+  .season-bar-row{flex-direction:column}
+  .season-bar-sidenote{width:auto}
+}
+.season-bar-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px;font-size:10.5px;color:var(--t3)}
+.season-bar-legend .sbl-sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+
+/* 리그 콘텐츠 발행 흐름 다이어그램 */
+.lg-flow-block{background:var(--sur)}
+.lg-flow-diagram{display:flex;gap:28px;align-items:flex-start;padding:10px 4px 6px;flex-wrap:wrap}
+.lg-flow-chain-col{display:flex;flex-direction:column;align-items:flex-start}
+.lg-flow-side{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 14px;border:1px dashed var(--bd2);border-radius:var(--rl);background:var(--sur2);flex-shrink:0}
+.lg-flow-side-lbl{font-size:10px;color:var(--t3);font-weight:700;white-space:nowrap}
+.lg-flow-main{display:grid;grid-template-columns:auto 1fr;column-gap:14px;row-gap:2px;align-items:center}
+.lg-flow-step{justify-self:center}
+.lg-flow-step .tb{font-size:14px;font-weight:800;padding:7px 20px;border-radius:14px}
+.lg-flow-strategy{justify-self:start;font-size:11px;color:var(--t2);font-weight:600;white-space:nowrap;background:var(--sur2);border:1px solid var(--bd);border-radius:10px;padding:4px 10px}
+.lg-flow-branch-strategy{margin-top:6px;text-align:left}
+.lg-flow-arrow{grid-column:1;justify-self:center;color:var(--t3);font-size:16px;line-height:1;margin:1px 0}
+.lg-flow-branch{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;justify-content:flex-start;align-items:center}
+@media (max-width:640px){
+  .lg-flow-diagram{flex-direction:column;align-items:center}
+  .lg-flow-chain-col{align-items:center}
+  .lg-flow-main{grid-template-columns:1fr;justify-items:center;text-align:center}
+  .lg-flow-strategy{justify-self:center;white-space:normal;text-align:center}
+  .lg-flow-arrow{grid-column:1}
+  .lg-flow-branch{justify-content:center}
+  .lg-flow-branch-strategy{text-align:center}
+}
+
+/* ── 2026 시즌 종합 리뷰: PPT 보고서 스타일 레이아웃 ── */
+.review-wrap{padding:6px 2px}
+.review-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.review-stat-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--rl);padding:16px 18px;box-shadow:var(--sh)}
+.review-stat-card.rs-up{border-color:var(--rd-bd);background:linear-gradient(180deg,var(--rd-bg),var(--sur) 70%)}
+.review-stat-card.rs-down{border-color:var(--ac-bd);background:linear-gradient(180deg,var(--ac-bg),var(--sur) 70%)}
+.rs-label{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+.rs-value{font-size:26px;font-weight:800;color:var(--t1);font-family:'DM Mono',monospace;line-height:1}
+.review-stat-card.rs-up .rs-value{color:var(--rd)}
+.review-stat-card.rs-down .rs-value{color:var(--ac)}
+.rs-sub{font-size:10.5px;color:var(--t3);margin-top:6px}
+
+.review-summary{background:#fff;border:1.5px solid var(--bd2);border-radius:var(--r);padding:16px 18px;font-size:13.5px;color:var(--t2);line-height:1.75;margin-bottom:22px;box-shadow:var(--sh)}
+
+.review-section-ttl{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.review-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:24px}
+.review-card{background:var(--sur);border:1px solid var(--bd);border-radius:var(--r);padding:14px 15px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:8px}
+.rc-top{display:flex;align-items:center;justify-content:space-between}
+.rc-icon{font-size:20px}
+.rc-tag{font-size:16px;font-weight:900;color:#fff;background:var(--ac);border:none;border-radius:14px;padding:6px 16px;letter-spacing:.3px;box-shadow:0 2px 6px rgba(26,86,219,.35)}
+.rc-tag.rc-tag-expand{background:var(--rd);box-shadow:0 2px 6px rgba(192,57,43,.35)}
+.rc-tag.rc-tag-explore{background:#7c3aed;box-shadow:0 2px 6px rgba(124,58,237,.35)}
+.rc-tag.rc-tag-improve{background:#0d7a4e;box-shadow:0 2px 6px rgba(13,122,78,.35)}
+.rc-tag.rc-tag-hold{background:#6b7280;box-shadow:0 2px 6px rgba(107,114,128,.35)}
+.rc-ttl{font-size:13px;font-weight:800;color:var(--t1)}
+.rc-body{font-size:12px;color:var(--t2);line-height:1.6}
+
+.review-conclusion{background:#fff;border:1.5px solid var(--ac-bd);border-radius:var(--rl);padding:18px 20px;box-shadow:var(--sh)}
+.review-conclusion .rc-hdr{font-size:14px;font-weight:800;color:var(--ac);margin-bottom:10px}
+.review-conclusion .rc-body p{font-size:12.5px;color:var(--t2);line-height:1.75;margin-bottom:8px}
+.review-conclusion .rc-body p:last-child{margin-bottom:0}
+.review-conclusion-list{margin:0 0 0 20px;padding:0}
+.review-conclusion-list li{font-size:13px;color:var(--t2);line-height:1.8;margin-bottom:10px}
+.review-conclusion-list li:last-child{margin-bottom:0}
+.review-highlight{color:var(--rd);background:var(--rd-bg);padding:1px 6px;border-radius:4px}
+
+@media (max-width:900px){
+  .review-stats{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:700px){
+  .review-stats{grid-template-columns:1fr}
+}
+
+/* 엑셀 스타일 채우기 핸들 (포맷/유형/제작자 셀) */
+.fill-handle{position:absolute;right:1px;bottom:1px;width:8px;height:8px;background:var(--ac);border:1.5px solid #fff;
+  box-shadow:0 0 0 1px var(--ac);cursor:crosshair;opacity:0;transition:opacity .1s;z-index:2}
+td.c-fmt:hover .fill-handle, td.c-cat:hover .fill-handle{opacity:1}
+body.fill-dragging{cursor:crosshair!important;user-select:none}
+body.fill-dragging .fill-handle{opacity:1}
+tr.fill-target td{background:#e3f0ff!important}
+
+.sa-big-btn{display:flex;align-items:center;gap:18px;width:100%;padding:22px 28px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,#e22134,#b91c2f);color:#fff;cursor:pointer;box-shadow:0 6px 20px rgba(226,33,52,.35);
+  transition:transform .15s, box-shadow .15s;text-align:left;font-family:'Pretendard',sans-serif}
+.sa-big-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(226,33,52,.45)}
+.sa-big-btn-ico{font-size:38px;flex-shrink:0}
+.sa-big-btn-txt{display:flex;flex-direction:column;gap:4px}
+.sa-big-btn-ttl{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.sa-big-btn-sub{font-size:13px;font-weight:500;opacity:.92}
+.lg-comment{margin-top:10px;padding:12px 14px 12px 16px;background:#fff;border:1px solid var(--bd2);border-left:4px solid var(--ac);border-radius:var(--r);font-size:12.5px;color:var(--t2);line-height:1.7;box-shadow:var(--sh)}
+.lg-comment .val-hi{color:var(--ac)}
+.ov-comment-highlight{margin:6px 0 16px;padding:14px 16px 14px 18px;background:#fff;border:1px solid var(--bd2);border-left:4px solid #f5a623;border-radius:var(--r);font-size:12.5px;color:var(--t2);line-height:1.75;box-shadow:var(--sh)}
+.ov-comment-highlight .val-hi{color:#b45309}
+
+/* 외주/넥슨을 제외한 내부 제작 콘텐츠 행 은은한 강조 */
+tr.internal-cr td{background:#f4f1fb}
+tr.internal-cr:hover td{background:#ece5f9}
+tr.ck.internal-cr td{background:var(--ac-bg)}
+
+@media (max-width:900px){
+  .top3-grid{grid-template-columns:repeat(2,1fr)}
+}
 @media (max-width:640px){
   .insight-mgrid{grid-template-columns:repeat(2,1fr)}
   .modal-box.wide{max-width:96vw}
+  .ycreator-table{font-size:10px}
 }
 
 /* ── toast ── */
@@ -297,7 +537,7 @@ select{cursor:pointer}
 </head>
 <body>
 
-<div class="page">
+<div class="page" id="dash-view">
 
 <header class="hdr">
   <div class="brand">
@@ -311,14 +551,6 @@ select{cursor:pointer}
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="hdr-meta">로드된 데이터 <b id="hm-total">0</b>건</div>
-    <button class="btn ghost" onclick="openProdImpactModal()" style="height:32px;padding:0 12px;font-size:12px;color:var(--t2);border-color:var(--bd2)">
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      제작요소 영향 분석
-    </button>
-    <button class="btn ghost" onclick="openSummaryModal()" style="height:32px;padding:0 12px;font-size:12px;color:var(--t2);border-color:var(--bd2)">
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      요약보기
-    </button>
     <button class="btn ghost" onclick="exportSettings()" style="height:32px;padding:0 12px;font-size:12px;color:var(--t2);border-color:var(--bd2)">
       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       설정 내보내기
@@ -380,6 +612,17 @@ select{cursor:pointer}
   </div>
   <input type="file" id="finput" accept=".xlsx,.xls" multiple onchange="handleFileInput(this)">
   <div class="up-results" id="up-results"></div>
+</div>
+
+<!-- 서든어택 전용 종합 분석 대형 배너 -->
+<div id="sa-analysis-banner" style="display:none;margin-bottom:18px">
+  <button onclick="openAnalysisPage()" class="sa-big-btn">
+    <span class="sa-big-btn-ico">📊</span>
+    <span class="sa-big-btn-txt">
+      <span class="sa-big-btn-ttl">서든어택 콘텐츠 총합 분석</span>
+      <span class="sa-big-btn-sub">시즌별 추세 · 리그 콘텐츠 심층 분석 · 유형별 TOP 랭킹 한눈에 보기 →</span>
+    </span>
+  </button>
 </div>
 
 <!-- KPI -->
@@ -542,6 +785,12 @@ select{cursor:pointer}
           <div class="tg" data-g="creator" data-v="외주" onclick="setFilter(this,'creator')"><span class="tdot" style="background:#a21caf"></span>외주</div>
         </div>
       </div>
+      <div>
+        <div class="tglbl">시즌 (리그 콘텐츠 등)</div>
+        <div class="tgrow" id="season-filter-row">
+          <div class="tg on" data-g="season" data-v="" onclick="setFilter(this,'season')"><span class="tdot" style="background:#9a9a9f"></span>전체</div>
+        </div>
+      </div>
     </div>
     <div>
       <div class="tglbl">페이지당</div>
@@ -681,17 +930,6 @@ select{cursor:pointer}
   <div class="popt" data-v="외주">외주</div>
 </div>
 
-<!-- 제작요소 영향 분석 모달 -->
-<div class="modal-overlay" id="prodimpact-modal">
-  <div class="modal-box wide">
-    <div class="modal-hdr">
-      <span class="modal-hdr-ttl">제작요소별 지표 영향 분석 <span style="color:var(--t3);font-weight:400">(현재 채널: <b id="pi-ch-nm"></b>)</span></span>
-      <button class="modal-close" onclick="closeProdImpactModal()">✕</button>
-    </div>
-    <div class="modal-body" id="prodimpact-body"></div>
-  </div>
-</div>
-
 <!-- 제작요소 체크리스트 모달 -->
 <div class="modal-overlay" id="prod-modal">
   <div class="modal-box">
@@ -703,27 +941,69 @@ select{cursor:pointer}
   </div>
 </div>
 
-<!-- 요약 통계 모달 -->
-<div class="modal-overlay" id="summary-modal">
-  <div class="modal-box wide">
-    <div class="modal-hdr">
-      <span class="modal-hdr-ttl">제작자 · 유형별 요약 통계 <span style="color:var(--t3);font-weight:400">(현재 채널: <b id="sum-ch-nm"></b>)</span></span>
-      <button class="modal-close" onclick="closeSummaryModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="sum-tabs">
-        <div class="sum-tab on" data-t="creator" onclick="switchSumTab(this,'creator')">제작자별</div>
-        <div class="sum-tab" data-t="cat" onclick="switchSumTab(this,'cat')">유형별</div>
-        <div class="sum-tab" data-t="fmt" onclick="switchSumTab(this,'fmt')">포맷별</div>
+<!-- 종합 분석 페이지 (팝업이 아닌 별도 페이지 전환) -->
+<div class="page" id="analysis-view" style="display:none">
+  <div class="an-hdr">
+    <div style="display:flex;align-items:center;gap:14px">
+      <button class="btn ghost" onclick="closeAnalysisPage()">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        대시보드로 돌아가기
+      </button>
+      <div>
+        <div class="an-hdr-ttl"><span id="an-hdr-main-ttl">종합 분석</span> <span id="an-hdr-ch-suffix" style="color:var(--t3);font-weight:400">— <b id="an-ch-nm"></b></span></div>
+        <div class="an-hdr-sub">전체 <b id="an-total-n">0</b>건 데이터 기준 · 이 채널에서 잘 나가는 콘텐츠를 한눈에 확인하세요</div>
       </div>
-      <div id="sum-table-wrap"></div>
     </div>
+  </div>
+
+  <div class="dsec">
+    <div class="dsec-ttl">📊 한눈에 보는 요약</div>
+
+    <div style="margin-bottom:16px">
+      <div class="an-subttl">상반기·하반기 조회수 추세 (전체 합계 · 이유정 · 외주)</div>
+      <div id="ov-trend-wrap"></div>
+    </div>
+
+    <div id="ov-rank-wrap" style="margin-bottom:16px"></div>
+
+    <div>
+      <div class="an-subttl">서든어택 조회수 TOP 10 (시즌 · 콘텐츠 · 제작자 · 유형 · 조회수)</div>
+      <div id="ov-top10-comment"></div>
+      <div id="ov-top10-wrap"></div>
+    </div>
+  </div>
+
+  <div class="dsec">
+    <div class="dsec-ttl">🏆 리그 콘텐츠 분석</div>
+
+    <div style="margin-bottom:20px">
+      <div class="an-subttl">시즌별 조회수 추세 (리그 콘텐츠 · 전체 합계 · 이유정 · 외주)</div>
+      <div id="lg-trend-wrap"></div>
+      <div id="lg-trend-comment"></div>
+    </div>
+
+    <div style="margin-bottom:20px">
+      <div class="an-subttl">시즌별 제작자 비교 — 브랜딩팀 vs 외주 <span style="font-weight:400;color:var(--t3)">(▲ 빨간 배경 = 해당 시즌 더 높은 값, 최근 시즌부터 · 2025 시즌2부터 이유정은 브랜딩팀입니다)</span></div>
+      <div id="lg-season-compare-comment"></div>
+      <div id="lg-season-compare-wrap"></div>
+    </div>
+
+    <div>
+      <div class="an-subttl">유형별 콘텐츠 성과 &amp; 개선 추이 <span style="font-weight:400;color:var(--t3)">(유형 → 시즌 → 지표별 상위 3개, 그 아래 시즌별 변화 서술)</span></div>
+      <div id="lg-top3-wrap"></div>
+    </div>
+  </div>
+
+  <div class="dsec">
+    <div class="dsec-ttl dsec-ttl-final">🎯 2026 시즌 종합 리뷰 &amp; 다음 시즌 콘텐츠 기획</div>
+    <div id="lg-final-review-wrap"></div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 const BUILTIN_SA = [{"id":"45CbexPRuO0","title":"Core-X vs Divine - DAY2 MATCH4 하이라이트｜2026 서든어택 챔피언십 시즌1","date":"May 16, 2026","views":9005,"impressions":95109,"ctr":8.03,"avg_view_rate":36.55,"engagement":0.99,"likes":28,"comments":46,"shares":15}];
+
 
 const CHANNELS = ['서든어택','카스온라인','더파이널스','SAZ','낙원','낙원글로벌','오버워치'];
 const CREATORS = ['심승선','이유정','이수민','임기백','넥슨','외주'];
@@ -872,8 +1152,8 @@ function applyRows(ch, rows) {
   });
   document.getElementById('hm-total').textContent = allRows.length.toLocaleString();
   document.getElementById('up-title').textContent = ch+' 데이터 업로드';
-  document.getElementById('sum-ch-nm').textContent = ch;
   updateKPI(ch);
+  renderSeasonFilterOptions();
   applyFilters();
 }
 
@@ -984,8 +1264,10 @@ function loadRemoteSettings(ch, entry) {
 function loadCh(ch) {
   curCh = ch;
   checked.clear();
-  fmtFlt = ''; catFlt = '';
+  fmtFlt = ''; catFlt = ''; crFlt = ''; seasonFlt = '';
   pg = 1;
+  var saBanner = document.getElementById('sa-analysis-banner');
+  if(saBanner) saBanner.style.display = (ch==='서든어택') ? 'block' : 'none';
   document.querySelectorAll('.tg[data-g="fmt"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
   document.querySelectorAll('.tg[data-g="cat"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
   document.querySelectorAll('.tg[data-g="creator"]').forEach(function(t){ t.classList.toggle('on', t.dataset.v===''); });
@@ -1275,18 +1557,39 @@ function applyFilters() {
     if(catFlt==='__NONE__'){ if(d.cat) return false; }
     else if(catFlt&&d.cat!==catFlt) return false;
     if(crFlt&&(d.creator||'')!==crFlt) return false;
+    if(seasonFlt){ if(!isLeagueCat(d.cat)) return false; var s=seasonOf(d.date); if(!s||s.label!==seasonFlt) return false; }
     return true;
   });
   doSort(); pg=1; buildHeat(filtered); render();
 }
 var crFlt = '';
+var seasonFlt = '';
 function setFilter(el, group) {
   document.querySelectorAll('.tg[data-g="'+group+'"]').forEach(function(t){ t.classList.remove('on'); });
   el.classList.add('on');
   if(group==='fmt') fmtFlt=el.dataset.v;
   else if(group==='cat') catFlt=el.dataset.v;
   else if(group==='creator') crFlt=el.dataset.v;
+  else if(group==='season') seasonFlt=el.dataset.v;
   applyFilters();
+}
+function renderSeasonFilterOptions(){
+  var container = document.getElementById('season-filter-row');
+  if(!container) return;
+  var seasonsSet = {};
+  allRows.forEach(function(r){
+    if(!isLeagueCat(r.cat)) return; /* 시즌 카테고리는 리그 콘텐츠에만 적용 */
+    var s = seasonOf(r.date);
+    if(s) seasonsSet[s.key] = s.label;
+  });
+  var keys = Object.keys(seasonsSet).map(Number).sort(function(a,b){ return b-a; });
+  var html = '<div class="tg'+(seasonFlt===''?' on':'')+'" data-g="season" data-v="" onclick="setFilter(this,\'season\')"><span class="tdot" style="background:#9a9a9f"></span>전체</div>';
+  keys.forEach(function(k){
+    var label = seasonsSet[k];
+    var on = seasonFlt===label ? ' on' : '';
+    html += '<div class="tg'+on+'" data-g="season" data-v="'+esc(label)+'" onclick="setFilter(this,\'season\')"><span class="tdot" style="background:#7c3aed"></span>'+esc(label)+'</div>';
+  });
+  container.innerHTML = html;
 }
 function sortValue(d,key){
   if(key==='date') return dateVal(d.date);
@@ -1375,7 +1678,9 @@ function render() {
     var hv=(heatMaps.views||{})[d.id]||'', hi=(heatMaps.impressions||{})[d.id]||'';
     var hc=(heatMaps.ctr||{})[d.id]||'', ha=(heatMaps.avg_view_rate||{})[d.id]||'', he=(heatMaps.engagement||{})[d.id]||'';
     var hfx=(heatMaps.fixedV||{})[d.id]||'', hnw=(heatMaps.newV||{})[d.id]||'', hrt=(heatMaps.returnV||{})[d.id]||'', hsb=(heatMaps.subs||{})[d.id]||'';
-    html+='<tr class="'+(ck?'ck':'')+'" id="row-'+rid+'">';
+    var isInternal = d.creator && d.creator!=='외주' && d.creator!=='넥슨';
+    var rowCls = (ck?'ck ':'')+(isInternal?'internal-cr':'');
+    html+='<tr class="'+rowCls.trim()+'" id="row-'+rid+'">';
     html+='<td class="c-chk"><input type="checkbox" '+(ck?'checked':'')+' onchange="chkRow(\''+rid+'\',this)"></td>';
     html+='<td class="c-ttl"><a class="tlink" href="https://youtube.com/watch?v='+rid+'" target="_blank" title="'+esc(d.title)+'">'+esc(d.title)+'</a></td>';
     html+='<td class="c-dt dc">'+fmtDate(d.date)+'<br><span class="dtag">'+daysAgoStr(d.date)+'</span></td>';
@@ -1384,9 +1689,9 @@ function render() {
     html+='<td class="c-n nc '+hc+'">'+d.ctr.toFixed(2)+'</td>';
     html+='<td class="c-n nc '+ha+'">'+d.avg_view_rate.toFixed(1)+'%</td>';
     html+='<td class="c-n nc '+he+'">'+d.engagement.toFixed(2)+'</td>';
-    html+='<td class="c-fmt" onclick="openPop(event,\'fmt\',\''+rid+'\')" style="cursor:pointer">'+fmtBadge(d.fmt)+'</td>';
-    html+='<td class="c-cat" onclick="openPop(event,\'cat\',\''+rid+'\')" style="cursor:pointer">'+catBadge(d.cat)+'</td>';
-    html+='<td class="c-cat" onclick="openPop(event,\'creator\',\''+rid+'\')" style="cursor:pointer">'+creatorBadge(d.creator)+'</td>';
+    html+='<td class="c-fmt" onclick="openPop(event,\'fmt\',\''+rid+'\')" style="cursor:pointer;position:relative">'+fmtBadge(d.fmt)+'<span class="fill-handle" title="드래그해서 아래 행에 복사" onmousedown="startFillDrag(event,\'fmt\',\''+rid+'\')" onclick="event.stopPropagation()"></span></td>';
+    html+='<td class="c-cat" onclick="openPop(event,\'cat\',\''+rid+'\')" style="cursor:pointer;position:relative">'+catBadge(d.cat)+'<span class="fill-handle" title="드래그해서 아래 행에 복사" onmousedown="startFillDrag(event,\'cat\',\''+rid+'\')" onclick="event.stopPropagation()"></span></td>';
+    html+='<td class="c-cat" onclick="openPop(event,\'creator\',\''+rid+'\')" style="cursor:pointer;position:relative">'+creatorBadge(d.creator)+'<span class="fill-handle" title="드래그해서 아래 행에 복사" onmousedown="startFillDrag(event,\'creator\',\''+rid+'\')" onclick="event.stopPropagation()"></span></td>';
     html+='<td class="c-prod">'+prodBadgeHtml(d.id, d.prod)+'</td>';
     html+='<td class="c-n nc '+hfx+'">'+(d.fixedV||0).toLocaleString()+'</td>';
     html+='<td class="c-n nc '+hnw+'">'+(d.newV||0).toLocaleString()+'</td>';
@@ -1415,7 +1720,10 @@ function goPg(p){ pg=p; render(); }
 
 function chkRow(id,el){
   el.checked?checked.add(id):checked.delete(id);
-  var r=document.getElementById('row-'+id); if(r) r.className=el.checked?'ck':'';
+  var r=document.getElementById('row-'+id);
+  if(r){
+    r.classList.toggle('ck', el.checked);
+  }
   document.getElementById('ex-cnt').textContent=checked.size;
   var sb=document.getElementById('sbadge'); sb.style.display=checked.size?'':'none'; sb.textContent=checked.size+'건 선택';
 }
@@ -1484,6 +1792,71 @@ function setMeta(ch,id,key,val){
   ST.meta[ch][id][key]=val; saveST();
 }
 
+/* ── 엑셀 스타일 채우기 드래그 (포맷/유형/제작자 셀) ── */
+var fillDrag = null;
+function rowIdFromPoint(x,y){
+  var el = document.elementFromPoint(x,y);
+  var tr = el && el.closest ? el.closest('tr[id^="row-"]') : null;
+  return tr ? tr.id.replace('row-','') : null;
+}
+function startFillDrag(e, kind, id){
+  e.preventDefault();
+  e.stopPropagation();
+  var srcRow = allRows.find(function(d){ return d.id===id; });
+  if(!srcRow) return;
+  var idx = filtered.findIndex(function(d){ return d.id===id; });
+  if(idx<0) return;
+  fillDrag = {kind:kind, value:srcRow[kind], sourceIdx:idx};
+  document.body.classList.add('fill-dragging');
+  document.addEventListener('mousemove', onFillDragMove);
+  document.addEventListener('mouseup', onFillDragEnd);
+}
+function onFillDragMove(e){
+  if(!fillDrag) return;
+  var id = rowIdFromPoint(e.clientX, e.clientY);
+  document.querySelectorAll('tr.fill-target').forEach(function(r){ r.classList.remove('fill-target'); });
+  if(id){
+    var idx = filtered.findIndex(function(d){ return d.id===id; });
+    if(idx>=0){
+      var lo=Math.min(fillDrag.sourceIdx, idx), hi=Math.max(fillDrag.sourceIdx, idx);
+      for(var i=lo;i<=hi;i++){
+        var r2 = document.getElementById('row-'+filtered[i].id);
+        if(r2) r2.classList.add('fill-target');
+      }
+    }
+  }
+}
+function onFillDragEnd(e){
+  if(!fillDrag) return;
+  var id = rowIdFromPoint(e.clientX, e.clientY);
+  var applied = 0, kind = fillDrag.kind;
+  if(id){
+    var idx = filtered.findIndex(function(d){ return d.id===id; });
+    if(idx>=0){
+      var lo=Math.min(fillDrag.sourceIdx, idx), hi=Math.max(fillDrag.sourceIdx, idx);
+      for(var i=lo;i<=hi;i++){
+        var rid2 = filtered[i].id;
+        var full = allRows.find(function(d){ return d.id===rid2; });
+        if(full){
+          full[kind] = fillDrag.value;
+          setMeta(curCh, rid2, kind, fillDrag.value);
+          applied++;
+        }
+      }
+    }
+  }
+  document.querySelectorAll('tr.fill-target').forEach(function(r){ r.classList.remove('fill-target'); });
+  document.body.classList.remove('fill-dragging');
+  document.removeEventListener('mousemove', onFillDragMove);
+  document.removeEventListener('mouseup', onFillDragEnd);
+  fillDrag = null;
+  if(applied>1){
+    if(kind==='fmt'){ buildHeat(filtered); updateKPI(curCh); }
+    render();
+    showToast('✅ '+applied+'개 행에 값 채우기 완료');
+  }
+}
+
 function doCopy(){
   var sel=allRows.filter(function(d){ return checked.has(d.id); });
   if(!sel.length){ showToast('⚠️ 체크된 콘텐츠가 없습니다'); return; }
@@ -1547,177 +1920,1050 @@ function minMax(arr){
 function fmtNum(v){ return Math.round(v).toLocaleString(); }
 function fmtPct(v){ return v.toFixed(2)+'%'; }
 
-var sumTab = 'creator';
-var METRIC_DEFS = [
-  {key:'views', label:'조회수', fmt:fmtNum},
-  {key:'impressions', label:'노출수', fmt:fmtNum},
-  {key:'ctr', label:'CTR', fmt:fmtPct},
-  {key:'avg_view_rate', label:'평균조회율', fmt:function(v){return v.toFixed(1)+'%';}},
-  {key:'engagement', label:'참여율', fmt:fmtPct}
-];
+/* ══════════════════════════════════════════════
+   종합 분석 페이지 (팝업이 아닌 별도 페이지)
+   ══════════════════════════════════════════════ */
 
-function computeGroupInsights(field){
+function yearOf(dateStr){
+  var v = dateVal(dateStr);
+  if(!v) return null;
+  return Math.floor(v/10000);
+}
+
+/* 시즌 정의: 2~7월 = 시즌1, 8~12월 = 시즌2, 1월은 전년도 시즌2로 편입(리그 오프시즌 잔여 업로드) */
+function seasonOf(dateStr){
+  var v = dateVal(dateStr);
+  if(!v) return null;
+  var y = Math.floor(v/10000), m = Math.floor((v%10000)/100);
+  if(m>=2 && m<=7)  return {year:y,   num:1, key:y*10+1,     label:y+' 시즌1'};
+  if(m>=8 && m<=12) return {year:y,   num:2, key:y*10+2,     label:y+' 시즌2'};
+  if(m===1)         return {year:y-1, num:2, key:(y-1)*10+2, label:(y-1)+' 시즌2'};
+  return null;
+}
+
+function isLeagueCat(cat){ return !!cat && cat.indexOf('리그')===0; }
+var INTERNAL_CREATORS_EXCLUDE = ['외주','넥슨']; // 이 두 곳을 제외한 나머지는 내부 제작 → 표에서 은은하게 강조
+
+/* 시즌마다 다른 색을 배정 (연도*2+시즌번호 기준 고정 배정이라 항상 같은 시즌은 같은 색) */
+var SEASON_COLOR_PALETTE = ['#1a56db','#0d7a4e','#c0392b','#92400e','#7c3aed','#0e7490','#be185d','#4d7c0f','#b45309','#1d4ed8'];
+function seasonColorFor(label){
+  var m = /^(\d{4})\s*시즌(\d)$/.exec(label||'');
+  if(!m) return '#5a5a60';
+  var idx = (parseInt(m[1],10)*2 + parseInt(m[2],10)) % SEASON_COLOR_PALETTE.length;
+  return SEASON_COLOR_PALETTE[idx];
+}
+
+function openAnalysisPage(){
+  document.getElementById('dash-view').style.display = 'none';
+  document.getElementById('analysis-view').style.display = 'block';
+  renderAnalysisPage();
+  window.scrollTo(0,0);
+}
+function closeAnalysisPage(){
+  document.getElementById('analysis-view').style.display = 'none';
+  document.getElementById('dash-view').style.display = 'block';
+}
+
+/* 상반기/하반기 구분 (리그 시즌과 달리 전체 콘텐츠에 적용되는 일반 반기 구분: 1~6월=상반기, 7~12월=하반기) */
+function halfOf(dateStr){
+  var v = dateVal(dateStr);
+  if(!v) return null;
+  var y = Math.floor(v/10000), m = Math.floor((v%10000)/100);
+  var h = m<=6 ? 1 : 2;
+  return {year:y, half:h, key:y*10+h, label:y+' '+(h===1?'상반기':'하반기')};
+}
+
+/* ── 반기별 조회수 추세 (전체합계 · 이유정 · 외주) — 채널 전체(리그+비리그) 요약용 ── */
+function buildHalfYearSeries(rows){
+  var halves = {};
+  rows.forEach(function(r){
+    var h = halfOf(r.date);
+    if(!h) return;
+    if(!halves[h.key]) halves[h.key] = {key:h.key, label:h.label, total:0, 이유정:0, 외주:0};
+    halves[h.key].total += (r.views||0);
+    if(r.creator==='이유정') halves[h.key].이유정 += (r.views||0);
+    if(r.creator==='외주')   halves[h.key].외주   += (r.views||0);
+  });
+  var now = new Date();
+  var curHalfKey = now.getFullYear()*10 + (now.getMonth()<6 ? 1 : 2); /* 이제 막 시작된 진행 중인 반기는 데이터가 불완전하므로 제외 */
+  return Object.keys(halves).map(function(k){ return halves[k]; })
+    .filter(function(h){ return h.key !== curHalfKey; })
+    .sort(function(a,b){ return a.key-b.key; });
+}
+
+/* ── 시즌별 조회수 추세 (전체합계 · 이유정 · 외주) — 리그 콘텐츠 전용 ── */
+function buildSeasonalSeries(rows){
+  var seasons = {};
+  rows.forEach(function(r){
+    var s = seasonOf(r.date);
+    if(!s) return;
+    if(!seasons[s.key]) seasons[s.key] = {key:s.key, label:s.label, total:0, 이유정:0, 외주:0};
+    seasons[s.key].total += (r.views||0);
+    if(r.creator==='이유정') seasons[s.key].이유정 += (r.views||0);
+    if(r.creator==='외주')   seasons[s.key].외주   += (r.views||0);
+  });
+  return Object.keys(seasons).map(function(k){ return seasons[k]; }).sort(function(a,b){ return a.key-b.key; });
+}
+
+function renderSeasonalLineChart(data){
+  if(!data.length) return '<div style="color:var(--t3);font-size:12px;padding:16px">업로드일 정보를 알 수 없어 시즌별 추세를 계산할 수 없습니다</div>';
+  var W=920, H=270, padL=54, padR=16, padT=28, padB=34;
+  var innerW=W-padL-padR, innerH=H-padT-padB;
+  var maxV = Math.max.apply(null, data.map(function(d){ return d.total; })) || 1;
+  var n = data.length;
+  function xPos(i){ return padL + (n<=1 ? innerW/2 : (innerW*i/(n-1))); }
+  function yPos(v){ return padT + innerH - (v/maxV)*innerH; }
+  function pathFor(key,color){
+    var pts = data.map(function(d,i){ return xPos(i).toFixed(1)+','+yPos(d[key]).toFixed(1); }).join(' ');
+    return '<polyline points="'+pts+'" fill="none" stroke="'+color+'" stroke-width="2.5"/>';
+  }
+  function dotsFor(key,color){
+    return data.map(function(d,i){ return '<circle cx="'+xPos(i).toFixed(1)+'" cy="'+yPos(d[key]).toFixed(1)+'" r="3.5" fill="'+color+'"/>'; }).join('');
+  }
+  function valLabelsFor(key,color,dy){
+    return data.map(function(d,i){
+      if(!d[key]) return '';
+      return '<text x="'+xPos(i).toFixed(1)+'" y="'+(yPos(d[key])+dy).toFixed(1)+'" font-size="9.5" fill="'+color+'" text-anchor="middle" font-weight="700">'+fmtN(d[key])+'</text>';
+    }).join('');
+  }
+  var grid='';
+  for(var g=0; g<=4; g++){
+    var gy = padT + innerH*g/4;
+    grid += '<line x1="'+padL+'" y1="'+gy+'" x2="'+(W-padR)+'" y2="'+gy+'" stroke="var(--bd)" stroke-width="1"/>';
+  }
+  var xlabels = data.map(function(d,i){ return '<text x="'+xPos(i).toFixed(1)+'" y="'+(H-12)+'" font-size="10" fill="var(--t3)" text-anchor="middle">'+esc(d.label)+'</text>'; }).join('');
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;max-height:290px;display:block">'+
+    grid +
+    pathFor('total','#1a56db')  + dotsFor('total','#1a56db')  + valLabelsFor('total','#1a56db',-11) +
+    pathFor('이유정','#0d7a4e') + dotsFor('이유정','#0d7a4e') +
+    pathFor('외주','#c0392b')   + dotsFor('외주','#c0392b')   +
+    xlabels +
+    '</svg>';
+  var legend = '<div class="lchart-legend">'+
+    '<span><span class="sw" style="background:#1a56db"></span>전체 합계</span>'+
+    '<span><span class="sw" style="background:#0d7a4e"></span>이유정</span>'+
+    '<span><span class="sw" style="background:#c0392b"></span>외주</span>'+
+    '</div>';
+
+  var sumTotal=0, sum이유정=0, sum외주=0;
+  data.forEach(function(d){ sumTotal+=d.total; sum이유정+=d.이유정; sum외주+=d.외주; });
+  var totalsHtml = '<div class="lchart-totals">'+
+    '<span><b>전체 합산 조회수</b> '+sumTotal.toLocaleString()+'회</span>'+
+    '<span><b>이유정 합산</b> '+sum이유정.toLocaleString()+'회</span>'+
+    '<span><b>외주 합산</b> '+sum외주.toLocaleString()+'회</span>'+
+    '</div>';
+
+  return '<div class="lchart-wrap">'+totalsHtml+svg+legend+'</div>';
+}
+
+/* ── 유형별 TOP5 랭킹 (미지정 유형 제외) ── */
+function buildCatRankExcl(metricKey, mode){
   var groups = {};
   allRows.forEach(function(r){
-    var key = r[field] || '미지정';
-    if(!groups[key]) groups[key] = {rows:[]};
-    groups[key].rows.push(r);
+    var k = r.cat;
+    if(!k) return; // 미지정 제외
+    if(!groups[k]) groups[k] = [];
+    groups[k].push(r[metricKey]||0);
   });
-  var chFixedMed = median(allRows.map(function(r){return r.fixedV||0;}));
-  var chNewMed   = median(allRows.map(function(r){return r.newV||0;}));
-  var chRetMed   = median(allRows.map(function(r){return r.returnV||0;}));
-
-  return Object.keys(groups).map(function(k){
-    var rows = groups[k].rows;
-    var metrics = METRIC_DEFS.map(function(md){
-      var arr = rows.map(function(r){ return r[md.key]||0; });
-      var mm = minMax(arr);
-      return {label:md.label, fmt:md.fmt, min:mm.min, max:mm.max, med:median(arr)};
-    });
-    var fixedArr = rows.map(function(r){return r.fixedV||0;});
-    var newArr   = rows.map(function(r){return r.newV||0;});
-    var retArr   = rows.map(function(r){return r.returnV||0;});
-    var subsArr  = rows.map(function(r){return r.subs||0;});
-    function trend(med, chMed){
-      if(chMed===0) return 'flat';
-      var r=med/chMed;
-      if(r>=1.1) return 'up';
-      if(r<=0.9) return 'down';
-      return 'flat';
-    }
-    return {
-      key:k, n:rows.length, metrics:metrics,
-      fixedMed:median(fixedArr), newMed:median(newArr), retMed:median(retArr),
-      fixedTrend:trend(median(fixedArr),chFixedMed), newTrend:trend(median(newArr),chNewMed), retTrend:trend(median(retArr),chRetMed),
-      subsAvg: subsArr.length ? (subsArr.reduce(function(a,b){return a+b;},0)/subsArr.length) : 0,
-      subsSum: subsArr.reduce(function(a,b){return a+b;},0)
-    };
-  }).sort(function(a,b){ return b.n-a.n; });
+  var arr = Object.keys(groups).map(function(k){
+    var vals = groups[k];
+    var val = mode==='avg' ? (vals.reduce(function(a,b){return a+b;},0)/vals.length) : vals.reduce(function(a,b){return a+b;},0);
+    return {key:k, val:val};
+  });
+  arr.sort(function(a,b){ return b.val-a.val; });
+  return arr.slice(0,5);
 }
-
-function trendArrow(t){
-  if(t==='up') return '<span class="trend-up">▲ 평균 이상</span>';
-  if(t==='down') return '<span class="trend-down">▼ 평균 이하</span>';
-  return '<span class="trend-flat">─ 평균 수준</span>';
-}
-
-function renderRankBox(title, list, unit){
+function renderRankTop5(title, list, unit, showSign, decimals){
   var html = '<div class="rank-box"><div class="rank-box-ttl">'+esc(title)+'</div>';
-  if(!list.length){ html += '<div style="color:var(--t3);font-size:12px">데이터 없음</div>'; }
-  list.slice(0,5).forEach(function(g,i){
-    html += '<div class="rank-item"><span class="rank-no'+(i===0?' top':'')+'">'+(i+1)+'</span><span class="rank-nm">'+esc(g.key)+'</span><span class="rank-val">'+(g.subsAvg>=0?'+':'')+Math.round(g.subsAvg).toLocaleString()+unit+'</span></div>';
+  if(!list.length) html += '<div style="color:var(--t3);font-size:12px">데이터 없음</div>';
+  list.forEach(function(g,i){
+    var vDisp = decimals!=null ? g.val.toFixed(decimals) : Math.round(g.val).toLocaleString();
+    html += '<div class="rank-item"><span class="rank-no'+(i===0?' top':'')+'">'+(i+1)+'</span>'+
+      '<span class="rank-nm">'+esc(g.key)+'</span>'+
+      '<span class="rank-val">'+(showSign && g.val>=0?'+':'')+vDisp+unit+'</span></div>';
   });
   html += '</div>';
   return html;
 }
 
-function renderSummaryTable(){
-  var field = sumTab==='creator' ? 'creator' : (sumTab==='fmt' ? 'fmt' : 'cat');
-  var label = sumTab==='creator' ? '제작자' : (sumTab==='fmt' ? '포맷' : '유형');
-  var data = computeGroupInsights(field);
+/* ── 순수 조회수 TOP10 (미지정 유형 제외, 제작자·연도 강조) ── */
+function buildTop10Pure(){
+  return allRows.filter(function(r){ return !!r.cat; })
+    .slice().sort(function(a,b){ return (b.views||0)-(a.views||0); }).slice(0,10);
+}
+function buildTop10Comment(top10list){
+  if(!top10list.length) return '';
+  var yujCount = top10list.filter(function(d){ return d.creator==='이유정'; }).length;
 
-  var rankSorted = data.slice().sort(function(a,b){ return b.subsAvg-a.subsAvg; });
-  var rankHtml = '<div class="rank-wrap">'+renderRankBox(label+'별 구독자 증가 기여 순위 (편당 평균)', rankSorted, '명')+'</div>';
+  var leagueRows = allRows.filter(function(r){ return isLeagueCat(r.cat); });
+  var totalViews = allRows.reduce(function(s,r){ return s+(r.views||0); },0);
+  var totalImpr  = allRows.reduce(function(s,r){ return s+(r.impressions||0); },0);
+  var leagueViews = leagueRows.reduce(function(s,r){ return s+(r.views||0); },0);
+  var leagueImpr  = leagueRows.reduce(function(s,r){ return s+(r.impressions||0); },0);
+  var viewShare = totalViews ? (leagueViews/totalViews*100) : 0;
+  var imprShare = totalImpr ? (leagueImpr/totalImpr*100) : 0;
 
-  var cardsHtml = '';
-  if(!data.length){
-    cardsHtml = '<div style="text-align:center;color:var(--t3);padding:30px">데이터가 없습니다</div>';
-  } else {
-    data.forEach(function(g){
-      cardsHtml += '<div class="insight-card">';
-      cardsHtml += '<div class="insight-hdr"><span class="insight-hdr-nm">'+esc(g.key)+'</span><span class="insight-hdr-n">콘텐츠 '+g.n.toLocaleString()+'건</span></div>';
-      cardsHtml += '<div class="insight-mgrid">';
-      g.metrics.forEach(function(m){
-        cardsHtml += '<div class="insight-m"><div class="insight-m-lbl">'+esc(m.label)+'</div><div class="insight-m-med">'+m.fmt(m.med)+'</div><div class="insight-m-range">최저 '+m.fmt(m.min)+' · 최고 '+m.fmt(m.max)+'</div></div>';
-      });
-      cardsHtml += '</div>';
-      cardsHtml += '<div class="insight-audience">';
-      cardsHtml += '<span>고정시청자 중앙값 <b>'+fmtNum(g.fixedMed)+'</b> '+trendArrow(g.fixedTrend)+'</span>';
-      cardsHtml += '<span>신규시청자 중앙값 <b>'+fmtNum(g.newMed)+'</b> '+trendArrow(g.newTrend)+'</span>';
-      cardsHtml += '<span>재방문시청자 중앙값 <b>'+fmtNum(g.retMed)+'</b> '+trendArrow(g.retTrend)+'</span>';
-      cardsHtml += '<span>구독자 증가 편당 평균 <b>'+(g.subsAvg>=0?'+':'')+fmtNum(g.subsAvg)+'</b> (합계 '+(g.subsSum>=0?'+':'')+fmtNum(g.subsSum)+')</span>';
-      cardsHtml += '</div></div>';
-    });
+  var txt = '💡 TOP10 중 <span class="val-hi">'+yujCount+'개</span>가 브랜딩팀이 제작한 콘텐츠일 만큼, 서든어택 채널의 상위권 조회수를 브랜딩팀 콘텐츠가 다수 차지하고 있습니다.';
+  txt += ' 특히 리그 콘텐츠는 채널 전체 조회수의 <span class="val-hi">'+viewShare.toFixed(0)+'%</span>, 노출수의 <span class="val-hi">'+imprShare.toFixed(0)+'%</span>를 차지할 만큼 굉장히 큰 비중을 가져가고 있습니다.';
+  return '<div class="ov-comment-highlight">'+txt+'</div>';
+}
+function creatorPillClass(creator){
+  var idx = CREATORS.indexOf(creator);
+  return idx>=0 ? 'p'+idx : 'pn';
+}
+function renderTop10Pure(list){
+  if(!list.length) return '<div style="color:var(--t3);font-size:12px;padding:10px">데이터가 없습니다 (유형 미지정 콘텐츠는 제외)</div>';
+  var html = '<div class="top10-list">';
+  list.forEach(function(d,i){
+    var isLg = isLeagueCat(d.cat);
+    var s = seasonOf(d.date);
+    var y = yearOf(d.date);
+    var slabel = isLg ? (s ? s.label : (y ? y+'년' : '')) : (y ? y+'년' : '');
+    var badgeColor = isLg && s ? seasonColorFor(s.label) : (y ? SEASON_COLOR_PALETTE[(y*3)%SEASON_COLOR_PALETTE.length] : '#5a5a60');
+    var gcls = i===0?'g1':(i===1?'g2':(i===2?'g3':''));
+    var url = 'https://youtube.com/watch?v='+esc(d.id);
+    var crCls = creatorPillClass(d.creator);
+    html += '<div class="top10-item '+(isLg?'top10-league':'top10-general')+'">'+
+      '<span class="top10-no '+gcls+'">'+(i+1)+'</span>'+
+      '<span class="top10-typetag '+(isLg?'is-league':'is-general')+'">'+(isLg?'리그':'일반')+'</span>'+
+      '<a class="top10-ttl" href="'+url+'" target="_blank" title="'+esc(d.title)+'">'+esc(d.title)+'</a>'+
+      '<span class="top10-badges">'+
+        (slabel ? '<span class="top10-yr" style="background:'+badgeColor+'">'+esc(slabel)+'</span>' : '')+
+        '<span class="crpill '+crCls+'">'+esc(d.creator||'미지정')+'</span>'+
+      '</span>'+
+      '<span class="top10-cat">'+esc(d.cat)+'</span>'+
+      '<span class="top10-views">'+(d.views||0).toLocaleString()+'회</span>'+
+      '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+
+/* ── 리그: 유형별 그룹 ── */
+function leagueCatGroups(){
+  var cats = {};
+  allRows.forEach(function(r){
+    if(isLeagueCat(r.cat)){
+      if(!cats[r.cat]) cats[r.cat]=[];
+      cats[r.cat].push(r);
+    }
+  });
+  return cats;
+}
+
+/* ── 리그 콘텐츠 전체 시즌 추세 아래 한줄평 ── */
+function buildLeagueOverallComment(){
+  var leagueRows = allRows.filter(function(r){ return isLeagueCat(r.cat); });
+  if(!leagueRows.length) return '';
+
+  var seasonSeries = buildSeasonalSeries(leagueRows);
+  var curIdx = -1;
+  for(var i=0;i<seasonSeries.length;i++){ if(seasonSeries[i].label===CURRENT_SEASON_LABEL){ curIdx=i; break; } }
+
+  var turnaroundTxt = '';
+  if(curIdx>0){
+    var cur = seasonSeries[curIdx], prev = seasonSeries[curIdx-1];
+    var wasDecliningBefore = curIdx>=2 ? (seasonSeries[curIdx-1].total <= seasonSeries[curIdx-2].total) : (prev.total>0);
+    var pct = prev.total===0 ? (cur.total===0?0:100) : ((cur.total-prev.total)/Math.abs(prev.total)*100);
+    if(cur.total >= prev.total){
+      turnaroundTxt = (wasDecliningBefore ? '전 시즌까지 하락하던 리그 콘텐츠 조회수 총합이 ' : '리그 콘텐츠 조회수 총합이 ')+'<b>'+CURRENT_SEASON_LABEL+'</b>에 다시 '+diffSpan(pct)+' 반등했습니다.';
+
+      /* 실제로 어느 제작자의 증가분이 반등을 이끌었는지 동적으로 판별 */
+      var deltaYuj = cur.이유정 - prev.이유정;
+      var deltaWaeju = cur.외주 - prev.외주;
+      if(deltaYuj>0 && deltaYuj>=deltaWaeju){
+        turnaroundTxt += ' 이 반등은 주로 <b>브랜딩팀</b>이 제작한 콘텐츠의 조회수가 <span class="val-hi">'+fmtNum(prev.이유정)+'회</span> → <span class="val-hi">'+fmtNum(cur.이유정)+'회</span>로 크게 늘어난 데서 비롯되었으며, 외주 콘텐츠 조회수는 상대적으로 큰 변화가 없었습니다.';
+      } else if(deltaWaeju>0 && deltaWaeju>deltaYuj){
+        turnaroundTxt += ' 이 반등은 주로 <b>외주</b> 콘텐츠의 조회수가 <span class="val-hi">'+fmtNum(prev.외주)+'회</span> → <span class="val-hi">'+fmtNum(cur.외주)+'회</span>로 늘어난 데서 비롯되었습니다.';
+      }
+    }
   }
-  document.getElementById('sum-table-wrap').innerHTML = rankHtml + cardsHtml;
-}
-function switchSumTab(el, tab){
-  document.querySelectorAll('.sum-tab').forEach(function(t){ t.classList.remove('on'); });
-  el.classList.add('on');
-  sumTab = tab;
-  renderSummaryTable();
-}
-function openSummaryModal(){
-  document.getElementById('sum-ch-nm').textContent = curCh;
-  renderSummaryTable();
-  document.getElementById('summary-modal').classList.add('open');
-}
-function closeSummaryModal(){
-  document.getElementById('summary-modal').classList.remove('open');
+
+  var totalViews = leagueRows.reduce(function(s,r){ return s+(r.views||0); },0);
+  var prelimViews = leagueRows.filter(function(r){ return r.cat==='리그 예선전'; }).reduce(function(s,r){ return s+(r.views||0); },0);
+  var prelimTxt = '';
+  if(totalViews>0 && prelimViews>0){
+    var share = prelimViews/totalViews*100;
+    prelimTxt = ' 데이터를 보면 리그 콘텐츠 전체 조회수 중 <span class="val-hi">'+share.toFixed(0)+'%</span>가 예선전 콘텐츠에서 나왔는데, 예선전을 라이브로 진행하면서 큰 효과를 본 것으로 보입니다.';
+  }
+
+  var full = (turnaroundTxt+prelimTxt).trim();
+  if(!full) return '';
+  return '<div class="lg-comment">'+full+'</div>';
 }
 
-/* ── 제작요소 영향 분석 ── */
-function computeProdImpact(){
-  return PROD_ITEMS.map(function(it){
-    var onRows = allRows.filter(function(r){ return r.prod && r.prod[it.key]; });
-    var offRows = allRows.filter(function(r){ return !(r.prod && r.prod[it.key]); });
-    function stat(rows, key, useMedian){
-      var arr = rows.map(function(r){ return r[key]||0; });
-      if(!arr.length) return 0;
-      return useMedian ? median(arr) : (arr.reduce(function(a,b){return a+b;},0)/arr.length);
-    }
-    function diffPct(on, off){
-      if(off===0) return on===0?0:100;
-      return ((on-off)/Math.abs(off))*100;
-    }
-    var viewsOn=stat(onRows,'views',true), viewsOff=stat(offRows,'views',true);
-    var ctrOn=stat(onRows,'ctr',false), ctrOff=stat(offRows,'ctr',false);
-    var engOn=stat(onRows,'engagement',false), engOff=stat(offRows,'engagement',false);
-    var subsOn=stat(onRows,'subs',false), subsOff=stat(offRows,'subs',false);
+/* ── 시즌별 제작자 비교 위 한줄평: 2025 시즌2부터 SOOP 외주 콘텐츠의 효율 ── */
+function buildSeasonCompareComment(){
+  var leagueRows = allRows.filter(function(r){ return isLeagueCat(r.cat); });
+  var CUTOFF_KEY = 2025*10+2; // 2025 시즌2
+  var relevant = leagueRows.filter(function(r){
+    var s = seasonOf(r.date);
+    return s && s.key >= CUTOFF_KEY;
+  });
+  var waeju = relevant.filter(function(r){ return r.creator==='외주'; });
+  var yuj = relevant.filter(function(r){ return r.creator==='이유정'; });
+  if(!waeju.length || !yuj.length) return '';
+
+  var yujMed = median(yuj.map(function(r){ return r.views||0; }));
+  var waejuMed = median(waeju.map(function(r){ return r.views||0; }));
+  var yujSum = yuj.reduce(function(s,r){ return s+(r.views||0); },0);
+  var waejuSum = waeju.reduce(function(s,r){ return s+(r.views||0); },0);
+  var countRatio = waeju.length ? (yuj.length/waeju.length*100) : 0; // 이유정 건수가 외주 대비 몇%인지 (적을수록 이유정이 적게 만듦)
+
+  var sumTxt = (yujSum>=waejuSum)
+    ? '총 조회수 합계도 <span class="val-hi">'+fmtNum(yujSum)+'회</span>로 외주(<span class="val-hi">'+fmtNum(waejuSum)+'회</span>)보다 높습니다.'
+    : '총 조회수 합계는 <span class="val-hi">'+fmtNum(yujSum)+'회</span>로 외주(<span class="val-hi">'+fmtNum(waejuSum)+'회</span>)와 비슷한 수준을 유지하고 있습니다.';
+
+  var medTxt = (yujMed>=waejuMed)
+    ? '콘텐츠 1개당 중앙 조회수는 <span class="val-hi">'+fmtNum(yujMed)+'회</span>로 외주(<span class="val-hi">'+fmtNum(waejuMed)+'회</span>)보다 높습니다.'
+    : '콘텐츠 1개당 중앙 조회수는 <span class="val-hi">'+fmtNum(yujMed)+'회</span>로 외주(<span class="val-hi">'+fmtNum(waejuMed)+'회</span>)와 비슷한 수준입니다.';
+
+  var txt = '💡 <b>2025 시즌2</b>부터 이유정은 외주 대비 제작 건수가 <span class="val-hi">'+countRatio.toFixed(0)+'%</span> 수준으로 더 적게 제작했습니다.'+
+    ' 그런데 '+medTxt+' 이는 영상 한 편당 성공률(타율)이 더 높다는 뜻입니다.'+
+    ' 게다가 '+sumTxt+' 더 적은 개수로도 이 정도 성과를 냈다는 것은, 콘텐츠 하나하나의 품질과 전략을 꾸준히 연구한 결과로 볼 수 있습니다.';
+  return '<div class="lg-comment">'+txt+'</div>';
+}
+
+/* ── 리그: 시즌별 이유정 vs 외주 비교 (더 높은 값 빨간색) ── */
+function buildLeagueSeasonCompare(){
+  var leagueRows = allRows.filter(function(r){ return isLeagueCat(r.cat); });
+  var seasons = {};
+  leagueRows.forEach(function(r){
+    var s = seasonOf(r.date);
+    if(!s) return;
+    var cr = r.creator;
+    if(cr!=='이유정' && cr!=='외주') return;
+    if(!seasons[s.key]) seasons[s.key] = {season:s, byCreator:{}};
+    if(!seasons[s.key].byCreator[cr]) seasons[s.key].byCreator[cr]=[];
+    seasons[s.key].byCreator[cr].push(r);
+  });
+  var keys = Object.keys(seasons).map(Number).sort(function(a,b){ return b-a; });
+  return keys.map(function(k){ return seasons[k]; });
+}
+function renderLeagueSeasonCompare(list){
+  if(!list.length) return '<div style="color:var(--t3);font-size:12px;padding:10px">이유정 또는 외주가 제작한 리그 콘텐츠의 시즌 데이터가 없습니다</div>';
+  var METRICS = [
+    {key:'n',        label:'건수',      isCount:true},
+    {key:'medViews',label:'중앙조회수', fmt:fmtNum},
+    {key:'sumViews',label:'총조회수합', fmt:fmtNum},
+    {key:'medImpr', label:'중앙노출수', fmt:fmtNum},
+    {key:'ctr',     label:'CTR',        fmt:function(v){return v.toFixed(2)+'%';}},
+    {key:'avr',     label:'평균조회율', fmt:function(v){return v.toFixed(1)+'%';}},
+    {key:'eng',     label:'참여율',     fmt:function(v){return v.toFixed(2)+'%';}}
+  ];
+  function statsFor(rows){
+    if(!rows || !rows.length) return null;
+    function avg(arr){ return arr.reduce(function(a,b){return a+b;},0)/arr.length; }
     return {
-      label:it.label, nOn:onRows.length, nOff:offRows.length,
-      views:{on:viewsOn, off:viewsOff, diff:diffPct(viewsOn,viewsOff)},
-      ctr:{on:ctrOn, off:ctrOff, diff:diffPct(ctrOn,ctrOff)},
-      eng:{on:engOn, off:engOff, diff:diffPct(engOn,engOff)},
-      subs:{on:subsOn, off:subsOff, diff:diffPct(subsOn,subsOff)}
+      n: rows.length,
+      medViews: median(rows.map(function(r){return r.views||0;})),
+      sumViews: rows.reduce(function(a,r){return a+(r.views||0);},0),
+      medImpr:  median(rows.map(function(r){return r.impressions||0;})),
+      ctr: avg(rows.map(function(r){return r.ctr||0;})),
+      avr: avg(rows.map(function(r){return r.avg_view_rate||0;})),
+      eng: avg(rows.map(function(r){return r.engagement||0;}))
+    };
+  }
+  var html='';
+  list.forEach(function(entry){
+    var yuStats = statsFor(entry.byCreator['이유정']);
+    var oeStats = statsFor(entry.byCreator['외주']);
+    html += '<div class="lg-type-block"><div class="lg-type-hdr"><b>'+esc(entry.season.label)+'</b>'+
+      '<span class="lg-type-n">이유정 '+(yuStats?yuStats.n:0)+'건 · 외주 '+(oeStats?oeStats.n:0)+'건</span></div>';
+    html += '<div style="overflow-x:auto"><table class="pi-table"><thead><tr><th style="text-align:left">제작자</th>';
+    METRICS.forEach(function(m){ html += '<th>'+m.label+'</th>'; });
+    html += '</tr></thead><tbody>';
+    ['이유정','외주'].forEach(function(cr){
+      var st = cr==='이유정' ? yuStats : oeStats;
+      var other = cr==='이유정' ? oeStats : yuStats;
+      html += '<tr><td class="lbl">'+cr+'</td>';
+      METRICS.forEach(function(m){
+        if(!st){ html += '<td>—</td>'; return; }
+        var v = st[m.key];
+        var cls = '', prefix = '';
+        if(other){
+          var ov = other[m.key];
+          if(v > ov){ cls = ' class="cmp-win"'; prefix = '▲ '; }
+          else if(v < ov){ cls = ' class="cmp-lose"'; }
+        }
+        var disp = m.isCount ? v : m.fmt(v);
+        html += '<td'+cls+'>'+prefix+disp+'</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div></div>';
+  });
+  return html;
+}
+
+/* ── 리그: 유형별 · 시즌별 지표 TOP3 ── */
+var LEAGUE_METRICS = [
+  {key:'views',         label:'조회수',     fmt:function(v){return fmtNum(v)+'회';}},
+  {key:'impressions',   label:'노출수',     fmt:function(v){return fmtNum(v)+'회';}},
+  {key:'ctr',           label:'CTR',        fmt:function(v){return v.toFixed(2)+'%';}},
+  {key:'avg_view_rate', label:'평균조회율', fmt:function(v){return v.toFixed(1)+'%';}},
+  {key:'engagement',    label:'참여율',     fmt:function(v){return v.toFixed(2)+'%';}},
+  {key:'subs',          label:'구독자증가', fmt:function(v){return (v>=0?'+':'')+fmtNum(v)+'명';}}
+];
+
+/* 유형(rows) → 시즌별 종합 통계 (건수/제작자/중앙조회수/중앙노출수/CTR/평균조회율/참여율) */
+function buildTypeSeasonStats(rows){
+  var bySeason = {};
+  rows.forEach(function(r){
+    var s = seasonOf(r.date);
+    if(!s) return;
+    if(!bySeason[s.key]) bySeason[s.key] = {season:s, rows:[]};
+    bySeason[s.key].rows.push(r);
+  });
+  var keys = Object.keys(bySeason).map(Number).sort(function(a,b){ return a-b; }); // 과거→현재
+  function avg(arr){ return arr.length ? arr.reduce(function(a,b){return a+b;},0)/arr.length : 0; }
+  return keys.map(function(k){
+    var e = bySeason[k];
+    var creatorsArr = [];
+    e.rows.forEach(function(r){ var c=r.creator||'미지정'; if(creatorsArr.indexOf(c)<0) creatorsArr.push(c); });
+    return {
+      season: e.season, n: e.rows.length, creators: creatorsArr, rows: e.rows,
+      medViews: median(e.rows.map(function(r){return r.views||0;})),
+      sumViews: e.rows.reduce(function(a,r){return a+(r.views||0);},0),
+      medImpr:  median(e.rows.map(function(r){return r.impressions||0;})),
+      ctr: avg(e.rows.map(function(r){return r.ctr||0;})),
+      avr: avg(e.rows.map(function(r){return r.avg_view_rate||0;})),
+      eng: avg(e.rows.map(function(r){return r.engagement||0;})),
+      subsAvg: avg(e.rows.map(function(r){return r.subs||0;}))
     };
   });
 }
+function seasonAbbrev(label){ return label.replace('시즌','S'); }
+/* 중앙조회수 기준 시즌 랭킹 체인: "2026 S1 → 2025 S2 → ..." (일반 텍스트) */
+function buildSeasonRankChain(seasonStats){
+  if(!seasonStats.length) return '데이터 없음';
+  var sorted = seasonStats.slice().sort(function(a,b){ return b.medViews-a.medViews; });
+  return sorted.map(function(s){ return seasonAbbrev(s.season.label); }).join(' → ');
+}
+/* 시즌별 색상 + 굵게 강조된 랭킹 체인 (HTML) */
+function buildSeasonRankChainHtml(seasonStats){
+  if(!seasonStats.length) return '데이터 없음';
+  var sorted = seasonStats.slice().sort(function(a,b){ return b.medViews-a.medViews; });
+  return sorted.map(function(s){
+    var color = seasonColorFor(s.season.label);
+    return '<b style="color:'+color+'">'+esc(seasonAbbrev(s.season.label))+'</b>';
+  }).join(' <span style="color:var(--t3);font-weight:400">→</span> ');
+}
+
+/* 리그 라이브 전용: 시즌별 5대 지표 + 합산조회수 (TOP3 불필요) */
+function renderSimpleSeasonMetrics(seasonStats){
+  if(!seasonStats.length) return '<div style="color:var(--t3);font-size:12px;padding:10px">시즌 정보를 계산할 수 있는 콘텐츠가 없습니다</div>';
+  var sorted = seasonStats.slice().sort(function(a,b){ return b.season.key-a.season.key; });
+  var html = '<div style="overflow-x:auto"><table class="ycreator-table"><thead><tr>'+
+    '<th style="text-align:left">시즌</th><th style="text-align:left">제작자</th><th>건수</th><th>중앙조회수</th><th>합산조회수</th><th>중앙노출수</th><th>CTR</th><th>평균조회율</th><th>참여율</th>'+
+    '</tr></thead><tbody>';
+  sorted.forEach(function(s){
+    html += '<tr><td class="yr">'+esc(s.season.label)+'</td><td class="crnm">'+esc(s.creators.join(', '))+'</td>'+
+      '<td>'+s.n+'</td><td>'+fmtNum(s.medViews)+'</td><td>'+fmtNum(s.sumViews)+'</td><td>'+fmtNum(s.medImpr)+'</td>'+
+      '<td>'+s.ctr.toFixed(2)+'%</td><td>'+s.avr.toFixed(1)+'%</td><td>'+s.eng.toFixed(2)+'%</td></tr>';
+  });
+  html += '</tbody></table></div>';
+  return html;
+}
+
+/* 리그 유형 표시 순서 고정 (요청된 순서), 목록에 없는 유형은 건수 많은 순으로 뒤에 붙임 */
+var LEAGUE_TYPE_ORDER = ['리그 라이브','리그 오픈','리그 예선전','리그 현황','리그 팀소개','리그 하이라이트','리그 실험형','리그 서사','리그 예능','리그 스케치'];
+function orderLeagueCats(cats){
+  var known = LEAGUE_TYPE_ORDER.filter(function(c){ return cats[c]; });
+  var rest = Object.keys(cats).filter(function(c){ return LEAGUE_TYPE_ORDER.indexOf(c)<0; })
+    .sort(function(a,b){ return cats[b].length-cats[a].length; });
+  return known.concat(rest);
+}
+
+/* 리그 콘텐츠 발행 흐름: 하나의 시즌을 보따리로 봤을 때 어떤 순서로 콘텐츠가 나오는지 한눈에 정리 */
+/* 단계별 전략 매핑 */
+var STAGE_STRATEGY = {
+  '리그 오픈':     '조회수보다 참가 독려 · 공유수 확대 전략',
+  '리그 예선전':   '바이럴 중심으로 조회수·노출수를 끌어올리는 전략',
+  '리그 현황':     '바이럴 중심으로 조회수·노출수를 끌어올리는 전략',
+  '리그 팀소개':   '바이럴 중심으로 조회수·노출수를 끌어올리는 전략',
+  '리그 하이라이트':'선수·팀 인지도 상승 + 이슈메이킹 전략',
+  '리그 실험형':   '선수·팀 인지도 상승 + 이슈메이킹 전략',
+  '리그 예능':     '팬덤 증가 전략',
+  '리그 서사':     '팬덤 증가 전략',
+  '리그 스케치':   '팬덤 증가 전략'
+};
+function flowStrategyTag(catName){
+  var s = STAGE_STRATEGY[catName];
+  if(!s) return '';
+  return '<span class="lg-flow-strategy">→ '+esc(s)+'</span>';
+}
+
+function buildLeagueFlowDiagram(){
+  var cats = leagueCatGroups();
+  var MAIN_CHAIN = ['리그 오픈','리그 예선전','리그 현황','리그 팀소개','리그 하이라이트','리그 실험형'];
+  var BRANCH_TYPES = ['리그 예능','리그 서사','리그 스케치'];
+  var mainChain = MAIN_CHAIN.filter(function(c){ return cats[c]; });
+  var branchTypes = BRANCH_TYPES.filter(function(c){ return cats[c]; });
+  var hasLive = !!cats['리그 라이브'];
+  if(!mainChain.length && !branchTypes.length && !hasLive) return '';
+
+  var html = '<div class="lg-flow-diagram">';
+
+  html += '<div class="lg-flow-chain-col">';
+  html += '<div class="lg-flow-main">';
+  mainChain.forEach(function(catName, i){
+    html += '<div class="lg-flow-step">'+catBadge(catName)+'</div>'+flowStrategyTag(catName);
+    if(i<mainChain.length-1 || branchTypes.length){
+      html += '<div class="lg-flow-arrow">↓</div><div></div>';
+    }
+  });
+  html += '</div>';
+  if(branchTypes.length){
+    html += '<div class="lg-flow-branch">';
+    branchTypes.forEach(function(catName){
+      html += '<div class="lg-flow-step">'+catBadge(catName)+'</div>';
+    });
+    html += flowStrategyTag('리그 서사');
+    html += '</div>';
+  }
+  html += '</div>';
+
+  if(hasLive){
+    html += '<div class="lg-flow-side">'+
+      '<div class="lg-flow-side-lbl">🔴 상시 병행 (순수 리그 관심도)</div>'+
+      '<div class="lg-flow-step">'+catBadge('리그 라이브')+'</div>'+
+      '</div>';
+  }
+
+  html += '</div>';
+  return '<div class="lg-narrative"><p style="margin-bottom:10px">📋 <b>리그 콘텐츠 발행 흐름</b> — 리그 오픈부터 실험형까지 순서대로 발행되고, 그 아래로 예능·서사·스케치가 파생됩니다. 라이브는 시즌 내내 상시 병행되는 콘텐츠입니다.</p>'+html+'</div>';
+}
+
+function renderLeagueTop3(){
+  var cats = leagueCatGroups();
+  var order = orderLeagueCats(cats);
+  if(!order.length) return '<div style="color:var(--t3);font-size:12px;padding:10px">리그 유형으로 지정된 콘텐츠가 없습니다</div>';
+  var html='<div class="lg-type-block lg-flow-block">'+buildLeagueFlowDiagram()+'</div>';
+  order.forEach(function(catName){
+    var rows = cats[catName];
+    var seasonStats = buildTypeSeasonStats(rows);
+    var rankChainHtml = buildSeasonRankChainHtml(seasonStats);
+    html += '<div class="lg-type-block"><div class="lg-type-hdr">'+
+      '<span class="lg-type-hdr-left">'+catBadge(catName)+
+      '<span class="lg-rank-chain">시즌 순위(중앙조회수) '+rankChainHtml+'</span></span>'+
+      '<span class="lg-type-n">'+rows.length+'건</span></div><div style="padding:12px">';
+
+    /* 1) 상세 설명(서술)을 먼저 보여줌 */
+    html += narrativeForType(catName, seasonStats);
+
+    /* 2) 그 아래 데이터(TOP3 또는 리그라이브 전용 표)를 보여줌 */
+    if(catName==='리그 라이브'){
+      html += '<div class="lg-data-hdr">📋 시즌별 상세 지표</div>';
+      html += renderSimpleSeasonMetrics(seasonStats);
+      html += '</div></div>';
+      return;
+    }
+
+    var bySeason = {};
+    rows.forEach(function(r){
+      var s = seasonOf(r.date);
+      if(!s) return;
+      if(!bySeason[s.key]) bySeason[s.key] = {season:s, rows:[]};
+      bySeason[s.key].rows.push(r);
+    });
+    var seasonKeys = Object.keys(bySeason).map(Number).sort(function(a,b){ return b-a; });
+    if(!seasonKeys.length){
+      html += '</div></div>';
+      return;
+    }
+
+    /* 지표별 전체 시즌 중 최고 시즌 계산 (시즌이 2개 이상일 때만 강조) */
+    var bestSeasonForMetric = {};
+    if(seasonKeys.length > 1){
+      LEAGUE_METRICS.forEach(function(m){
+        var best=null, bestVal=-Infinity;
+        seasonKeys.forEach(function(sk){
+          var top = bySeason[sk].rows.slice().sort(function(a,b){ return (b[m.key]||0)-(a[m.key]||0); })[0];
+          if(top && (top[m.key]||0) > bestVal){ bestVal = top[m.key]||0; best = sk; }
+        });
+        bestSeasonForMetric[m.key] = best;
+      });
+    }
+
+    html += '<div class="lg-data-hdr">📋 시즌별 상세 TOP3</div>';
+    seasonKeys.forEach(function(sk){
+      var entry = bySeason[sk];
+      html += '<div class="lg-season-sub"><div class="lg-season-sub-ttl">'+esc(entry.season.label)+' <span style="color:var(--t3);font-weight:400">('+entry.rows.length+'건)</span></div>';
+      html += '<div class="top3-grid">';
+      LEAGUE_METRICS.forEach(function(m){
+        var sorted = entry.rows.slice().sort(function(a,b){ return (b[m.key]||0)-(a[m.key]||0); }).slice(0,3);
+        var isBest = bestSeasonForMetric[m.key]===sk && sorted.length>0;
+        html += '<div class="top3-col'+(isBest?' top3-col-best':'')+'"><div class="top3-col-ttl">'+m.label+' TOP3'+(isBest?' <span class="top3-best-badge">🏆최고시즌</span>':'')+'</div>';
+        sorted.forEach(function(r,i){
+          var internal = r.creator && r.creator!=='외주' && r.creator!=='넥슨';
+          var vurl = 'https://youtube.com/watch?v='+esc(r.id);
+          html += '<div class="top3-row'+(internal?' top3-row-internal':'')+'"><span class="top3-rk">'+(i+1)+'</span>'+
+            '<a class="top3-thumb-link" href="'+vurl+'" target="_blank" title="'+esc(r.title)+'"><img class="top3-thumb" src="https://img.youtube.com/vi/'+esc(r.id)+'/mqdefault.jpg" loading="lazy" alt=""></a>'+
+            '<a class="top3-nm" href="'+vurl+'" target="_blank" title="'+esc(r.title)+'">'+esc(r.title)+'</a>'+
+            '<span class="top3-cr'+(internal?' top3-cr-internal':'')+'">'+esc(r.creator||'—')+'</span>'+
+            '<span class="top3-val">'+m.fmt(r[m.key]||0)+'</span></div>';
+        });
+        if(!sorted.length) html += '<div style="font-size:11px;color:var(--t3);padding:4px 0">데이터 없음</div>';
+        html += '</div>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div></div>';
+  });
+  return html || '<div style="color:var(--t3);font-size:12px;padding:10px">시즌 정보를 계산할 수 있는 리그 콘텐츠가 없습니다</div>';
+}
+
+/* ── 리그: 유형별 개선 추이 — 표 대신 서술형 리포트 (renderLeagueTop3 하단에 삽입됨) ── */
+/* 조회수 외에 어떤 지표가 특히 좋았는지 서술 (노출수→추천/검색 노출, CTR→섬네일/제목 후킹, 평균조회율→시청지속력, 참여율→반응, 구독자증가→채널성장 기여) */
+function describeStrengthsForSeason(target, seasonStats){
+  var others = seasonStats.filter(function(s){ return s!==target; });
+  if(!others.length) return '';
+  function avgOf(key){ return others.reduce(function(s,x){return s+x[key];},0)/others.length; }
+  var avgImpr = avgOf('medImpr'), avgCtr = avgOf('ctr'), avgAvr = avgOf('avr'), avgEng = avgOf('eng'), avgSubs = avgOf('subsAvg');
+  var notes = [];
+  if(avgImpr>0 && target.medImpr >= avgImpr*1.1) notes.push('노출수가 <span class="val-hi">'+fmtNum(target.medImpr)+'회</span>로 많아 추천·검색 노출이 잘 되었습니다');
+  if(avgCtr>0 && target.ctr >= avgCtr*1.1) notes.push('CTR이 <span class="val-hi">'+target.ctr.toFixed(2)+'%</span>로 다른 시즌보다 높아 섬네일·제목 후킹이 좋았던 것으로 보입니다');
+  if(avgAvr>0 && target.avr >= avgAvr*1.1) notes.push('평균 조회율이 <span class="val-hi">'+target.avr.toFixed(1)+'%</span>로 높아 시청 지속력이 좋았습니다');
+  if(avgEng>0 && target.eng >= avgEng*1.1) notes.push('참여율이 <span class="val-hi">'+target.eng.toFixed(2)+'%</span>로 높아 시청자 반응이 좋았습니다');
+  if(avgSubs>0 && target.subsAvg >= avgSubs*1.1) notes.push('구독자 증가가 편당 평균 <span class="val-hi">'+(target.subsAvg>=0?'+':'')+fmtNum(target.subsAvg)+'명</span>으로 높아 채널 성장에도 크게 기여했습니다');
+  if(!notes.length) return '';
+  return '<p>✨ <b>'+esc(target.season.label)+'</b>은(는) '+notes.join(', ')+'.</p>';
+}
+
+var CURRENT_SEASON_LABEL = '2026 시즌1';
+
+/* 2026 시즌1을 기준으로, 역대 최고 시즌 대비 증감을 서술 (요청: "가장 높았던 시즌"이 아니라 "지금 시즌" 중심으로 설명) */
+function describeCurrentVsPeak(seasonStats){
+  var current = null;
+  for(var i=0;i<seasonStats.length;i++){ if(seasonStats[i].season.label===CURRENT_SEASON_LABEL){ current=seasonStats[i]; break; } }
+  var peak = seasonStats.slice().sort(function(a,b){ return b.medViews-a.medViews; })[0];
+  if(!current) return {current:null, peak:peak, html:''};
+  var html;
+  if(peak.season.key===current.season.key){
+    html = '<p>📊 <b>'+esc(current.season.label)+'</b>이 역대 최고 성과를 기록한 시즌입니다 (중앙 조회수 <span class="val-hi">'+fmtNum(current.medViews)+'회</span>).</p>';
+  } else {
+    var pct = peak.medViews===0 ? (current.medViews===0?0:100) : ((current.medViews-peak.medViews)/Math.abs(peak.medViews)*100);
+    html = '<p>📊 <b>'+CURRENT_SEASON_LABEL+'</b> 중앙 조회수는 <span class="val-hi">'+fmtNum(current.medViews)+'회</span>로, 역대 최고 시즌인 <b>'+esc(peak.season.label)+'</b>(<span class="val-hi">'+fmtNum(peak.medViews)+'회</span>) 대비 '+diffSpan(pct)+' 변화했습니다.</p>';
+  }
+  return {current:current, peak:peak, html:html};
+}
+
+/* 유형별 도메인 지식 기반 서술 (데이터만으로는 알 수 없는 실제 배경 설명) */
+/* 유형별 "이 콘텐츠가 어떤 콘텐츠인지" 한 줄 설명 (모든 유형 서술의 도입부에 공통 사용) */
+var LEAGUE_TYPE_DESC = {
+  '리그 예선전':   '본선 진출 팀을 가리는 예선 경기를 다루는 콘텐츠',
+  '리그 오픈':     '리그의 시작을 알리는 콘텐츠',
+  '리그 현황':     '리그의 팀 진출 혹은 탈락 결과를 알려주는 모션그래픽 콘텐츠',
+  '리그 팀소개':   '리그에 참가하는 팀을 소개하는 콘텐츠',
+  '리그 하이라이트':'경기의 명장면을 편집해 보여주는 하이라이트 콘텐츠',
+  '리그 실험형':   '밈이나 유행하는 스타일을 차용한 콘텐츠로, 유쾌한 콘텐츠를 소비하고자 하는 시청자의 욕구를 충족시키며 서든어택의 대세감을 형성하는 콘텐츠',
+  '리그 서사':     '감동적인 서사 혹은 선수·팀의 매력을 극대화시켜 팬덤을 형성하는 콘텐츠',
+  '리그 예능':     '예능 형식으로 촬영하여 재미를 주는 콘텐츠',
+  '리그 스케치':   '현장의 반응이나 분위기를 담은 콘텐츠',
+  '리그 라이브':   '리그 경기 중계를 하이라이트 롱폼으로 편집한 콘텐츠로, 순수하게 리그의 관심도를 보여주는 콘텐츠'
+};
+function typeDescSentence(catName){
+  var desc = LEAGUE_TYPE_DESC[catName];
+  if(!desc) return '';
+  return '<p>🎬 <b>'+esc(catName)+'</b>은(는) '+desc+'입니다.</p>';
+}
+
+/* 유형별 도메인 지식 기반 서술 (데이터만으로는 알 수 없는 실제 배경 설명) */
+var LEAGUE_NARRATIVE_NOTES = {
+  '리그 오픈': function(seasonStats){
+    var typeRows = [];
+    seasonStats.forEach(function(s){ typeRows = typeRows.concat(s.rows||[]); });
+    var avgShares = typeRows.length ? typeRows.reduce(function(s,r){ return s+(r.shares||0); },0)/typeRows.length : 0;
+    var medShares = median(typeRows.map(function(r){ return r.shares||0; }));
+
+    var txt = '대회에 직접 참가하는 소수의 시청자를 위해 제작되는 성격이 강해 애초에 유튜브 조회수 자체가 크게 나오기 어려운 유형입니다.';
+    txt += ' 이번 시즌부터는 <b>SOOP</b>에서 동시 업로드를 진행했는데, SOOP에서만 <span class="val-hi">29,497회</span>의 조회수를 기록하며 리그 오픈을 알리는 데 SOOP에서 효과적이었습니다.';
+    txt += ' 즉 실제 수요가 있는 BJ 측 플랫폼(SOOP)에서 조회수가 더 많이 나오는 콘텐츠이기 때문에, 유튜브 조회수가 낮게 나와도 크게 상관없습니다.';
+    txt += ' 다만 여기서 끝나는 게 아니라, 이 콘텐츠는 <b>참가자를 모집하는 성향</b>이 강한 콘텐츠이기 때문에 조회수보다는 <b>공유수</b>를 지표로 봐야 합니다.';
+    txt += ' 리그의 시작을 알리는 콘텐츠로서 꼭 필요한 유형이며, 실제로 편당 평균 공유수는 <span class="val-hi">'+fmtNum(avgShares)+'회</span>(중앙값 <span class="val-hi">'+fmtNum(medShares)+'회</span>)를 기록하고 있습니다.';
+    return '<p>👥 '+txt+'</p>';
+  },
+  '리그 현황': function(seasonStats){
+    var current = null;
+    for(var i=0;i<seasonStats.length;i++){ if(seasonStats[i].season.label===CURRENT_SEASON_LABEL){ current=seasonStats[i]; break; } }
+    if(!current) current = seasonStats[seasonStats.length-1];
+    var ann = CH_KPI[curCh] && CH_KPI[curCh].long ? CH_KPI[curCh].long.ctr : null;
+    var txt = '예선전을 라이브로 진행하면서 함께 수혜를 받아 조회수가 동반 상승했습니다.';
+    if(current){
+      txt += ' 특히 섬네일 CTR이 <span class="val-hi">'+current.ctr.toFixed(2)+'%</span>';
+      if(ann!=null) txt += '로 롱폼 평균(<span class="val-hi">'+ann.toFixed(1)+'%</span>) 대비 매우 높은 수준인데';
+      else txt += '로 매우 높은 수준인데';
+      txt += ', 이는 하이라이트 콘텐츠의 섬네일 포맷을 차용하면서 CTR을 끌어올린 결과로 보입니다.';
+    }
+    return '<p>🔥 '+txt+'</p>';
+  },
+  '리그 팀소개': function(seasonStats){
+    var switchIdx = -1;
+    for(var i=1;i<seasonStats.length;i++){
+      var prevHasOutsource = seasonStats[i-1].creators.indexOf('외주')>=0;
+      var curHasOutsource = seasonStats[i].creators.indexOf('외주')>=0;
+      if(curHasOutsource && !prevHasOutsource){ switchIdx=i; break; }
+    }
+    var txt = '기존에 직접 촬영하여 제작하던 방식에서, 공수를 줄이고자 <b>SOOP 제작 콘텐츠</b>로 대체되면서 관심도가 급격히 하락했습니다.';
+    if(switchIdx>=0){
+      var before = seasonStats[switchIdx-1], after = seasonStats[switchIdx];
+      var pct = before.medViews===0 ? (after.medViews===0?0:100) : ((after.medViews-before.medViews)/Math.abs(before.medViews)*100);
+      txt += ' '+esc(before.season.label)+'(<span class="val-hi">'+fmtNum(before.medViews)+'회</span>) → '+esc(after.season.label)+'(<span class="val-hi">'+fmtNum(after.medViews)+'회</span>)로 '+diffSpan(pct)+' 변화했습니다.';
+    }
+    txt += ' 실제로 선수들 사이에서도 인터뷰 당시 <b>"직접 촬영을 안 해주시냐"</b>는 아쉬움의 목소리가 다수 나왔습니다.';
+    txt += ' 외주 제작 콘텐츠라도 <b>선수 얼굴이 드러나는 섬네일</b>로 교체해 관심도를 끌어올려보는 것을 제안합니다.';
+    txt += ' 또한 롱폼은 <b>금요일 오후 7시, 토요일 오후 7시</b>를 기점으로 알고리즘 노출이 두 차례 증가하는 성격을 가지고 있어, 팀소개 영상을 토요일이 아닌 <b>금요일에 하루 일찍</b> 업로드하는 것을 제안드립니다.';
+    return '<p>⚠️ '+txt+'</p>';
+  },
+  '리그 하이라이트': function(seasonStats){
+    var s2025s2 = null;
+    for(var i=0;i<seasonStats.length;i++){ if(seasonStats[i].season.label==='2025 시즌2'){ s2025s2=seasonStats[i]; break; } }
+    var txt = '하락 추세이지만, 이슈가 되는 인원에 따라 조회수 편차가 매우 큰 유형입니다.';
+    txt += ' 그런데 같은 하이라이트 형식 안에서도 <b>2025 시즌2 손태현의 "FINF를 이끄는자"</b>처럼 <b>오프더레코드</b>를 활용한 <b>매드무비형</b> 콘텐츠는, 등장 인물의 인기와 무관하게 고성과를 낼 확률이 높은 것으로 나타났습니다';
+    if(s2025s2) txt += ' (해당 시즌 중앙 조회수 <span class="val-hi">'+fmtNum(s2025s2.medViews)+'회</span>)';
+    txt += '. 2026 시즌에는 이 포맷을 많이 차용하지 않아 아쉬움이 있었던 만큼, 다음 시즌에는 오프더레코드를 매번 받아 매드무비형 제작 비율을 늘리는 것을 제안드립니다.';
+    return '<p>🎲 '+txt+'</p>';
+  },
+  '리그 실험형': function(seasonStats){
+    var s2025s2 = null, s2026s1 = null;
+    seasonStats.forEach(function(s){
+      if(s.season.label==='2025 시즌2') s2025s2 = s;
+      if(s.season.label===CURRENT_SEASON_LABEL) s2026s1 = s;
+    });
+    var txt = '<b>"세상이 날 억까해"</b> 랭킹 콘텐츠처럼 유쾌한 밈형 콘텐츠가 조회수와 노출수 모두 높게 나오는 것을 확인할 수 있습니다.';
+    txt += ' 2026 시즌1에는 기존에 잘 되었던 포맷을 그대로 재사용했습니다';
+    if(s2025s2 && s2026s1){
+      txt += ' ('+esc(s2025s2.season.label)+' <span class="val-hi">'+fmtNum(s2025s2.medViews)+'회</span> → '+esc(s2026s1.season.label)+' <span class="val-hi">'+fmtNum(s2026s1.medViews)+'회</span>)';
+    }
+    txt += '. 또한 이 유형은 다른 리그 콘텐츠들과 달리 노출수가 조회수를 압도적으로 웃돌기보다는 <b>조회수가 노출수에 근접하거나 앞서는</b> 모습을 보이는데, 이는 알고리즘 노출보다 콘텐츠 자체를 순수하게 보고 싶어하는 시청자 니즈와 수요를 보여주는 신호로 해석됩니다.';
+    txt += ' 다음 시즌에는 이런 유쾌한 밈형 콘텐츠를 더 발굴하고 늘려야 할 것으로 보입니다.';
+    return '<p>💡 '+txt+'</p>';
+  },
+  '리그 서사': function(seasonStats){
+    var first = seasonStats[0], last = seasonStats[seasonStats.length-1];
+    var pct = first.medViews===0 ? (last.medViews===0?0:100) : ((last.medViews-first.medViews)/Math.abs(first.medViews)*100);
+    var txt = '점차 상승 추세를 보이고 있으며, '+esc(first.season.label)+' 대비 선수·팀을 응원하는 팬덤 동향이 크게 증가한 것으로 보입니다 (중앙 조회수 '+esc(first.season.label)+' <span class="val-hi">'+fmtNum(first.medViews)+'회</span> → '+esc(last.season.label)+' <span class="val-hi">'+fmtNum(last.medViews)+'회</span>, '+diffSpan(pct)+').';
+
+    var lastRows = last.rows || [];
+    var lastUploadDate = null;
+    lastRows.forEach(function(r){ var v=dateVal(r.date); if(v && (!lastUploadDate || v>lastUploadDate)) lastUploadDate=v; });
+    if(lastUploadDate){
+      var y=Math.floor(lastUploadDate/10000), m=Math.floor((lastUploadDate%10000)/100), d=lastUploadDate%100;
+      var uploadDateObj = new Date(y, m-1, d);
+      var daysAgo = Math.floor((new Date() - uploadDateObj)/86400000);
+      if(daysAgo>=0 && daysAgo<=14){
+        txt += ' 최신 콘텐츠는 업로드된 지 <span class="val-hi">'+daysAgo+'일</span>밖에 되지 않아, 조회수가 앞으로 더 상승할 여지가 남아있습니다.';
+      }
+    }
+
+    txt += ' 실제로 선수들 사이에서도 팬덤이 늘어났다는 반응을 얻어냈으며, 현장 관람 인원도 꾸준하고 현장 응원 열기 또한 뜨거운 것으로 확인됩니다.';
+    return '<p>📈 '+txt+'</p>';
+  },
+  '리그 예능': function(seasonStats){
+    return '<p>✂️ 촬영이 들어가는 만큼 제작 공수가 높은 편인데, 그에 비해 반응이 크게 높지 않아 2026년에는 콘텐츠 제작을 생략했습니다.</p>';
+  },
+  '리그 스케치': function(seasonStats){
+    return '<p>✂️ 이벤트 등과 연계하지 않는 일반적인 스케치 콘텐츠는 제작해도 수요가 매우 적어, 다른 콘텐츠 유형으로 대체되었습니다.</p>';
+  },
+  '리그 라이브': function(seasonStats){
+    var s2025s1 = null, s2026s1 = null;
+    seasonStats.forEach(function(s){
+      if(s.season.label==='2025 시즌1') s2025s1 = s;
+      if(s.season.label===CURRENT_SEASON_LABEL) s2026s1 = s;
+    });
+    var prevIdx = -1;
+    for(var i=0;i<seasonStats.length;i++){ if(seasonStats[i].season.label===CURRENT_SEASON_LABEL){ prevIdx=i-1; break; } }
+    var prev = prevIdx>=0 ? seasonStats[prevIdx] : null;
+    var cur = s2026s1;
+
+    var txt = '전체적으로는 하락 추세를 보이고 있습니다.';
+    if(cur && prev){
+      var pct = prev.medViews===0 ? (cur.medViews===0?0:100) : ((cur.medViews-prev.medViews)/Math.abs(prev.medViews)*100);
+      if(cur.medViews >= prev.medViews){
+        txt += ' 다만 직전 시즌 대비 이번 시즌은 특별히 화제가 될 만한 이슈 인원이 없었음에도 불구하고 중앙 조회수가 '+esc(prev.season.label)+'(<span class="val-hi">'+fmtNum(prev.medViews)+'회</span>) → '+esc(cur.season.label)+'(<span class="val-hi">'+fmtNum(cur.medViews)+'회</span>)로 '+diffSpan(pct)+' 소폭 상승했습니다.';
+      }
+    }
+    if(s2025s1){
+      txt += ' 2025 시즌1에는 김지훈·위티 등 화제성 있는 인물이 참여했던 시즌이었던 반면, 2026 시즌1은 특별한 이슈 인원 없이도 선전한 셈입니다.';
+    }
+    return '<p>📉 '+txt+'</p>';
+  }
+};
+
+function narrativeForType(catName, seasonStats){
+  if(!seasonStats.length) return '<div class="lg-narrative"><p style="color:var(--t3)">시즌 정보를 계산할 수 있는 콘텐츠가 없습니다.</p></div>';
+  var parts = [];
+
+  /* 0) 이 콘텐츠가 어떤 콘텐츠인지 한 줄 설명 (모든 유형 공통) */
+  var descHtml = typeDescSentence(catName);
+  if(descHtml) parts.push(descHtml);
+
+  /* 리그 예선전: 2026 시즌1부터 인터뷰 → 라이브+하이라이트로 포맷 전환된 사실을 서술 */
+  if(catName==='리그 예선전'){
+    var idx2026s1 = -1;
+    for(var i=0;i<seasonStats.length;i++){ if(seasonStats[i].season.label==='2026 시즌1'){ idx2026s1=i; break; } }
+    if(idx2026s1>=0){
+      var cur = seasonStats[idx2026s1];
+      var prev = idx2026s1>0 ? seasonStats[idx2026s1-1] : null;
+      var growthTxt = '';
+      if(prev){
+        var pct = prev.medViews===0 ? (cur.medViews===0?0:100) : ((cur.medViews-prev.medViews)/Math.abs(prev.medViews)*100);
+        growthTxt = ' 직전 시즌('+esc(prev.season.label)+', <span class="val-hi">'+fmtNum(prev.medViews)+'회</span>) 대비 중앙 조회수가 <span class="val-hi">'+fmtNum(cur.medViews)+'회</span>로 '+diffSpan(pct)+' 변화했습니다.';
+      }
+      parts.push('<p>🔄 <b>포맷 전환:</b> 이전 시즌까지 인터뷰 형식으로 진행되던 예선전 콘텐츠가, <b>2026 시즌1부터 라이브 중계 + 하이라이트 편집</b> 방식으로 바뀌었습니다.'+growthTxt+' 이는 콘텐츠 자체의 완성도보다도, 예선전 단계부터 라이브로 중계하며 시청자의 관심을 압도적으로 끌어모은 것이 효과적이었다는 것을 보여줍니다.</p>');
+      parts.push('<p>✨ 또 하나의 장점은, 메인 이슈를 몰고 다니는 이슈 인원이 예선전에서 탈락할 경우 기존 방식으로는 이를 조명할 방법이 없었다는 점입니다. 이번에 예선전을 라이브로 진행하면서 <b>김지훈·슉맨·임치훈</b> 등 이슈 인원의 플레이를 그 자리에서 숏폼으로 활용할 수 있게 되었고, 그 결과 <span class="val-hi">50만</span> 조회수를 얻어내는 성공 사례를 만들어냈습니다.</p>');
+    }
+  }
+
+  if(seasonStats.length < 2){
+    var override0 = LEAGUE_NARRATIVE_NOTES[catName];
+    if(override0){
+      parts.push(override0(seasonStats));
+    } else if(catName!=='리그 예선전') {
+      parts.push('<p style="color:var(--t3)">아직 시즌 데이터가 1개뿐이라 추세를 비교할 수 없습니다.</p>');
+    }
+    var chartHtml0 = renderSeasonTrendBarChart(seasonStats, narrExtraBar(catName, seasonStats), narrOverlayEstimate(catName, seasonStats));
+    if(chartHtml0) parts.push(chartHtml0);
+    return '<div class="lg-narrative">'+parts.join('')+'</div>';
+  }
+
+  var override = LEAGUE_NARRATIVE_NOTES[catName];
+  if(override){
+    parts.push(override(seasonStats));
+  } else if(catName!=='리그 예선전') {
+    var cmp = describeCurrentVsPeak(seasonStats);
+    if(cmp.html) parts.push(cmp.html);
+    if(cmp.current){
+      var strengthsNote = describeStrengthsForSeason(cmp.current, seasonStats);
+      if(strengthsNote) parts.push(strengthsNote);
+    }
+  }
+
+  var chartHtml = renderSeasonTrendBarChart(seasonStats, narrExtraBar(catName, seasonStats), narrOverlayEstimate(catName, seasonStats));
+  if(chartHtml) parts.push(chartHtml);
+
+  return '<div class="lg-narrative">'+parts.join('')+'</div>';
+}
+
+/* 시즌별 중앙조회수 막대그래프: 전 시즌 대비 상승(빨강)/하락(파랑)이 한눈에 보이도록. sideNote가 있으면 그래프 우측에 추가 지표 박스를 붙임 */
+function narrOverlayEstimate(catName, seasonStats){
+  if(catName!=='리그 서사' || !seasonStats.length) return null;
+  var last = seasonStats[seasonStats.length-1];
+  var lastRows = last.rows || [];
+  var lastUploadDate = null;
+  lastRows.forEach(function(r){ var v=dateVal(r.date); if(v && (!lastUploadDate || v>lastUploadDate)) lastUploadDate=v; });
+  if(!lastUploadDate) return null;
+  var y=Math.floor(lastUploadDate/10000), m=Math.floor((lastUploadDate%10000)/100), d=lastUploadDate%100;
+  var daysAgo = Math.floor((new Date() - new Date(y, m-1, d))/86400000);
+  if(daysAgo>=0 && daysAgo<=14) return {value:5100, color:'#c0392b'};
+  return null;
+}
+function narrExtraBar(catName, seasonStats){
+  if(catName!=='리그 오픈' || !seasonStats.length) return null;
+  var hasCurrent = seasonStats.some(function(s){ return s.season.label===CURRENT_SEASON_LABEL; });
+  if(!hasCurrent) return null;
+  return {value:29000, label:'SOOP', sub:'SOOP 동시업로드', color:'#0d7a4e'};
+}
+
+function renderSeasonTrendBarChart(seasonStats, extraBar, overlayEstimate){
+  if(!seasonStats.length) return '';
+  var n = seasonStats.length + (extraBar ? 1 : 0);
+  var W = Math.max(360, n*100), H=170, padT=26, padB=34;
+  var innerH = H-padT-padB;
+  var maxVals = seasonStats.map(function(s){ return s.medViews; });
+  if(extraBar) maxVals.push(extraBar.value);
+  if(overlayEstimate) maxVals.push(overlayEstimate.value);
+  var maxV = Math.max.apply(null, maxVals) || 1;
+  var gap = W/n;
+  var barW = Math.min(64, gap*0.5);
+  var bars='', labels='';
+  seasonStats.forEach(function(s,i){
+    var h = Math.max(4, (s.medViews/maxV)*innerH);
+    var x = gap*i + (gap-barW)/2;
+    var y = padT+innerH-h;
+    var color = '#9a9a9f';
+    if(i>0) color = s.medViews >= seasonStats[i-1].medViews ? '#c0392b' : '#1a56db';
+    bars += '<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+h.toFixed(1)+'" rx="4" fill="'+color+'"/>';
+    bars += '<text x="'+(x+barW/2).toFixed(1)+'" y="'+(y-7).toFixed(1)+'" font-size="11" font-weight="800" fill="'+color+'" text-anchor="middle">'+fmtN(s.medViews)+'</text>';
+    labels += '<text x="'+(x+barW/2).toFixed(1)+'" y="'+(H-14)+'" font-size="10.5" fill="var(--t3)" text-anchor="middle">'+esc(seasonAbbrev(s.season.label))+'</text>';
+    labels += '<text x="'+(x+barW/2).toFixed(1)+'" y="'+(H-2)+'" font-size="9" fill="var(--t3)" text-anchor="middle">'+s.n+'건</text>';
+    /* 마지막 시즌 위에 추정치를 겹쳐서 표시 (예: 리그 서사, 업로드 14일 이내) */
+    if(overlayEstimate && i===seasonStats.length-1){
+      var eh = Math.max(4, (overlayEstimate.value/maxV)*innerH);
+      var ey = padT+innerH-eh;
+      bars += '<rect x="'+x.toFixed(1)+'" y="'+ey.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+eh.toFixed(1)+'" rx="4" fill="'+overlayEstimate.color+'22" stroke="'+overlayEstimate.color+'" stroke-width="2" stroke-dasharray="5,3"/>';
+      bars += '<text x="'+(x+barW/2).toFixed(1)+'" y="'+(ey-7).toFixed(1)+'" font-size="11" font-weight="800" fill="'+overlayEstimate.color+'" text-anchor="middle">~'+fmtN(overlayEstimate.value)+' 추정</text>';
+    }
+  });
+  if(extraBar){
+    var ei = seasonStats.length;
+    var eh2 = Math.max(4, (extraBar.value/maxV)*innerH);
+    var ex = gap*ei + (gap-barW)/2;
+    var ey2 = padT+innerH-eh2;
+    bars += '<rect x="'+ex.toFixed(1)+'" y="'+ey2.toFixed(1)+'" width="'+barW.toFixed(1)+'" height="'+eh2.toFixed(1)+'" rx="4" fill="'+extraBar.color+'"/>';
+    bars += '<text x="'+(ex+barW/2).toFixed(1)+'" y="'+(ey2-7).toFixed(1)+'" font-size="11" font-weight="800" fill="'+extraBar.color+'" text-anchor="middle">'+fmtN(extraBar.value)+'</text>';
+    labels += '<text x="'+(ex+barW/2).toFixed(1)+'" y="'+(H-14)+'" font-size="10.5" fill="'+extraBar.color+'" font-weight="700" text-anchor="middle">'+esc(extraBar.label)+'</text>';
+    labels += '<text x="'+(ex+barW/2).toFixed(1)+'" y="'+(H-2)+'" font-size="9" fill="var(--t3)" text-anchor="middle">'+esc(extraBar.sub)+'</text>';
+  }
+  var svg = '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;max-height:180px;display:block">'+bars+labels+'</svg>';
+  var legend = '<div class="season-bar-legend">'+
+    '<span><span class="sbl-sw" style="background:#c0392b"></span>전 시즌 대비 상승</span>'+
+    '<span><span class="sbl-sw" style="background:#1a56db"></span>전 시즌 대비 하락</span>'+
+    '<span><span class="sbl-sw" style="background:#9a9a9f"></span>최초 시즌</span>';
+  if(extraBar) legend += '<span><span class="sbl-sw" style="background:'+extraBar.color+'"></span>'+esc(extraBar.label)+' 지표</span>';
+  if(overlayEstimate) legend += '<span><span class="sbl-sw" style="background:'+overlayEstimate.color+'22;border:1.5px dashed '+overlayEstimate.color+'"></span>추정치(업로드 14일 이내, 상승 전망)</span>';
+  legend += '</div>';
+  return '<div class="season-bar-chart"><div class="lg-data-hdr" style="margin-top:0">📊 시즌별 중앙 조회수 추이</div>'+svg+legend+'</div>';
+}
+
+
+/* ── 렌더 총괄 ── */
+/* ── 2026 시즌 종합 리뷰 & 다음 시즌 콘텐츠 기획 (모든 리그 유형 분석을 종합) ── */
+function buildFinalReview(){
+  var leagueRows = allRows.filter(function(r){ return isLeagueCat(r.cat); });
+  if(!leagueRows.length) return '<div style="color:var(--t3);font-size:12px;padding:10px">리그 콘텐츠 데이터가 없어 종합 리뷰를 작성할 수 없습니다</div>';
+
+  var seasonSeries = buildSeasonalSeries(leagueRows);
+  var curIdx = -1;
+  for(var i=0;i<seasonSeries.length;i++){ if(seasonSeries[i].label===CURRENT_SEASON_LABEL){ curIdx=i; break; } }
+  var turnaroundPct = null;
+  if(curIdx>0){
+    var cur = seasonSeries[curIdx], prev = seasonSeries[curIdx-1];
+    turnaroundPct = prev.total===0 ? (cur.total===0?0:100) : ((cur.total-prev.total)/Math.abs(prev.total)*100);
+  }
+
+  var CUTOFF_KEY = 2025*10+2;
+  var relevant = leagueRows.filter(function(r){ var s=seasonOf(r.date); return s && s.key>=CUTOFF_KEY; });
+  var yuj = relevant.filter(function(r){ return r.creator==='이유정'; });
+  var waeju = relevant.filter(function(r){ return r.creator==='외주'; });
+  var yujMed = yuj.length ? median(yuj.map(function(r){ return r.views||0; })) : 0;
+  var waejuMed = waeju.length ? median(waeju.map(function(r){ return r.views||0; })) : 0;
+  var yujBetter = yuj.length && waeju.length && yujMed >= waejuMed;
+  var yujVsWaejuPct = waejuMed>0 ? ((yujMed-waejuMed)/waejuMed*100) : null;
+
+  /* 예선전 라이브 전환 효과: 직전 시즌 대비 2026 시즌1 중앙 조회수 변화율 */
+  var prelimRows = leagueRows.filter(function(r){ return r.cat==='리그 예선전'; });
+  var prelimSeasonStats = buildTypeSeasonStats(prelimRows);
+  var prelimCurIdx = -1;
+  for(var pi=0;pi<prelimSeasonStats.length;pi++){ if(prelimSeasonStats[pi].season.label===CURRENT_SEASON_LABEL){ prelimCurIdx=pi; break; } }
+  var prelimLivePct = null;
+  if(prelimCurIdx>0){
+    var pCur = prelimSeasonStats[prelimCurIdx], pPrev = prelimSeasonStats[prelimCurIdx-1];
+    prelimLivePct = pPrev.medViews===0 ? (pCur.medViews===0?0:100) : ((pCur.medViews-pPrev.medViews)/Math.abs(pPrev.medViews)*100);
+  }
+
+  var html = '<div class="review-wrap">';
+
+  /* 1) 헤드라인 핵심 지표 카드 */
+  html += '<div class="review-stats">';
+  html += '<div class="review-stat-card'+(prelimLivePct!=null && prelimLivePct>=0 ? ' rs-up' : (prelimLivePct!=null ? ' rs-down' : ''))+'">'+
+    '<div class="rs-label">🔴 예선전 라이브 전환 효과</div>'+
+    '<div class="rs-value">'+(prelimLivePct!=null ? (prelimLivePct>=0?'+':'')+prelimLivePct.toFixed(1)+'%' : '—')+'</div>'+
+    '<div class="rs-sub">예선전 중앙조회수 · 직전 시즌 대비</div></div>';
+  html += '<div class="review-stat-card'+(turnaroundPct!=null && turnaroundPct>=0 ? ' rs-up' : (turnaroundPct!=null ? ' rs-down' : ''))+'">'+
+    '<div class="rs-label">리그 콘텐츠 조회수 반등</div>'+
+    '<div class="rs-value">'+(turnaroundPct!=null ? (turnaroundPct>=0?'+':'')+turnaroundPct.toFixed(1)+'%' : '—')+'</div>'+
+    '<div class="rs-sub">직전 시즌 대비 · '+CURRENT_SEASON_LABEL+'</div></div>';
+  html += '<div class="review-stat-card'+(yujBetter ? ' rs-up' : '')+'">'+
+    '<div class="rs-label">이유정 편당 중앙조회수</div>'+
+    '<div class="rs-value">'+fmtNum(yujMed)+'회</div>'+
+    '<div class="rs-sub">'+(yujVsWaejuPct!=null ? '외주 대비 '+(yujVsWaejuPct>=0?'+':'')+yujVsWaejuPct.toFixed(0)+'%' : '2025 시즌2~')+'</div></div>';
+  html += '<div class="review-stat-card">'+
+    '<div class="rs-label">외주 편당 중앙조회수</div>'+
+    '<div class="rs-value">'+fmtNum(waejuMed)+'회</div>'+
+    '<div class="rs-sub">2025 시즌2~ 기준</div></div>';
+  html += '</div>';
+
+  /* 2) 종합 리뷰 한 문단 (예선전 라이브 전환을 가장 강하게 강조) */
+  html += '<div class="review-summary">📊 <b>종합 리뷰</b> — <b class="review-highlight">2026 시즌1에서 가장 효과적이었던 변화는 단연 예선전을 라이브로 전환한 것입니다.</b>';
+  if(prelimLivePct!=null){
+    html += ' 예선전 중앙 조회수가 직전 시즌 대비 <b class="review-highlight">'+diffSpan(prelimLivePct)+'</b> 변화하며 예선전 단계부터 시청자의 관심을 압도적으로 끌어모았고, 이 효과가 리그 현황 등 인접 유형까지 함께 끌어올렸습니다.';
+  } else {
+    html += ' 이 효과가 예선전·현황 두 유형에 함께 반영되어 리그 콘텐츠가 반등했습니다.';
+  }
+  html += ' 여기에 더해 브랜딩팀이 제작한 콘텐츠가 반등의 핵심 동력이었습니다.';
+  if(yujBetter){
+    html += ' 적은 제작 건수로도 안정적인 성과를 내는 <b>"양보다 질"</b> 전략이 데이터로 증명된 상태입니다.';
+  }
+  html += ' 특히 하이라이트 같은 고정 콘텐츠 이외에도 <b>랭킹 콘텐츠</b> 같은 새로운 유형의 콘텐츠를 적극적으로 발굴하고 있으며, 이는 리그의 볼거리를 새롭게 제시함으로써 시청자의 지속적인 관심을 유지하는 데 큰 도움을 주고 있습니다.';
+  html += '</div>';
+
+  /* 3) 유형별 다음 시즌 과제 카드 그리드 (발행 흐름 순서: 오픈 → 예선전·현황 → 팀소개 → 하이라이트 → 실험형 → 서사 → 예능·스케치) */
+  html += '<div class="review-section-ttl">🎯 유형별 다음 시즌 과제</div>';
+  html += '<div class="review-grid">';
+  var actions = [
+    {icon:'📢', tag:'유지', types:'리그 오픈', body:'SOOP 동시 업로드를 유지하고, 유튜브 조회수보다 공유수를 지표로 관리합니다.'},
+    {icon:'🔴', tag:'유지', types:'리그 예선전 · 현황', body:'라이브 중계 포맷을 계속 유지해, 지금의 상승 흐름을 이어갑니다.'},
+    {icon:'🖼️', tag:'개선', types:'리그 팀소개', body:'외주 콘텐츠도 선수 얼굴이 드러나는 섬네일로 교체해 관심도 회복을 시도합니다.'},
+    {icon:'🎬', tag:'확대', types:'리그 하이라이트', body:'오프더레코드 기반 매드무비형 제작 비율을 늘려, 등장 인물 의존도를 낮춥니다.'},
+    {icon:'✨', tag:'발굴', types:'리그 실험형', body:'순수 시청 수요가 확인된 유형인 만큼, 밈·유행 스타일 콘텐츠를 새롭게 발굴합니다.'},
+    {icon:'❤️', tag:'유지', types:'리그 서사', body:'팬덤이 천천히 살아나는 흐름인 만큼, 무리하게 확대하기보다 지금의 제작 방향을 유지합니다.'},
+    {icon:'⏸️', tag:'보류', types:'리그 예능 · 스케치', body:'제작 중단 결정을 유지하되, 이벤트 연계형 등 제한적 부활 가능성만 열어둡니다.'}
+  ];
+  actions.forEach(function(a){
+    var tagCls = a.tag==='확대' ? ' rc-tag-expand' : (a.tag==='발굴' ? ' rc-tag-explore' : (a.tag==='개선' ? ' rc-tag-improve' : (a.tag==='보류' ? ' rc-tag-hold' : '')));
+    html += '<div class="review-card"><div class="rc-top"><span class="rc-icon">'+a.icon+'</span><span class="rc-tag'+tagCls+'">'+a.tag+'</span></div>'+
+      '<div class="rc-ttl">'+esc(a.types)+'</div><div class="rc-body">'+a.body+'</div></div>';
+  });
+  html += '</div>';
+
+  /* 4) 제안 (강조 박스) */
+  html += '<div class="review-conclusion">';
+  html += '<div class="rc-hdr">💡 제안</div>';
+  html += '<ol class="review-conclusion-list">';
+  html += '<li>예선전의 라이브 효과를 확인하였기 때문에 라이브를 진행하고, 예선전 단계의 이슈력을 극대화하기 위해 하이라이트 콘텐츠를 <b>4개 이상</b> 제작한다.</li>';
+  html += '<li>매주마다 <b>오프더레코드</b>를 받아 하이라이트 포맷 중 <b>매드무비 포맷</b>을 집중적으로 제작한다.</li>';
+  html += '<li>팀 소개 콘텐츠의 경우 <b>섬네일을 개선</b>하여 예선전 단계의 관심을 이어갈 수 있도록 해본다.</li>';
+  html += '<li>히트 쳤던 랭킹 콘텐츠 같은 유쾌한 콘텐츠를 발굴하기 위해 <b>새로운 콘텐츠를 적극적으로 시도</b>한다.</li>';
+  html += '<li>서사 콘텐츠의 경우 2026 시즌과 동일하게 <b>인트로를 깊이 고민하여 연출</b>하여 감동을 줄 수 있는 포맷으로 제작해본다.</li>';
+  html += '</ol>';
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+
+function renderAnalysisPage(){
+  document.getElementById('an-ch-nm').textContent = curCh;
+  document.getElementById('an-hdr-main-ttl').textContent = (curCh==='서든어택') ? '서든어택 콘텐츠 총합 분석' : '종합 분석';
+  document.getElementById('an-hdr-ch-suffix').style.display = (curCh==='서든어택') ? 'none' : '';
+  document.getElementById('an-total-n').textContent = allRows.length.toLocaleString();
+
+  document.getElementById('ov-trend-wrap').innerHTML = renderSeasonalLineChart(buildHalfYearSeries(allRows));
+
+  var rankHtml = '<div class="rank-wrap">'+
+    renderRankTop5('유형별 구독자 증가 기여 TOP5', buildCatRankExcl('subs','sum'), '명', true)+
+    renderRankTop5('유형별 조회수 기여 TOP5', buildCatRankExcl('views','sum'), '회', false)+
+    renderRankTop5('유형별 노출수 기여 TOP5', buildCatRankExcl('impressions','sum'), '회', false)+
+    renderRankTop5('유형별 CTR TOP5', buildCatRankExcl('ctr','avg'), '%', false, 2)+
+    renderRankTop5('유형별 평균조회율 TOP5', buildCatRankExcl('avg_view_rate','avg'), '%', false, 1)+
+    renderRankTop5('유형별 참여율 TOP5', buildCatRankExcl('engagement','avg'), '%', false, 2)+
+    '</div>';
+  document.getElementById('ov-rank-wrap').innerHTML = rankHtml;
+
+  var top10List = buildTop10Pure();
+  document.getElementById('ov-top10-comment').innerHTML = buildTop10Comment(top10List);
+  document.getElementById('ov-top10-wrap').innerHTML = renderTop10Pure(top10List);
+
+  var leagueRows = allRows.filter(function(r){ return isLeagueCat(r.cat); });
+  document.getElementById('lg-trend-wrap').innerHTML          = renderSeasonalLineChart(buildSeasonalSeries(leagueRows));
+  document.getElementById('lg-trend-comment').innerHTML       = buildLeagueOverallComment();
+  document.getElementById('lg-season-compare-comment').innerHTML = buildSeasonCompareComment();
+  document.getElementById('lg-season-compare-wrap').innerHTML = renderLeagueSeasonCompare(buildLeagueSeasonCompare());
+  document.getElementById('lg-top3-wrap').innerHTML           = renderLeagueTop3();
+  document.getElementById('lg-final-review-wrap').innerHTML   = buildFinalReview();
+}
+
+
+
+/* ── 유틸: 증감률 표시 (개선 추이 등에서 재사용) ── */
 function diffSpan(v){
   var cls = v>3?'pi-diff-up':(v<-3?'pi-diff-down':'pi-diff-flat');
   var sign = v>0?'+':'';
   return '<span class="'+cls+'">'+sign+v.toFixed(1)+'%</span>';
-}
-function renderProdImpact(){
-  var data = computeProdImpact();
-  var html = '<table class="pi-table"><thead><tr>'+
-    '<th style="text-align:left">제작 요소</th><th>적용/미적용 건수</th>'+
-    '<th>중앙 조회수(적용)</th><th>중앙 조회수(미적용)</th><th>차이</th>'+
-    '<th>평균 CTR(적용/미적용)</th><th>차이</th>'+
-    '<th>평균 참여율(적용/미적용)</th><th>차이</th>'+
-    '<th>평균 구독자증가(적용/미적용)</th><th>차이</th>'+
-    '</tr></thead><tbody>';
-  data.forEach(function(d){
-    html += '<tr>'+
-      '<td class="lbl">'+esc(d.label)+'</td>'+
-      '<td>'+d.nOn.toLocaleString()+' / '+d.nOff.toLocaleString()+'</td>'+
-      '<td>'+fmtNum(d.views.on)+'</td><td>'+fmtNum(d.views.off)+'</td><td>'+diffSpan(d.views.diff)+'</td>'+
-      '<td>'+d.ctr.on.toFixed(2)+'% / '+d.ctr.off.toFixed(2)+'%</td><td>'+diffSpan(d.ctr.diff)+'</td>'+
-      '<td>'+d.eng.on.toFixed(2)+'% / '+d.eng.off.toFixed(2)+'%</td><td>'+diffSpan(d.eng.diff)+'</td>'+
-      '<td>'+(d.subs.on>=0?'+':'')+fmtNum(d.subs.on)+' / '+(d.subs.off>=0?'+':'')+fmtNum(d.subs.off)+'</td><td>'+diffSpan(d.subs.diff)+'</td>'+
-      '</tr>';
-  });
-  html += '</tbody></table>';
-  html += '<div class="pi-note">💡 "적용"은 해당 제작요소를 체크(○)한 콘텐츠, "미적용"은 체크하지 않은(✕) 콘텐츠입니다. 차이는 (적용−미적용)/미적용 기준 비율이며, 조회수는 중앙값·CTR/참여율/구독자증가는 평균으로 계산합니다. 제작요소가 아직 설정되지 않은 콘텐츠가 많으면 "미적용" 쪽에 함께 집계되어 정확도가 떨어질 수 있습니다.</div>';
-  document.getElementById('prodimpact-body').innerHTML = html;
-}
-function openProdImpactModal(){
-  document.getElementById('pi-ch-nm').textContent = curCh;
-  renderProdImpact();
-  document.getElementById('prodimpact-modal').classList.add('open');
-}
-function closeProdImpactModal(){
-  document.getElementById('prodimpact-modal').classList.remove('open');
 }
 
 
